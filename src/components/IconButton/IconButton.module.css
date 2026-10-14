@@ -1,0 +1,24 @@
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--size-target-min);
+  height: var(--size-target-min);
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.iconButton:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.iconButton:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: default;
+}

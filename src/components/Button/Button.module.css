@@ -1,0 +1,47 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  /* min-height rather than height, so a long translation can wrap instead of overflowing. */
+  min-height: var(--size-control);
+  padding-block: 0;
+  padding-inline: var(--space-6);
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: var(--type-button-font-size);
+  line-height: var(--type-button-line-height);
+  font-weight: var(--type-button-font-weight);
+  text-align: center;
+  cursor: pointer;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+/* No hover or pressed colours: Atlas runs on touch screens. */
+.primary {
+  background: var(--action-primary);
+  color: var(--text-on-action);
+}
+
+.quiet {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.button:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.loading {
+  cursor: progress;
+}
+
+.button:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: default;
+}

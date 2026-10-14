@@ -1,0 +1,79 @@
+.textField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-family: var(--font-sans);
+}
+
+.disabled {
+  opacity: var(--opacity-disabled);
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.label {
+  color: var(--text-primary);
+  font-size: var(--type-label-font-size);
+  line-height: var(--type-label-line-height);
+  font-weight: var(--type-label-font-weight);
+}
+
+.control {
+  position: relative;
+}
+
+.input {
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--size-control);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--space-4);
+  border: var(--stroke-default) solid var(--border-control);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--type-input-font-size);
+  line-height: var(--type-input-line-height);
+  font-weight: var(--type-input-font-weight);
+  appearance: none;
+}
+
+.input::placeholder {
+  color: var(--text-secondary);
+}
+
+.input:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--danger-text);
+  box-shadow: var(--shadow-danger-halo);
+}
+
+/* Keyboard focus stays visible on an invalid field; the danger border remains. */
+.input[aria-invalid="true"]:focus-visible {
+  box-shadow: var(--shadow-focus);
+}
+
+.input:disabled {
+  cursor: default;
+}
+
+/* Password: room for the toggle, which sits inside the field inset by space.1. */
+.withToggle .input {
+  padding-inline-end: calc(var(--size-target-min) + var(--space-1));
+}
+
+.toggle {
+  position: absolute;
+  top: var(--space-1);
+  inset-inline-end: var(--space-1);
+}

@@ -1,0 +1,113 @@
+.group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  font-family: var(--font-sans);
+}
+
+/* On a group, the fieldset carries the opacity once; its rows are never marked disabled themselves. */
+.disabled {
+  opacity: var(--opacity-disabled);
+}
+
+.legend {
+  margin-bottom: var(--space-2);
+  padding: 0;
+  color: var(--text-primary);
+  font-size: var(--type-label-font-size);
+  line-height: var(--type-label-line-height);
+  font-weight: var(--type-label-font-weight);
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* As in Checkbox: the circle lines up with the first line of the label, a single line is centred in the row. */
+.row {
+  display: grid;
+  grid-template-columns: var(--size-mark) auto;
+  justify-content: start;
+  align-content: center;
+  align-items: start;
+  column-gap: var(--space-3);
+  min-height: var(--size-target-min);
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+
+.row.disabled,
+.group.disabled .row {
+  cursor: default;
+}
+
+.control {
+  position: relative;
+  display: flex;
+}
+
+/* The native input stays in place for clicks, arrow keys and assistive tech; the circle below draws it. */
+.input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--size-mark);
+  height: var(--size-mark);
+  border: var(--stroke-default) solid var(--border-control);
+  border-radius: var(--radius-full);
+  background: var(--surface-raised);
+}
+
+.dot {
+  width: var(--size-dot);
+  height: var(--size-dot);
+  border-radius: var(--radius-full);
+  background: var(--text-on-action);
+  visibility: hidden;
+}
+
+.input:checked + .circle {
+  border-color: var(--action-primary);
+  background: var(--action-primary);
+}
+
+.input:checked + .circle .dot {
+  visibility: visible;
+}
+
+.input:focus-visible + .circle {
+  box-shadow: var(--shadow-focus);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  color: var(--text-primary);
+  font-size: var(--type-body-font-size);
+  line-height: var(--type-body-line-height);
+  font-weight: var(--type-body-font-weight);
+}
+
+.description {
+  color: var(--text-secondary);
+  font-size: var(--type-body-sm-font-size);
+  line-height: var(--type-body-sm-line-height);
+  font-weight: var(--type-body-sm-font-weight);
+}

@@ -1,0 +1,50 @@
+.accountCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-block: var(--space-3);
+  padding-inline: var(--space-4);
+  border: var(--stroke-default) solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  font-family: var(--font-sans);
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--size-avatar);
+  height: var(--size-avatar);
+  border-radius: var(--radius-full);
+  background: var(--action-primary);
+  color: var(--text-on-action);
+  font-size: var(--type-label-font-size);
+  line-height: var(--type-label-line-height);
+  font-weight: var(--type-label-font-weight);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.name {
+  color: var(--text-primary);
+  font-size: var(--type-body-strong-font-size);
+  line-height: var(--type-body-strong-line-height);
+  font-weight: var(--type-body-strong-font-weight);
+}
+
+.email {
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: var(--type-body-sm-font-size);
+  line-height: var(--type-body-sm-line-height);
+  font-weight: var(--type-body-sm-font-weight);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
