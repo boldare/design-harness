@@ -90,7 +90,6 @@ export function RadioGroup({ legend, options, value, onChange, error, disabled =
           />
         ))}
       </div>
-      {/* SPEC GAP: the Radio README lists an error prop but no error state or token. The message follows TextField. */}
       {error && <FieldMessage id={messageId}>{error}</FieldMessage>}
     </fieldset>
   );

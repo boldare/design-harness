@@ -25,7 +25,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* SPEC GAP: the gap between value and chevron is not specified; space.2 is the icon-to-text gap used elsewhere. */
   gap: var(--space-2);
   box-sizing: border-box;
   width: 100%;
@@ -81,8 +80,7 @@
   position: absolute;
   top: 100%;
   inset-inline: 0;
-  /* SPEC GAP: no elevation token. The menu must sit above positioned content that follows it in the page. */
-  z-index: 1;
+  z-index: var(--layer-overlay);
   margin: var(--space-2) 0 0;
   padding-block: var(--space-2);
   padding-inline: 0;
@@ -97,7 +95,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* SPEC GAP: as in the field, space.2 between the label and the check. */
   gap: var(--space-2);
   min-height: var(--size-target-min);
   padding-inline: var(--space-4);

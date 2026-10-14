@@ -87,6 +87,9 @@
   /* duration */
   --duration-spin: 800ms;
 
+  /* layer */
+  --layer-overlay: 10;
+
   /* Type */
   --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, monospace;

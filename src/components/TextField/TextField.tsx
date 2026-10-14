@@ -75,7 +75,6 @@ export function TextField({
             className={styles.toggle}
             icon={passwordVisible ? 'eye-off' : 'eye'}
             label={passwordVisible ? 'Hide password' : 'Show password'}
-            pressed={passwordVisible}
             disabled={disabled}
             onPress={() => setPasswordVisible(!passwordVisible)}
           />

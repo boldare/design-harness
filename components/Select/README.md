@@ -5,9 +5,9 @@ One choice from a list, shown as a field that opens a menu of options.
 ## Anatomy
 
 1. Label (`Text/label`, `text.primary`), gap `space.2`.
-2. Field: the TextField shell (height `size.control`, radius `radius.md`, `surface.raised`, `border.control`, padding `space.4`), the selected value in `Controls/input` or a placeholder in `text.secondary`, and Icon `chevron-down` at `size.icon-md` in `text.secondary` on the right.
-3. Menu, below the field with a gap of `space.2`: fill `surface.raised`, border `stroke.default` in `border.subtle`, radius `radius.md`, `shadow.overlay`, vertical padding `space.2`.
-4. Option: height `size.target-min`, horizontal padding `space.4`, text `Text/body` in `text.primary`. The selected option uses `Text/body-strong` and shows Icon `check` at `size.icon-md`.
+2. Field: the TextField shell (height `size.control`, radius `radius.md`, `surface.raised`, `border.control`, padding `space.4`), the selected value in `Controls/input` or a placeholder in `text.secondary`, and Icon `chevron-down` at `size.icon-md` in `text.secondary` on the right, with a gap of `space.2` after the value.
+3. Menu, below the field with a gap of `space.2`: fill `surface.raised`, border `stroke.default` in `border.subtle`, radius `radius.md`, `shadow.overlay`, vertical padding `space.2`, stacked above the content with `layer.overlay`.
+4. Option: height `size.target-min`, horizontal padding `space.4`, text `Text/body` in `text.primary`. The selected option uses `Text/body-strong` and shows Icon `check` at `size.icon-md`, `space.2` after the label.
 5. Message, as in TextField.
 
 ## Props
@@ -20,6 +20,7 @@ One choice from a list, shown as a field that opens a menu of options.
 | `placeholder` | string | "Choose…" |
 | `error` | string | none |
 | `disabled` | boolean | `false` |
+| `defaultOpen` | boolean, for previews and tests only | `false` |
 
 ## States (Figma: State)
 
@@ -27,7 +28,7 @@ One choice from a list, shown as a field that opens a menu of options.
 
 ## Tokens
 
-As TextField, plus `border.subtle`, `shadow.overlay`, `size.target-min`, `size.icon-md`, style `Text/body`, `Text/body-strong`.
+As TextField, plus `border.subtle`, `shadow.overlay`, `layer.overlay`, `size.target-min`, `size.icon-md`, style `Text/body`, `Text/body-strong`.
 
 ## Accessibility
 

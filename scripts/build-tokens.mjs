@@ -25,7 +25,8 @@ const semantic = tokens.color.tokens.filter((token) => typeof token.value === 'o
 const semanticFor = (theme) => semantic.map((token) => declaration(cssName(token.name), token.value[theme]));
 
 // Every other family is a flat list of { name, value }.
-const families = ['spacing', 'radius', 'size', 'stroke', 'shadow', 'opacity', 'duration'];
+// Families are read from the file, so a new one (for example layer) needs no change here.
+const families = Object.keys(tokens).filter((key) => !['color', 'type'].includes(key) && Array.isArray(tokens[key]?.tokens));
 
 // Type: one variable per property of each style, plus a utility class that applies them.
 const typeProperties = (style) => Object.keys(style).filter((key) => key !== 'name' && key !== 'usage');

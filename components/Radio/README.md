@@ -15,13 +15,15 @@ Option row, minimum height `size.target-min`: circle (`size.mark`, radius `radiu
 
 RadioGroup: `legend`, `options` (`{ value, label, description? }[]`), `value`, `onChange`, `error`, `disabled`.
 
+Error: the message appears under the whole group, built as in TextField (Icon `alert-circle` at `size.icon-sm` and `Text/body-sm`, both `danger.text`, gap `space.2`). The circles keep their colours, because the problem is the missing choice, not one option.
+
 ## States (Figma: Selected × State)
 
 `selected` true / false × `default`, `focus` (+ `shadow.focus` on the circle), `disabled` (`opacity.disabled`).
 
 ## Tokens
 
-`surface.raised`, `border.control`, `action.primary`, `text.on-action`, `text.primary`, `text.secondary`, `size.mark`, `size.dot`, `size.target-min`, `radius.full`, `stroke.default`, `space.2`, `space.3`, `opacity.disabled`, `shadow.focus`, styles `Text/label`, `Text/body`, `Text/body-sm`.
+`surface.raised`, `border.control`, `action.primary`, `text.on-action`, `text.primary`, `text.secondary`, `size.mark`, `size.dot`, `size.target-min`, `radius.full`, `stroke.default`, `space.2`, `space.3`, `danger.text`, `size.icon-sm`, `opacity.disabled`, `shadow.focus`, styles `Text/label`, `Text/body`, `Text/body-sm`.
 
 ## Accessibility
 

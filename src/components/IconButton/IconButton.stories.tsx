@@ -17,7 +17,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-/** The password visibility toggle: the label names the next action and aria-pressed carries the state. */
+/** A toggle with a fixed label: aria-pressed carries the state. The password toggle in TextField changes its label instead. */
 export const PasswordToggle: Story = {
   render: function Render(args: IconButtonProps) {
     const [visible, setVisible] = useState(false);
@@ -25,7 +25,7 @@ export const PasswordToggle: Story = {
       <IconButton
         {...args}
         icon={visible ? 'eye-off' : 'eye'}
-        label={visible ? 'Hide password' : 'Show password'}
+        label="Show password"
         pressed={visible}
         onPress={() => setVisible(!visible)}
       />

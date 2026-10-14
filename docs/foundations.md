@@ -50,6 +50,7 @@ Each of these was needed by a component and had no token yet, so it was proposed
 | `shadow.focus` | 2 px `surface.page` gap, 2 px `accent` ring | Every interactive element | Turns the focus rule above into a value. |
 | `shadow.danger-halo` | 3 px `danger.surface` | Invalid fields | From Atlas. |
 | `duration.spin` | 800 ms | Button loading spinner | From Atlas. Code only: Figma shows the spinner still. |
+| `layer.overlay` | 10 | Select menu | Raised by the code implementation: the menu must sit above content that follows it. Code only. |
 
 Not added on purpose: a success tone for the alert banner. It would need a `success.border` colour and a new green primitive, and no screen needs it yet. Atlas shows success with the success mark instead.
 
