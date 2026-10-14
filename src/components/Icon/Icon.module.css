@@ -13,6 +13,11 @@
   height: var(--size-icon-md);
 }
 
+.lg {
+  width: var(--size-icon-lg);
+  height: var(--size-icon-lg);
+}
+
 .spin {
   animation: spin var(--duration-spin) linear infinite;
 }

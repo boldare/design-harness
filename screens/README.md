@@ -13,6 +13,8 @@ Screens are compositions of components. They add layout and copy, never new visu
 - Frame: 390 × 844 for phone mockups (one screen height; longer screens scroll), fill `surface.page`.
 - Margins: `space.6` on both sides, `space.6` at the top, `space.8` at the bottom.
 - Title block: title (`Headings/title`) and intro (`Text/body`, `text.secondary`) with gap `space.3`.
-- Title block to the first content: `space.8`. Between fields: `space.5`. Between form sections: `space.8`, each section starting with `Headings/heading`.
+- Title block to the first content: `space.8`. Between fields: `space.5`. Between form sections: `space.8`.
+- A section starts with `Headings/heading`, `space.5` above its content. Rows of switches or radios inside it are `space.2` apart.
+- A footer pinned to the bottom keeps at least `space.10` from the content above it.
 - Components fill the screen width between the margins.
 - Every screen is checked in both themes.

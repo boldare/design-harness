@@ -11,7 +11,7 @@ export function Logo({ wordmark = true }: LogoProps) {
     <span className={styles.logo}>
       {/*
        * The mark is an asset: its geometry is fixed like an icon path, its colours come from tokens.
-       * SPEC GAP: no token gives the rendered size of the mark. It is drawn at its own 28-unit size.
+       * Spec: no token gives the rendered size of the mark. It is drawn at its own 28-unit size.
        */}
       <svg
         className={styles.mark}

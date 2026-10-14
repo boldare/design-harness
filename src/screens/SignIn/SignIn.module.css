@@ -23,7 +23,7 @@
 
 /*
  * At the bottom of the screen, centred.
- * SPEC GAP: no gap above it is given. space.10 (between screen regions) keeps it off the form on a full screen.
+ * Spec: no gap above it is given. space.10 (between screen regions) keeps it off the form on a full screen.
  */
 .footer {
   margin-block: auto 0;
@@ -37,7 +37,7 @@
 
 /*
  * Success: the outcome fills the space between the header and the actions.
- * SPEC GAP: the README gives no spacing inside it. As in the original Atlas design, the content is centred
+ * Spec: the README gives no spacing inside it. As in the original Atlas design, the content is centred
  * with one gap throughout: space.8, the title-block-to-content gap, and space.12 above the action area.
  */
 .outcome {

@@ -48,19 +48,14 @@ export function DeviceSettings({ state = 'connected', onSaveName }: DeviceSettin
         <Alert title="Device not found" description="Move your device closer to the phone and try again." />
       )}
 
-      {/* SPEC GAP: TextField has no blur callback. Blur bubbles in React, so the section catches it. */}
-      <section className={layout.section} onBlur={saveName}>
+      <section className={layout.section}>
         <h2 className={layout.heading}>Device</h2>
-        <TextField label="Device name" value={name} onChange={setName} disabled={disconnected} />
+        <TextField label="Device name" value={name} onChange={setName} onBlur={saveName} disabled={disconnected} />
       </section>
 
       <section className={layout.section}>
         <h2 className={layout.heading}>Feedback</h2>
-        {/*
-         * Changes apply at once, and the prototype device always confirms them.
-         * SPEC GAP: a change the device does not confirm should revert and say why next to the control,
-         * but Switch has no message slot (RadioGroup has error).
-         */}
+        {/* Changes apply at once; the prototype device always confirms them. */}
         <div className={styles.rows}>
           <Switch
             label="Vibration"

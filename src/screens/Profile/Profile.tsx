@@ -38,7 +38,7 @@ const usageSummaries = [
   { value: 'never', label: 'Never' },
 ];
 
-// SPEC GAP: the README does not say whether "Product news by email" starts checked. It starts unchecked (opt-in).
+// Spec: the README does not say whether "Product news by email" starts checked. It starts unchecked (opt-in).
 const savedValues: ProfileValues = {
   name: 'Anna Kowalska',
   email: 'anna.kowalska@example.com',
@@ -54,7 +54,7 @@ const opening: Record<ProfileState, { values: ProfileValues; validated: boolean;
 };
 
 /*
- * SPEC GAP: the README gives no rule for the full name and no message for an empty email.
+ * Spec: the README gives no rule for the full name and no message for an empty email.
  * The name is not checked; an empty email gets the SignIn message. Country can only be empty
  * when the screen opens in the error state, because the Select has no empty option.
  */

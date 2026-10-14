@@ -13,8 +13,3 @@
   color: var(--success-text);
 }
 
-/* Two classes outrank the size class of Icon, so the check takes size.icon-lg. */
-.statusMark .icon {
-  width: var(--size-icon-lg);
-  height: var(--size-icon-lg);
-}

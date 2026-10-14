@@ -13,11 +13,7 @@ export interface StatusMarkProps {
 export function StatusMark({ tone = 'success' }: StatusMarkProps) {
   return (
     <div className={`${styles.statusMark} ${styles[tone]}`} aria-hidden="true">
-      {/*
-       * SPEC GAP: Icon comes in sm and md only, with no stroke width for size.icon-lg.
-       * The check is drawn with the md stroke and sized to size.icon-lg in this component's stylesheet.
-       */}
-      <Icon name="check" size="md" className={styles.icon} />
+      <Icon name="check" size="lg" />
     </div>
   );
 }

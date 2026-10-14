@@ -47,7 +47,7 @@
 
 /*
  * A form section: the heading, then its fields with the gap between fields.
- * SPEC GAP: only the Profile "Details" section names the heading-to-field gap (space.5); every section uses it.
+ * Spec: only the Profile "Details" section names the heading-to-field gap (space.5); every section uses it.
  */
 .section {
   display: flex;

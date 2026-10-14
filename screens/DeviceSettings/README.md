@@ -21,5 +21,5 @@ Settings of a connected device. Every change applies immediately, so the screen 
 
 ## Acceptance
 
-- Each switch and radio change applies at once; if the device does not confirm, the control returns to its previous value and says why next to it.
+- Each switch and radio change applies at once; if the device does not confirm, the control returns to its previous value and an Alert above the section says why. The prototype device always confirms.
 - In `disconnected`, the controls show the last known values and cannot be changed.

@@ -30,7 +30,7 @@ type Request = 'none' | 'pending' | 'rejected' | 'accepted';
 
 const empty: SignInCredentials = { email: '', password: '' };
 
-// SPEC GAP: the README does not give the values the states show. They come from the original Atlas design.
+// Spec: the README does not give the values the states show. They come from the original Atlas design.
 const filled: SignInCredentials = { email: 'anna.kowalska@example.com', password: 'correct-horse' };
 const opening: Record<SignInState, { credentials: SignInCredentials; validated: boolean; request: Request }> = {
   empty: { credentials: empty, validated: false, request: 'none' },
@@ -40,7 +40,7 @@ const opening: Record<SignInState, { credentials: SignInCredentials; validated: 
   success: { credentials: filled, validated: true, request: 'accepted' },
 };
 
-// SPEC GAP: the README gives the AccountCard no values. The name is Anna's from the Profile README;
+// Spec: the README gives the AccountCard no values. The name is Anna's from the Profile README;
 // the email is the one she signed in with, as in the original Atlas design.
 const accountName = 'Anna Kowalska';
 
@@ -79,7 +79,7 @@ export function SignIn({ state = 'empty', onSignIn, onContinue }: SignInProps) {
     setValidated(true);
     if (found.email || found.password) {
       setRequest('none');
-      // SPEC GAP: the SignIn README does not say where focus goes. As in Profile, it moves to the first invalid field.
+      // Spec: the SignIn README does not say where focus goes. As in Profile, it moves to the first invalid field.
       document.getElementById(found.email ? emailId : passwordId)?.focus();
       return;
     }

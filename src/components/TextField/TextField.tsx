@@ -9,6 +9,8 @@ export interface TextFieldProps {
   type?: 'text' | 'email' | 'password';
   value: string;
   onChange: (value: string) => void;
+  /** Called when the field loses focus, for values saved on blur. */
+  onBlur?: () => void;
   /** Shows the format, such as "name@company.com". */
   placeholder?: string;
   /** Says how to fix the value. Turns the field into its error state. */
@@ -27,6 +29,7 @@ export function TextField({
   type = 'text',
   value,
   onChange,
+  onBlur,
   placeholder,
   error,
   disabled = false,
@@ -69,6 +72,7 @@ export function TextField({
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? messageId : undefined}
           onChange={(event) => onChange(event.target.value)}
+          onBlur={onBlur}
         />
         {isPassword && (
           <IconButton
