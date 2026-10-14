@@ -1,0 +1,56 @@
+.link {
+  position: relative;
+  display: inline-block;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-family: var(--font-sans);
+  text-align: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/*
+ * Touch target of size.target-min, centred on the text. It is drawn outside the layout,
+ * so the line height around the link does not change and the focus ring hugs the text box.
+ */
+.link::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: var(--size-target-min);
+  translate: 0 -50%;
+}
+
+.body {
+  font-size: var(--type-body-font-size);
+  line-height: var(--type-body-line-height);
+  font-weight: var(--type-body-font-weight);
+}
+
+.sm {
+  font-size: var(--type-body-sm-font-size);
+  line-height: var(--type-body-sm-line-height);
+  font-weight: var(--type-body-sm-font-weight);
+}
+
+.accent {
+  color: var(--accent);
+}
+
+/* Text/body-strong: same size and line height as Text/body, heavier weight. */
+.strong {
+  color: var(--text-primary);
+  font-weight: var(--type-body-strong-font-weight);
+}
+
+.subtle {
+  color: var(--text-secondary);
+}
+
+.link:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}

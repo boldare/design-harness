@@ -1,0 +1,7 @@
+/* The canvas follows the theme: page colour and default text from the tokens. */
+html,
+body {
+  background: var(--surface-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}

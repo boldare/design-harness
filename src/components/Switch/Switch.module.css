@@ -1,0 +1,85 @@
+.switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: var(--size-target-min);
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+
+.disabled {
+  opacity: var(--opacity-disabled);
+  cursor: default;
+}
+
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.label {
+  color: var(--text-primary);
+  font-size: var(--type-body-font-size);
+  line-height: var(--type-body-line-height);
+  font-weight: var(--type-body-font-weight);
+}
+
+.description {
+  color: var(--text-secondary);
+  font-size: var(--type-body-sm-font-size);
+  line-height: var(--type-body-sm-line-height);
+  font-weight: var(--type-body-sm-font-weight);
+}
+
+.control {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+}
+
+/* The native input stays in place for clicks and assistive tech; the track below draws it. */
+.input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+/* The thumb sits inside the track, inset by space.1: on the left when off, on the right when on. */
+.track {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  width: var(--size-switch-width);
+  height: var(--size-switch-height);
+  padding: var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--border-control);
+}
+
+.thumb {
+  width: var(--size-mark);
+  height: var(--size-mark);
+  border-radius: var(--radius-full);
+  background: var(--surface-raised);
+}
+
+.input:checked + .track {
+  justify-content: flex-end;
+  background: var(--action-primary);
+}
+
+.input:checked + .track .thumb {
+  background: var(--text-on-action);
+}
+
+.input:focus-visible + .track {
+  box-shadow: var(--shadow-focus);
+}

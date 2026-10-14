@@ -1,0 +1,25 @@
+.icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+.sm {
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
+}
+
+.md {
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
+}
+
+.spin {
+  animation: spin var(--duration-spin) linear infinite;
+}
+
+/* One full turn per duration.spin. */
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}

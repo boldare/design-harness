@@ -12,6 +12,8 @@ Container (height `size.control`, radius `radius.md`, horizontal padding `space.
 |------|--------|---------|
 | `variant` | `primary`, `quiet` | `primary` |
 | `loading` | boolean | `false` |
+| `loadingLabel` | string shown while loading ("Signing in…") | the label |
+| `icon` | Icon name, leading | none |
 | `disabled` | boolean | `false` |
 | `fullWidth` | boolean | `true` |
 | `onPress` | function | required |

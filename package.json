@@ -1,0 +1,32 @@
+{
+  "name": "atlas-design-system",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Atlas base components built from tokens/tokens.json.",
+  "type": "module",
+  "scripts": {
+    "tokens": "node scripts/build-tokens.mjs",
+    "lint:tokens": "node scripts/check-raw-values.mjs",
+    "typecheck": "tsc --noEmit",
+    "storybook": "npm run tokens && storybook dev -p 6006",
+    "build-storybook": "npm run tokens && storybook build"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@storybook/addon-a11y": "8.4.7",
+    "@storybook/addon-essentials": "8.4.7",
+    "@storybook/react": "8.4.7",
+    "@storybook/react-vite": "8.4.7",
+    "@storybook/test": "8.4.7",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "4.3.4",
+    "storybook": "8.4.7",
+    "storybook-addon-pseudo-states": "4.0.2",
+    "typescript": "5.6.3",
+    "vite": "5.4.11"
+  }
+}

@@ -12,6 +12,7 @@ Square container `size.target-min`, radius `radius.md`, no fill, centred Icon at
 |------|--------|---------|
 | `icon` | Icon name | required |
 | `label` | string | required |
+| `pressed` | boolean, for toggles with a fixed label | none |
 | `disabled` | boolean | `false` |
 | `onPress` | function | required |
 
@@ -25,8 +26,8 @@ Square container `size.target-min`, radius `radius.md`, no fill, centred Icon at
 
 ## Accessibility
 
-- `label` is required and becomes `aria-label`. For toggles it describes the action, not the state: "Show password", then "Hide password".
-- For a toggle also set `aria-pressed`.
+- `label` is required and becomes `aria-label`.
+- A toggle uses one of two patterns, never both: a label that names the next action ("Show password", then "Hide password") without `aria-pressed`, or a fixed label with `aria-pressed` (`pressed` prop). The password toggle uses the first.
 
 ## Do / Don't
 

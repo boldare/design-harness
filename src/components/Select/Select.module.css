@@ -1,0 +1,115 @@
+.select {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-family: var(--font-sans);
+}
+
+.disabled {
+  opacity: var(--opacity-disabled);
+}
+
+.label {
+  color: var(--text-primary);
+  font-size: var(--type-label-font-size);
+  line-height: var(--type-label-line-height);
+  font-weight: var(--type-label-font-weight);
+}
+
+.control {
+  position: relative;
+}
+
+/* The TextField shell, with the chevron on the right. */
+.field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--size-control);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--space-4);
+  border: var(--stroke-default) solid var(--border-control);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--type-input-font-size);
+  line-height: var(--type-input-line-height);
+  font-weight: var(--type-input-font-weight);
+  text-align: start;
+  cursor: pointer;
+}
+
+.field:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.field[aria-invalid="true"] {
+  border-color: var(--danger-text);
+  box-shadow: var(--shadow-danger-halo);
+}
+
+.field[aria-invalid="true"]:focus-visible {
+  box-shadow: var(--shadow-focus);
+}
+
+.field:disabled {
+  cursor: default;
+}
+
+.value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.placeholder {
+  color: var(--text-secondary);
+}
+
+.chevron {
+  color: var(--text-secondary);
+}
+
+.menu {
+  position: absolute;
+  top: 100%;
+  inset-inline: 0;
+  z-index: var(--layer-overlay);
+  margin: var(--space-2) 0 0;
+  padding-block: var(--space-2);
+  padding-inline: 0;
+  border: var(--stroke-default) solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-overlay);
+  list-style: none;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: var(--size-target-min);
+  padding-inline: var(--space-4);
+  color: var(--text-primary);
+  font-size: var(--type-body-font-size);
+  line-height: var(--type-body-line-height);
+  font-weight: var(--type-body-font-weight);
+  cursor: pointer;
+}
+
+.option:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.selected {
+  font-weight: var(--type-body-strong-font-weight);
+}

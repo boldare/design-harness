@@ -1,0 +1,49 @@
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding-block: var(--space-3);
+  padding-inline: var(--space-4);
+  border: var(--stroke-default) solid;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+}
+
+.danger {
+  border-color: var(--danger-border);
+  background: var(--danger-surface);
+  color: var(--danger-text);
+}
+
+/* One title line tall, so the icon stays centred on the first line when the text wraps. */
+.iconLine {
+  display: flex;
+  align-items: center;
+  height: calc(var(--type-body-strong-font-size) * var(--type-body-strong-line-height));
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.title,
+.description {
+  margin: 0;
+}
+
+.title {
+  color: var(--text-primary);
+  font-size: var(--type-body-strong-font-size);
+  line-height: var(--type-body-strong-line-height);
+  font-weight: var(--type-body-strong-font-weight);
+}
+
+.description {
+  color: var(--text-secondary);
+  font-size: var(--type-body-sm-font-size);
+  line-height: var(--type-body-sm-line-height);
+  font-weight: var(--type-body-sm-font-weight);
+}
