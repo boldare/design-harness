@@ -1,0 +1,50 @@
+/* min-height rather than height, so a long translation of "Help" can wrap instead of overflowing. */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--size-target-min);
+}
+
+.welcome {
+  margin-block-start: var(--space-14);
+}
+
+.alert {
+  margin-block-start: var(--space-8);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin-block: var(--space-8) 0;
+}
+
+/*
+ * At the bottom of the screen, centred.
+ * SPEC GAP: no gap above it is given. space.10 (between screen regions) keeps it off the form on a full screen.
+ */
+.footer {
+  margin-block: auto 0;
+  padding-block-start: var(--space-10);
+  color: var(--text-secondary);
+  font-size: var(--type-body-font-size);
+  line-height: var(--type-body-line-height);
+  font-weight: var(--type-body-font-weight);
+  text-align: center;
+}
+
+/*
+ * Success: the outcome fills the space between the header and the actions.
+ * SPEC GAP: the README gives no spacing inside it. As in the original Atlas design, the content is centred
+ * with one gap throughout: space.8, the title-block-to-content gap, and space.12 above the action area.
+ */
+.outcome {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+  gap: var(--space-8);
+  padding-block-end: var(--space-12);
+}
