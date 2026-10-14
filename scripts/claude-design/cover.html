@@ -1,0 +1,66 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Atlas</title>
+<link rel="stylesheet" href="{{font-url}}">
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--surface-page); color: var(--text-primary); font-family: var(--font-sans); overflow: hidden; }
+  .cover { position: relative; height: 288px; overflow: hidden; }
+  /* The composition sits in the right half of the 960-wide layout, clear of the name. */
+  .art { position: absolute; top: 0; left: 480px; width: 480px; height: 288px; overflow: hidden; }
+  .art svg { display: block; width: 480px; height: 288px; }
+  .ink { fill: var(--action-primary); }
+  .hue { fill: var(--accent); }
+  .tint { fill: var(--border-subtle); }
+  .dot { fill: var(--border-control); }
+  .dot.on { fill: var(--action-primary); }
+  .blk { rx: var(--radius-md); }
+  .words { position: absolute; left: var(--space-6); bottom: var(--space-6); max-width: 440px; }
+  /* Display size from the cover brief (120 px); the name uses the title style's weight and tracking. */
+  .name {
+    margin: 0;
+    font-size: 120px;
+    line-height: 0.9;
+    font-weight: var(--type-title-font-weight);
+    letter-spacing: var(--type-title-letter-spacing);
+    color: var(--text-primary);
+  }
+  .tag {
+    margin: var(--space-2) 0 0;
+    font-size: var(--type-body-sm-font-size);
+    line-height: var(--type-body-sm-line-height);
+    color: var(--text-secondary);
+  }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 288" width="480" height="288">
+<!--
+  blocks      action.primary 208 wide, bled off the top (the fill of the primary button and every selected control, so the largest) · border.subtle 256 x 224 bleeding off the right (the tint) · accent 208 x size.control under the slab (the one hue: links and the focus ring) · about 38% of 960 x 288
+  arrangement one tall ink slab with the accent bar under it, like a form ending in its button; the tint slab beside them; bottoms on one line space.6 above the edge
+  pattern     dot grid, from the 4 px scale and "every value comes from a token": size.dot discs at a space.8 pitch over the tint, three in action.primary like selected radios
+  scales      sides in space.4 multiples; gutter space.4; slab to bar space.5 (between fields); pitch space.8; inset space.6; discs size.dot; corners radius.md
+-->
+<rect class="ink blk" x="16" y="-12" width="208" height="204" rx="12"/>
+<rect class="hue blk" x="16" y="212" width="208" height="52" rx="12"/>
+<rect class="tint blk" x="240" y="40" width="256" height="224" rx="12"/>
+<circle class="dot" cx="269" cy="69" r="5"/><circle class="dot" cx="301" cy="69" r="5"/><circle class="dot" cx="333" cy="69" r="5"/><circle class="dot" cx="365" cy="69" r="5"/><circle class="dot" cx="397" cy="69" r="5"/><circle class="dot" cx="429" cy="69" r="5"/><circle class="dot" cx="461" cy="69" r="5"/>
+<circle class="dot" cx="269" cy="101" r="5"/><circle class="dot" cx="301" cy="101" r="5"/><circle class="dot on" cx="333" cy="101" r="5"/><circle class="dot" cx="365" cy="101" r="5"/><circle class="dot" cx="397" cy="101" r="5"/><circle class="dot" cx="429" cy="101" r="5"/><circle class="dot" cx="461" cy="101" r="5"/>
+<circle class="dot" cx="269" cy="133" r="5"/><circle class="dot" cx="301" cy="133" r="5"/><circle class="dot" cx="333" cy="133" r="5"/><circle class="dot" cx="365" cy="133" r="5"/><circle class="dot" cx="397" cy="133" r="5"/><circle class="dot on" cx="429" cy="133" r="5"/><circle class="dot" cx="461" cy="133" r="5"/>
+<circle class="dot" cx="269" cy="165" r="5"/><circle class="dot" cx="301" cy="165" r="5"/><circle class="dot" cx="333" cy="165" r="5"/><circle class="dot" cx="365" cy="165" r="5"/><circle class="dot" cx="397" cy="165" r="5"/><circle class="dot" cx="429" cy="165" r="5"/><circle class="dot" cx="461" cy="165" r="5"/>
+<circle class="dot" cx="269" cy="197" r="5"/><circle class="dot on" cx="301" cy="197" r="5"/><circle class="dot" cx="333" cy="197" r="5"/><circle class="dot" cx="365" cy="197" r="5"/><circle class="dot" cx="397" cy="197" r="5"/><circle class="dot" cx="429" cy="197" r="5"/><circle class="dot" cx="461" cy="197" r="5"/>
+<circle class="dot" cx="269" cy="229" r="5"/><circle class="dot" cx="301" cy="229" r="5"/><circle class="dot" cx="333" cy="229" r="5"/><circle class="dot" cx="365" cy="229" r="5"/><circle class="dot" cx="397" cy="229" r="5"/><circle class="dot" cx="429" cy="229" r="5"/><circle class="dot" cx="461" cy="229" r="5"/>
+</svg>
+</div>
+<div class="words">
+<h1 class="name">Atlas</h1>
+<p class="tag">Every value comes from a token.</p>
+</div>
+</div>
+</body>
+</html>

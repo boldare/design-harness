@@ -1,0 +1,62 @@
+/* Preview canvas, as the Storybook canvas (.storybook/preview.css): page colour and default text from the tokens. */
+html,
+body {
+  margin: 0;
+  background: var(--surface-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}
+
+.pv {
+  box-sizing: border-box;
+  padding: var(--space-6);
+}
+
+.pv p {
+  margin: 0;
+}
+
+.pv-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* State matrix, as src/storybook/StateMatrix: a heading column, then one column per variant. */
+.pv-matrix {
+  display: grid;
+  grid-template-columns: max-content repeat(var(--pv-columns), minmax(0, 1fr));
+  align-items: center;
+  column-gap: var(--space-8);
+  row-gap: var(--space-6);
+}
+
+.pv-row {
+  display: contents;
+}
+
+.pv-heading {
+  color: var(--text-secondary);
+}
+
+/* Preview layout only, not a design token: about one phone screen wide, as in the StateMatrix story helper. */
+.pv-cell {
+  min-width: 0;
+  max-width: 360px;
+}
+
+/* Labelled examples side by side, for states that do not form a full matrix. */
+.pv-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--pv-columns), minmax(0, 360px));
+  align-items: start;
+  column-gap: var(--space-8);
+  row-gap: var(--space-6);
+}
+
+.pv-example {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}

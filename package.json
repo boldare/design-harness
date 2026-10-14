@@ -9,7 +9,8 @@
     "lint:tokens": "node scripts/check-raw-values.mjs",
     "typecheck": "tsc --noEmit",
     "storybook": "npm run tokens && storybook dev -p 6006",
-    "build-storybook": "npm run tokens && storybook build"
+    "build-storybook": "npm run tokens && storybook build",
+    "claude-design": "node scripts/build-claude-design.mjs"
   },
   "dependencies": {
     "react": "18.3.1",
