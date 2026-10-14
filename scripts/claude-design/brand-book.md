@@ -58,10 +58,10 @@ Atlas speaks to the person holding the device as "you" and names itself in the t
 ## Iconography
 
 - Atlas has its own small stroke set, drawn on a 24-unit grid with round caps and joins: `eye`, `eye-off`, `chevron-down`, `check`, `alert-circle` and `spinner`. Use the Icon component. There are no icon files, sprites or icon fonts.
-- Stroke width is 2 at `size.icon-sm` and 1.8 at `size.icon-md`. Icons take the colour of the text around them.
+- Stroke width is 2 at `size.icon-sm`, 1.8 at `size.icon-md` and 2 at `size.icon-lg` (inside StatusMark). Icons take the colour of the text around them.
 - Icons are decorative by default. An action shown only as an icon is an IconButton, which carries the label.
 - Never make an icon the only signal of a state: an error icon always sits next to a message.
-- Atlas has no logo or wordmark file. Where the name has to appear, set "Atlas" in Geist.
+- The Atlas mark and wordmark are the Logo component: a 28 px mark in `text.primary` with a `surface.page` dot, and "Atlas" in `Text/body-strong`. Use the component; there is no logo file.
 
 ## Components
 
