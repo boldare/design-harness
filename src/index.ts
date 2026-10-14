@@ -12,3 +12,5 @@ export * from './components/Radio';
 export * from './components/Switch';
 export * from './components/Alert';
 export * from './components/AccountCard';
+export * from './components/Logo';
+export * from './components/StatusMark';

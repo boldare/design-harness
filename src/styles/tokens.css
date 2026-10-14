@@ -71,6 +71,8 @@
   --size-avatar: 40px;
   --size-switch-width: 56px;
   --size-switch-height: 32px;
+  --size-icon-lg: 32px;
+  --size-status-mark: 64px;
 
   /* stroke */
   --stroke-default: 1px;

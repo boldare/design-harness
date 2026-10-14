@@ -1,0 +1,20 @@
+.statusMark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--size-status-mark);
+  height: var(--size-status-mark);
+  border-radius: var(--radius-full);
+}
+
+.success {
+  background: var(--success-surface);
+  color: var(--success-text);
+}
+
+/* Two classes outrank the size class of Icon, so the check takes size.icon-lg. */
+.statusMark .icon {
+  width: var(--size-icon-lg);
+  height: var(--size-icon-lg);
+}

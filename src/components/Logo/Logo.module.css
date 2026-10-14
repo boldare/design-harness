@@ -1,0 +1,27 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-sans);
+}
+
+.mark {
+  display: block;
+  flex-shrink: 0;
+}
+
+/* The mark's colours are tokens, so it works in both themes. */
+.square {
+  fill: var(--text-primary);
+}
+
+.dot {
+  fill: var(--surface-page);
+}
+
+.wordmark {
+  color: var(--text-primary);
+  font-size: var(--type-body-strong-font-size);
+  line-height: var(--type-body-strong-line-height);
+  font-weight: var(--type-body-strong-font-weight);
+}
