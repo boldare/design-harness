@@ -1,0 +1,23 @@
+{
+  "file": {
+    "name": "design-harness",
+    "key": "XHhJ2l7C09Si5uQu3EBmUH",
+    "url": "https://www.figma.com/design/XHhJ2l7C09Si5uQu3EBmUH",
+    "team": "Boldare S.A.",
+    "project": "Gildia designu"
+  },
+  "naming": {
+    "figmaVariable": "token name with '.' replaced by '/' (surface.page -> surface/page)",
+    "web": "var(--<token name with '.' replaced by '-'>) (surface.page -> var(--surface-page))",
+    "android": "camelCase of the token name (surface.page -> surfacePage)",
+    "textStyle": "<type group>/<style name> (Text/body-sm)",
+    "effectStyle": "Shadow/<name without 'shadow.'> (Shadow/overlay)"
+  },
+  "collections": {
+    "Primitives": { "id": "VariableCollectionId:1:2", "modes": { "Value": "1:0" }, "holds": "color primitives, hidden from pickers" },
+    "Color": { "id": "VariableCollectionId:1:27", "modes": { "Light": "1:1", "Dark": "1:2" }, "holds": "semantic colours, aliases of primitives" },
+    "Dimensions": { "id": "VariableCollectionId:1:42", "modes": { "Value": "1:3" }, "holds": "space, radius, size, stroke" }
+  },
+  "syncedAt": "2026-10-14",
+  "counts": { "primitives": 24, "semantic": 14, "dimensions": 17, "textStyles": 9, "effectStyles": 1 }
+}
