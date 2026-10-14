@@ -35,6 +35,24 @@ Atlas started as a single sign-in flow: five states, light and dark, drawn on a 
 
 The Atlas acceptance slide lists "2 px accent ring on every input and link", but the inputs were drawn with `outline: none` and no focus style. The ring is now a rule (`stroke.focus` in `accent`, with a 2 px gap of `surface.page`) that every interactive component must implement.
 
+## Added for the base components (14.10.2026)
+
+Each of these was needed by a component and had no token yet, so it was proposed here first.
+
+| Token | Value | Needed by | Note |
+|-------|-------|-----------|------|
+| `size.icon-sm`, `size.icon-md` | 16, 20 | Messages, checkbox, password toggle, select, alert, spinner | Atlas used 16, 18 and 20. The 18 px spinner moves to 20. |
+| `size.mark` | 24 | Checkbox, radio, switch thumb | One size for every selection mark. |
+| `size.dot` | 10 | Selected radio | |
+| `size.avatar` | 40 | Account card | From Atlas. |
+| `size.switch-width`, `size.switch-height` | 56, 32 | Switch | Derived: a 24 px thumb with `space.1` around it. |
+| `opacity.disabled` | 0.55 | Every disabled control | From Atlas, where it locked the form while signing in. |
+| `shadow.focus` | 2 px `surface.page` gap, 2 px `accent` ring | Every interactive element | Turns the focus rule above into a value. |
+| `shadow.danger-halo` | 3 px `danger.surface` | Invalid fields | From Atlas. |
+| `duration.spin` | 800 ms | Button loading spinner | From Atlas. Code only: Figma shows the spinner still. |
+
+Not added on purpose: a success tone for the alert banner. It would need a `success.border` colour and a new green primitive, and no screen needs it yet. Atlas shows success with the success mark instead.
+
 ## The rule that follows from all of this
 
 Every value in a component comes from a token: colour, type, spacing, radius, size, stroke and shadow. A value that no token covers is not typed in by hand. It becomes a proposal for a new token, with a name, a usage note and a reason, and it is added here before the component uses it.
