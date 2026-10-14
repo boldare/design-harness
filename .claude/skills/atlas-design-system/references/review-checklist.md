@@ -7,6 +7,7 @@
 - [ ] Focus visible, disabled at `opacity.disabled`, targets at least `size.target-min`.
 - [ ] Light and dark checked in Figma (screenshot) and in Storybook (theme toggle).
 - [ ] Labels survive a 40 % longer translation.
+- [ ] A colour pair that failed a contrast rule has been looked up across the system, and other places using it are listed under Open.
 - [ ] `npm run lint:tokens`, `npm run typecheck`, `npm run build-storybook` pass.
 - [ ] `figma/library.json` and the component index (`components/README.md` or `screens/README.md`) updated.
 - [ ] Claude Design re-synced.

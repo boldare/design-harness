@@ -23,7 +23,7 @@ Each line is a requirement. The review checklist checks all of them.
 
 ## Accessibility
 - Real semantic elements: `button`, `a`, `input`, `label`, `fieldset` and `legend`.
-- Text contrast at least 4.5:1, borders and icons at least 3:1, in both themes. The usage notes give the measured ratios; a new colour pair is measured before it is used.
+- Text contrast at least 4.5:1, borders and icons at least 3:1, in both themes. The usage notes give the measured ratios; a new colour pair is measured before it is used. When a pair fails a rule, look for every other place in the system that uses the same pair and list them in the report, even when fixing them is outside the change.
 - Screen reader names and states as written in the component READMEs (`aria-invalid`, `aria-describedby`, `aria-busy`, `role="alert"`, `role="status"`).
 
 ## Reuse

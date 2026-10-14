@@ -281,9 +281,11 @@ const defined = new Set([
   ...bridgedNames.map(repoVar),
   ...typeVars.map(([name]) => name),
 ]);
+// Names starting with --rt- are runtime values a component sets inline from its props (a position, a fraction),
+// by the convention in .claude/skills/atlas-design-system/references/code.md. They are not tokens and are allowed.
 const checkVars = (label, css, local = []) => {
   for (const [, name] of css.matchAll(/var\((--[A-Za-z0-9_-]+)/g)) {
-    if (!defined.has(name) && !local.includes(name)) fail(`${label} reads ${name}, which no token defines in the preview`);
+    if (!defined.has(name) && !local.includes(name) && !name.startsWith('--rt-')) fail(`${label} reads ${name}, which no token defines in the preview`);
   }
 };
 
