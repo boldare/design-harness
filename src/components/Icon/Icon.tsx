@@ -37,14 +37,14 @@ const paths = {
 export type IconName = keyof typeof paths;
 export const iconNames = Object.keys(paths) as IconName[];
 
-export type IconSize = 'sm' | 'md';
+export type IconSize = 'sm' | 'md' | 'lg';
 
-// Stroke widths from the Icon spec: 2 at size.icon-sm, 1.8 at size.icon-md.
-const strokeWidth: Record<IconSize, number> = { sm: 2, md: 1.8 };
+// Stroke widths from the Icon spec: 2 at size.icon-sm, 1.8 at size.icon-md, 2 at size.icon-lg.
+const strokeWidth: Record<IconSize, number> = { sm: 2, md: 1.8, lg: 2 };
 
 export interface IconProps {
   name: IconName;
-  /** `sm` is size.icon-sm, `md` is size.icon-md. */
+  /** `sm` is size.icon-sm, `md` is size.icon-md, `lg` is size.icon-lg. */
   size?: IconSize;
   /** Only when the icon is the only carrier of meaning. Without it the icon is decorative. */
   label?: string;

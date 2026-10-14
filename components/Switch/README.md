@@ -31,7 +31,7 @@ Switch: track `size.switch-width` × `size.switch-height`, radius `radius.full`;
 ## Accessibility
 
 - `<button role="switch" aria-checked>` or `<input type="checkbox" role="switch">`, labelled by the row label. The whole row is the target.
-- If the change can fail (for example the device is out of range), revert the switch and say why next to it.
+- If the change can fail (for example the device is out of range), revert the switch and say why in an Alert above the settings it belongs to. The Switch itself has no message.
 
 ## Do / Don't
 

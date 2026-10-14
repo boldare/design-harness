@@ -1,0 +1,16 @@
+.states {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-10);
+}
+
+.state {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.label {
+  color: var(--text-secondary);
+}

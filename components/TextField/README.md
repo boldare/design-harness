@@ -18,6 +18,7 @@ Gaps: label row to field `space.2`, field to message `space.2`.
 | `label` | string | required |
 | `type` | `text`, `email`, `password` | `text` |
 | `value`, `onChange` | string, function | required |
+| `onBlur` | function, for values saved when the field loses focus | none |
 | `placeholder` | string | none |
 | `error` | string | none |
 | `disabled` | boolean | `false` |

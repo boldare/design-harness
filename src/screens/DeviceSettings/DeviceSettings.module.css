@@ -1,0 +1,6 @@
+/* Switch rows in a section sit closer together than fields. */
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}

@@ -21,13 +21,13 @@ The Atlas sign-in screen and its five states, taken from the original Atlas desi
 | `validation` | Sign in with a missing or malformed field | Each failing field in its error state with a message: "Enter your email address", "Enter a valid email, like name@company.com", "Enter your password", "Use at least 8 characters". Messages update as the person types | Sign in with both fields passing |
 | `loading` | Sign in with valid fields | Fields disabled, Button loading. The button keeps its colour | The server answers |
 | `error` | The server rejects the credentials | The Alert above the form. Input is kept | Any edit clears the Alert; Sign in retries |
-| `success` | The server accepts | The form is replaced by a `role="status"` region: StatusMark, "You're signed in" (`Headings/title`), "Good to see you again, Anna." (`Text/body`, `text.secondary`), AccountCard. At the bottom: Button `primary` "Continue" and Button `quiet` "Not you? Sign out", gap `space.2` | Continue, or Sign out back to `empty` |
+| `success` | The server accepts | The form is replaced by a `role="status"` region, centred in the space above the actions, gap `space.8`, `space.12` above the actions: StatusMark, "You're signed in" (`Headings/title`), "Good to see you again, Anna." (`Text/body`, `text.secondary`), AccountCard. At the bottom: Button `primary` "Continue" and Button `quiet` "Not you? Sign out", gap `space.2` | Continue, or Sign out back to `empty` |
 
-In the interactive prototype the first valid sign-in fails and the second succeeds, so both outcomes can be shown.
+In the interactive prototype the first valid sign-in fails and the second succeeds, so both outcomes can be shown. Values in the previews: email anna.kowalska@example.com ("anna.kowalska@" in validation), password of 12 characters (4 in validation), AccountCard Anna Kowalska.
 
 ## Acceptance
 
-- Empty submit shows both field messages and marks both fields invalid.
+- Empty submit shows both field messages, marks both fields invalid and moves focus to the first invalid field.
 - "anna.kowalska@" shows "Enter a valid email, like name@company.com", and the message clears once the email is valid.
 - After a server error the Alert is announced and both fields keep their input.
 - After success, Sign out returns to the empty form.

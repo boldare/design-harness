@@ -12,7 +12,7 @@ The account details and notification preferences, saved together with one button
    - Select, label "Country", options Poland, Germany, United Kingdom; value Poland.
 4. Section "Notifications", `space.8` below:
    - Radio group, legend "Usage summary": "Every day", "Every week" (selected), "Never".
-   - Checkbox "Product news by email", description "One email a month at most."
+   - Checkbox "Product news by email", description "One email a month at most.", unchecked (opt-in).
 5. Actions, `space.8` below, gap `space.2`: Button `primary` "Save changes", Button `quiet` "Cancel".
 
 ## States
@@ -20,7 +20,7 @@ The account details and notification preferences, saved together with one button
 | State | Shows |
 |-------|-------|
 | `default` | Saved values, all fields valid |
-| `error` | After Save with problems: Email "anna.kowalska@" in its error state ("Enter a valid email, like name@company.com"), Country empty in its error state ("Choose the country where you use your device"). Focus moves to the first invalid field |
+| `error` | After Save with problems (rules: full name required, "Enter your full name"; email required, "Enter your email address", and valid, as in SignIn; country required): Email "anna.kowalska@" in its error state ("Enter a valid email, like name@company.com"), Country empty in its error state ("Choose the country where you use your device"). Focus moves to the first invalid field |
 | `saving` | Fields and controls disabled, Button loading with "Saving…" |
 
 ## Acceptance

@@ -12,19 +12,19 @@ A stroke icon drawn on a 24-unit grid and shown at one of two sizes; it takes th
 | `alert-circle` | Field messages, Alert |
 | `spinner` | Button loading (animated in code) |
 
-New icons follow the same grid: 24 units, round caps and joins, stroke width 2 at `size.icon-sm`, 1.8 at `size.icon-md`.
+New icons follow the same grid: 24 units, round caps and joins, stroke width 2 at `size.icon-sm`, 1.8 at `size.icon-md` and 2 at `size.icon-lg`.
 
 ## Props
 
 | Prop | Values | Default |
 |------|--------|---------|
 | `name` | one of the set | required |
-| `size` | `sm` (`size.icon-sm`), `md` (`size.icon-md`) | `md` |
+| `size` | `sm` (`size.icon-sm`), `md` (`size.icon-md`), `lg` (`size.icon-lg`, inside StatusMark) | `md` |
 | `label` | string | none |
 
 ## Tokens
 
-`size.icon-sm`, `size.icon-md`. Colour is inherited (`currentColor` in code, the parent's text colour token in Figma).
+`size.icon-sm`, `size.icon-md`, `size.icon-lg`. Colour is inherited (`currentColor` in code, the parent's text colour token in Figma).
 
 ## Accessibility
 

@@ -1,0 +1,15 @@
+.statusMark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--size-status-mark);
+  height: var(--size-status-mark);
+  border-radius: var(--radius-full);
+}
+
+.success {
+  background: var(--success-surface);
+  color: var(--success-text);
+}
+

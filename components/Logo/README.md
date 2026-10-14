@@ -6,7 +6,7 @@ The Atlas mark and wordmark, shown in the header of entry screens.
 
 Row with gap `space.3`: the mark, then the wordmark "Atlas" in `Text/body-strong` and `text.primary`.
 
-The mark is an asset, not a layout: a 28-unit square with a corner radius of 8 filled with `text.primary`, and a 10-unit circle in its centre filled with `surface.page`. Its geometry is fixed like an icon path and is not tokenised; its colours are tokens, so it works in both themes.
+The mark is an asset, not a layout: drawn at 28 px, a 28-unit square with a corner radius of 8 filled with `text.primary`, and a 10-unit circle in its centre filled with `surface.page`. Its geometry is fixed like an icon path and is not tokenised; its colours are tokens, so it works in both themes.
 
 ## Props
 

@@ -1,4 +1,4 @@
-// Fails when component CSS types a value by hand instead of using a token (rule: docs/foundations.md).
+// Fails when component or screen CSS types a value by hand instead of using a token (rule: docs/foundations.md).
 // Flags hex / rgb / hsl colours, numbers with a unit, and font-size / font-weight / line-height without var().
 
 import { readdirSync, readFileSync } from 'node:fs';
@@ -6,7 +6,8 @@ import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
-const componentsDir = join(root, 'src/components');
+// Screens add layout only, never new visual values (screens/README.md), so they follow the same rule.
+const scannedDirs = ['src/components', 'src/screens'].map((dir) => join(root, dir));
 
 const rules = [
   { name: 'raw colour', test: (line) => /#[0-9a-f]{3,8}\b|\b(rgba?|hsla?)\(/i.test(line) },
@@ -27,7 +28,7 @@ const cssModules = (dir) =>
 // Blank out comments but keep their newlines, so line numbers stay right.
 const withoutComments = (css) => css.replace(/\/\*[\s\S]*?\*\//g, (comment) => comment.replace(/[^\n]/g, ' '));
 
-const files = cssModules(componentsDir);
+const files = scannedDirs.flatMap(cssModules);
 const problems = files.flatMap((file) =>
   withoutComments(readFileSync(file, 'utf8'))
     .split('\n')
@@ -43,4 +44,4 @@ if (problems.length > 0) {
   process.exit(1);
 }
 
-console.log(`No raw values in ${files.length} component stylesheets.`);
+console.log(`No raw values in ${files.length} component and screen stylesheets.`);
