@@ -608,7 +608,8 @@ for (const [path, text] of Object.entries(files)) {
 }
 stopIfProblems('writing');
 
-// The Artifact publish call: root = claude-design/, file_path = the index (sent last), files = everything else.
+// The Artifact publish call: root = the output directory, file_path = the index (sent last), files = everything else.
+// The artifact store serves .ts only with an explicit type, so index.d.ts goes as text/plain.
 const publishMap = {
   root: outDir,
   file_path: join(projectDir, 'design-system.json'),
@@ -616,7 +617,10 @@ const publishMap = {
     Object.keys(files)
       .filter((path) => path !== 'design-system.json')
       .sort()
-      .map((path) => [`project/${path}`, `project/${path}`]),
+      .map((path) => [
+        `project/${path}`,
+        path.endsWith('.ts') ? { from: `project/${path}`, contentType: 'text/plain' } : `project/${path}`,
+      ]),
   ),
 };
 writeFileSync(join(outDir, 'publish.json'), `${JSON.stringify(publishMap, null, 2)}\n`);
