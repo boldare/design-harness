@@ -29,9 +29,9 @@ The script stops with a message when the output would not work on the page: a to
 
 Run it after any change to tokens, component specs or component code.
 
-1. `npm run claude-design`. Options: `--by "<name>"` (defaults to `git config user.name`), `--note "<one line>"`, `--via "<surface>"` (defaults to `design-harness scripts/build-claude-design.mjs`; a pipeline passes a value starting with `CI`, such as `CI · boldare/design-harness@<sha>`, so the page warns that edits there may be overwritten), `--at <ISO date>`.
+1. `npm run claude-design`. Options: `--out <directory>` (default `claude-design`; may be absolute, because the Artifact tool publishes only from its session's working directory or scratchpad), `--by "<name>"` (defaults to `git config user.name`), `--note "<one line>"`, `--via "<surface>"` (defaults to `design-harness scripts/build-claude-design.mjs`; a pipeline passes a value starting with `CI`, such as `CI · boldare/design-harness@<sha>`, so the page warns that edits there may be overwritten), `--at <ISO date>`.
 2. Keep the artifact's own index. Read `project/design-system.json` from the artifact (Artifact tool, `action: "read"`, `path: "project/design-system.json"`), then build again with `--index-from <that saved file>`. The script keeps every key of the current index, its `createdOnFiles` marker included, and changes only `title`, `namespace`, `libraries` and `lastChange`.
-3. Publish with the Artifact tool, using `claude-design/publish.json`: `url` = the artifact URL above, `root` = the absolute path of `claude-design`, `file_path` = the absolute path of `claude-design/project/design-system.json` (the index, so it is written last), `files` = the `files` map from `publish.json`. One call carries everything (the system is far below the 255 paths a call allows).
+3. Publish with the Artifact tool, using `publish.json` in the output directory: `url` = the artifact URL above, `root` and `file_path` as written there (`file_path` is the index, so it is written last), `files` = its `files` map. One call carries everything (the system is far below the 255 paths a call allows).
 4. A file the repository no longer produces (a removed component) is deleted by adding `"project/<path>": null` to `files` in the same call.
 5. Read `project/README.md` back from the artifact to confirm the new version is served.
 

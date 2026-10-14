@@ -4,7 +4,7 @@
 // in claude-design/project/ (gitignored), so a re-sync after a token or component change is: run it, publish.
 // What the artifact is, how to publish and every format decision: docs/claude-design.md.
 //
-//   node scripts/build-claude-design.mjs [--out claude-design] [--by "Name"] [--via "..."] [--note "..."]
+//   node scripts/build-claude-design.mjs [--out claude-design (or an absolute directory)] [--by "Name"] [--via "..."] [--note "..."]
 //                                        [--at 2026-10-14T12:00:00Z] [--index-from <design-system.json read from the artifact>]
 //
 // Inputs: tokens/tokens.json, components/README.md, components/<Name>/README.md, docs/foundations.md,
@@ -14,7 +14,7 @@
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { basename, dirname, join, relative } from 'node:path';
+import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import vm from 'node:vm';
@@ -577,7 +577,8 @@ stopIfProblems('index');
 // Write claude-design/project/ and the publish map
 // ---------------------------------------------------------------------------------------------------------------
 
-const outDir = join(root, args.out);
+// --out may be absolute: the Artifact tool publishes only from its session's working directory or scratchpad.
+const outDir = resolve(root, args.out);
 const projectDir = join(outDir, 'project');
 rmSync(projectDir, { recursive: true, force: true });
 
@@ -620,9 +621,10 @@ const publishMap = {
 };
 writeFileSync(join(outDir, 'publish.json'), `${JSON.stringify(publishMap, null, 2)}\n`);
 
+const shown = (path) => (path.startsWith(root) ? relative(root, path) : path);
 const listing = readdirSync(projectDir, { recursive: true }).filter((path) => /\.\w+$/.test(path));
 console.log(
-  `Wrote ${relative(root, projectDir)}/ (${listing.length} files) from ${repo} at ${ref}: ` +
+  `Wrote ${shown(projectDir)}/ (${listing.length} files) from ${repo} at ${ref}: ` +
     `${components.length} components, ${tokenNames.size} tokens in ${2 + listFamilies.length} families. ` +
-    `Publish map: ${relative(root, join(outDir, 'publish.json'))}`,
+    `Publish map: ${shown(join(outDir, 'publish.json'))}`,
 );
