@@ -41,9 +41,9 @@
   "counts": {
     "primitives": 24,
     "semantic": 14,
-    "dimensions": 17,
+    "dimensions": 25,
     "textStyles": 9,
-    "effectStyles": 1
+    "effectStyles": 3
   },
   "pages": {
     "Foundations": {
@@ -51,6 +51,105 @@
       "rootFrameId": "3:2",
       "url": "https://www.figma.com/design/XHhJ2l7C09Si5uQu3EBmUH?node-id=3-2",
       "note": "Overview drawn from the variables and styles, Light and Dark side by side. Nothing on it is typed by hand."
+    },
+    "Components": {
+      "pageId": "6:2",
+      "overviewFrameId": "10:260",
+      "note": "One section per component. Overview frame shows the same instances in Light and Dark."
     }
-  }
+  },
+  "components": {
+    "Icon": {
+      "ids": {
+        "eye": "6:8",
+        "eye-off": "6:15",
+        "chevron-down": "6:19",
+        "check": "6:23",
+        "alert-circle": "6:29",
+        "spinner": "6:34"
+      },
+      "axes": "separate components, swapped with INSTANCE_SWAP"
+    },
+    "Button": {
+      "setId": "7:42",
+      "axes": "Variant (primary, quiet) x State (default, focus, disabled, loading)",
+      "properties": [
+        "Label"
+      ]
+    },
+    "IconButton": {
+      "setId": "7:56",
+      "axes": "State (default, focus, disabled)",
+      "properties": [
+        "Icon"
+      ]
+    },
+    "Link": {
+      "setId": "7:78",
+      "axes": "Tone (accent, strong, subtle) x Size (body, sm) x State (default, focus); strong exists only at body size",
+      "properties": [
+        "Label"
+      ]
+    },
+    "TextField": {
+      "setId": "8:162",
+      "axes": "Type (text, password) x State (empty, filled, focus, error, disabled)",
+      "properties": [
+        "Label action"
+      ]
+    },
+    "Select": {
+      "setId": "9:128",
+      "axes": "State (empty, filled, focus, open, error, disabled)",
+      "buildingBlocks": {
+        "Select/Option": "9:41"
+      }
+    },
+    "Checkbox": {
+      "setId": "10:162",
+      "axes": "Checked (false, true) x State (default, focus, error, disabled)",
+      "properties": [
+        "Label",
+        "Description"
+      ]
+    },
+    "Radio": {
+      "setId": "10:200",
+      "axes": "Selected (false, true) x State (default, focus, disabled)",
+      "properties": [
+        "Label",
+        "Description"
+      ]
+    },
+    "Switch": {
+      "setId": "10:238",
+      "axes": "Checked (false, true) x State (default, focus, disabled)",
+      "properties": [
+        "Label",
+        "Description"
+      ]
+    },
+    "Alert": {
+      "id": "10:240",
+      "properties": [
+        "Title",
+        "Description",
+        "Show description"
+      ]
+    },
+    "AccountCard": {
+      "id": "10:249",
+      "properties": [
+        "Name",
+        "Email",
+        "Initials"
+      ]
+    }
+  },
+  "figmaNotes": [
+    "Opacity variables use a 0-100 scale in Figma: opacity.disabled is 55 there and 0.55 in tokens.json and code.",
+    "A spread shadow (shadow.focus, shadow.danger-halo) only renders on a frame that clips its content, and it is cut off by any clipping parent. Focused frames clip, their parents do not.",
+    "Frames with no fill cast no shadow, so focus variants of quiet Button, IconButton and Link use a surface.page fill, which looks the same as no fill on the page.",
+    "Icons: vectors are bound to text.primary in the main component and overridden per instance with the colour token of their context."
+  ]
 }
