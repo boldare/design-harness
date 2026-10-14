@@ -1,0 +1,71 @@
+/*
+ * Layout rules for every screen, from screens/README.md. Screens add layout and copy, never new visual values.
+ * The phone frame (390 × 844) is a mockup size, not a token: it lives in the stories.
+ */
+
+/* Fills the frame it is placed in, so content at the bottom of a screen sits at the bottom of the frame. */
+.screen {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  box-sizing: border-box;
+  padding-block: var(--space-6) var(--space-8);
+  padding-inline: var(--space-6);
+  background: var(--surface-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}
+
+/* Title block to the first content, and between form sections. */
+.blocks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--type-title-font-size);
+  line-height: var(--type-title-line-height);
+  font-weight: var(--type-title-font-weight);
+  letter-spacing: var(--type-title-letter-spacing);
+}
+
+.intro {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--type-body-font-size);
+  line-height: var(--type-body-line-height);
+  font-weight: var(--type-body-font-weight);
+}
+
+/*
+ * A form section: the heading, then its fields with the gap between fields.
+ * SPEC GAP: only the Profile "Details" section names the heading-to-field gap (space.5); every section uses it.
+ */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.heading {
+  margin: 0;
+  font-size: var(--type-heading-font-size);
+  line-height: var(--type-heading-line-height);
+  font-weight: var(--type-heading-font-weight);
+  letter-spacing: var(--type-heading-letter-spacing);
+}
+
+/* Buttons at the end of a screen, one under the other. */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}

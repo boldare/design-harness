@@ -30,7 +30,9 @@ const preview: Preview = {
     backgrounds: { disable: true },
     controls: { expanded: true },
     options: {
-      storySort: { order: ['Foundations', ['Colour', 'Type', 'Spacing'], 'Components'] },
+      storySort: {
+        order: ['Foundations', ['Colour', 'Type', 'Spacing'], 'Components', 'Screens', ['SignIn', 'Profile', 'DeviceSettings']],
+      },
     },
   },
 };

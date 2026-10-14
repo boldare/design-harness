@@ -1,0 +1,8 @@
+/* A column, so the screen inside can grow to the full frame height. */
+.frame {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  /* An outline shows the frame edge on a canvas of the same colour without changing the frame size. */
+  outline: var(--stroke-default) solid var(--border-subtle);
+}
