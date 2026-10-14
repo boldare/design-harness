@@ -1,5 +1,7 @@
 # Components
 
+Screens built from these components are specified in [`screens/`](../screens/README.md).
+
 Every component has a folder with a `README.md`: what it is for, its anatomy, props, the states it must show, the tokens it uses, accessibility rules and do / don't. The README is the spec. The Figma component and the code implement it, and a change starts here.
 
 | Component | Purpose | Builds on |
@@ -15,6 +17,8 @@ Every component has a folder with a `README.md`: what it is for, its anatomy, pr
 | [Switch](Switch/README.md) | A setting that takes effect immediately | - |
 | [Alert](Alert/README.md) | A message about the whole form or screen | Icon |
 | [AccountCard](AccountCard/README.md) | The signed-in person, with avatar | - |
+| [Logo](Logo/README.md) | The Atlas mark and wordmark | - |
+| [StatusMark](StatusMark/README.md) | A large confirmation mark on outcome screens | Icon |
 
 ## Rules for every component
 
