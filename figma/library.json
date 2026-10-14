@@ -41,7 +41,7 @@
   "counts": {
     "primitives": 24,
     "semantic": 14,
-    "dimensions": 25,
+    "dimensions": 27,
     "textStyles": 9,
     "effectStyles": 3
   },
@@ -56,6 +56,15 @@
       "pageId": "6:2",
       "overviewFrameId": "10:260",
       "note": "One section per component. Overview frame shows the same instances in Light and Dark."
+    },
+    "Screens": {
+      "pageId": "14:2",
+      "sections": {
+        "SignIn": "14:252",
+        "Profile": "15:562",
+        "DeviceSettings": "15:732"
+      },
+      "note": "Light row on top, dark row below (clones with the Color collection set to Dark). Built only from component instances."
     }
   },
   "components": {
@@ -144,6 +153,15 @@
         "Email",
         "Initials"
       ]
+    },
+    "Logo": {
+      "id": "13:197",
+      "properties": [
+        "Wordmark"
+      ]
+    },
+    "StatusMark": {
+      "id": "13:201"
     }
   },
   "figmaNotes": [
