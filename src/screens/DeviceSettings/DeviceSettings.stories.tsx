@@ -32,7 +32,8 @@ export const Default: Story = {
 
 /** The two states from the README, side by side. */
 export const States: Story = {
-  parameters: { controls: { exclude: ['state'] } },
+  // Show the story's own code: in dev, the generated JSX source recurses through the array of screens and crashes the story.
+  parameters: { controls: { exclude: ['state'] }, docs: { source: { type: 'code' } } },
   render: (args) => (
     <ScreenStates
       states={states.map((state) => ({ label: state, screen: <DeviceSettings {...args} state={state} /> }))}

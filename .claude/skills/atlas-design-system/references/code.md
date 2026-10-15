@@ -13,7 +13,7 @@ React 18, TypeScript, CSS Modules, Storybook 8. Read two existing components bef
 - Runtime values: a value the component computes from its props while it runs (a thumb position, a filled fraction) is set inline as a custom property named `--rt-<name>` and read in CSS with `var(--rt-<name>)`. It is not a token and never stands in for one. The Claude Design build allows the `--rt-` prefix and nothing else that is not a token.
 
 ## Stories
-- `Default` with controls, and `States` that renders every state from the spec side by side, labelled, with realistic copy from the spec.
+- `Default` with controls, and `States` that renders every state from the spec side by side, labelled, with realistic copy from the spec. Give `States` the parameter `docs: { source: { type: 'code' } }`, as the existing screens do; without it the story crashes in `npm run storybook`.
 - The global theme toggle must switch the story; never hard-code a theme.
 
 ## Checks (all must pass before the report)

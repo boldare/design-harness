@@ -42,7 +42,8 @@ export const Default: Story = {
 
 /** The three states from the README, side by side. Each one is live and moves on as it is used. */
 export const States: Story = {
-  parameters: { controls: { exclude: ['state'] } },
+  // Show the story's own code: in dev, the generated JSX source recurses through the array of screens and crashes the story.
+  parameters: { controls: { exclude: ['state'] }, docs: { source: { type: 'code' } } },
   render: (args) => (
     <ScreenStates
       states={states.map((state) => ({ label: state, screen: <ProfilePrototype {...args} state={state} /> }))}
