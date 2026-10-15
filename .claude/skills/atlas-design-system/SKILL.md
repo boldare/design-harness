@@ -1,6 +1,6 @@
 ---
 name: atlas-design-system
-description: Adds or changes a component or a screen of the Atlas design system the way a member of the design team would, keeping the spec, tokens, Figma library, code and Claude Design in step. Use when someone asks for a new component (for example a range slider), a new screen or form (for example a multi-step onboarding), a new state or variant, or a change to tokens, in this repo or in the Atlas Figma file.
+description: Use for ANY change to how Atlas looks or behaves, so the change stays inside the design system: a new component (for example a range slider or a badge), a new screen or flow (for example a multi-step onboarding), a new state or variant, a change of colour, size, spacing or type on an existing component or screen ("make this button red", "make the field taller"), or a change to tokens. Keeps the spec, tokens, Figma library, code and Claude Design in step, and refuses values that bypass the tokens.
 ---
 
 # Atlas design system
