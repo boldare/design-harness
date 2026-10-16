@@ -23,3 +23,8 @@ npm run lint:tokens      # rejects raw values in component and screen CSS
 npm run typecheck
 npm run build-storybook
 ```
+
+## A running Storybook
+Someone may be showing `npm run storybook` while you work; it watches every file. The static build above does not prove what that server shows.
+- Change files with the Edit or Write tool, never with a script that empties a file and writes it again (`open(p, 'w')`, `cat >`, `sed -i`): the server can read the file halfway, keep the parse error and stop showing every story.
+- If the server is running (port 6006, or the one `npm run storybook` printed), finish with `curl -s -o /dev/null -w '%{http_code}' http://localhost:6006/index.json`. A 500 names the file it could not index: `touch` that file and fetch again. Report done only on a 200.
