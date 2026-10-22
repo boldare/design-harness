@@ -1,6 +1,4 @@
-// Runs in the browser before every test file: the tokens, the canvas and the fonts of the Atlas text styles.
+// Runs in the browser before every test file: the tokens and the canvas.
+// The web fonts come from previewHead (vitest.config.ts): a <link> added here would land in every recorded frame.
 import '../styles/tokens.css';
 import './canvas.css';
-import fontsHead from '../styles/fonts.html?raw';
-
-document.head.insertAdjacentHTML('beforeend', fontsHead);
