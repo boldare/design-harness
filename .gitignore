@@ -1,5 +1,8 @@
 node_modules
-storybook-static
+# describe-me output: the recorded frames and the static site; Vitest attachments (failure screenshots)
+.describe-me
+describe-me-dist
+.vitest
 dist
 *.log
 .DS_Store

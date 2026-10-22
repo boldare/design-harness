@@ -1,6 +1,6 @@
 /*
  * Layout rules for every screen, from screens/README.md. Screens add layout and copy, never new visual values.
- * The phone frame (390 × 844) is a mockup size, not a token: it lives in the stories.
+ * The phone frame (390 × 844) is a mockup size, not a token: it lives in the test helpers (src/test/PhoneFrame.tsx).
  */
 
 /* Fills the frame it is placed in, so content at the bottom of a screen sits at the bottom of the frame. */

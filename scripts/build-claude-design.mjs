@@ -8,7 +8,7 @@
 //                                        [--at 2026-10-14T12:00:00Z] [--index-from <design-system.json read from the artifact>]
 //
 // Inputs: tokens/tokens.json, components/README.md, components/<Name>/README.md, docs/foundations.md,
-// src/index.ts (built with Vite), src/foundations/Type.stories.tsx (type samples), .storybook/preview-head.html (font URL)
+// src/index.ts (built with Vite), src/foundations/type-samples.ts (type samples), src/styles/fonts.html (font URL)
 // and scripts/claude-design/ (brand book text, preview scripts, cover).
 
 import { execFileSync } from 'node:child_process';
@@ -60,7 +60,7 @@ if (Number.isNaN(Date.parse(at))) fail(`--at is not an ISO-8601 date: ${at}`);
 const repo = /github\.com[:/](.+?)(?:\.git)?$/.exec(git('remote', 'get-url', 'origin'))?.[1] ?? 'boldare/design-harness';
 const sha = git('rev-parse', '--short', 'HEAD') || 'unknown';
 const branch = git('rev-parse', '--abbrev-ref', 'HEAD') || 'HEAD';
-const inputs = ['tokens', 'components', 'docs/foundations.md', 'src', '.storybook', 'scripts/claude-design', 'scripts/build-claude-design.mjs'];
+const inputs = ['tokens', 'components', 'docs/foundations.md', 'src', 'scripts/claude-design', 'scripts/build-claude-design.mjs'];
 const dirty = git('status', '--porcelain', '--', ...inputs) !== '';
 const ref = `${branch}@${sha}${dirty ? '+uncommitted' : ''}`;
 const by = args.by ?? (git('config', 'user.name') || 'Claude');
@@ -85,13 +85,13 @@ for (const name of exported) if (!components.includes(name)) fail(`${name} is ex
 const componentRules = /## Rules for every component\n+([\s\S]*?)(?:\n## |\s*$)/.exec(componentsIndex)?.[1].trim();
 if (!componentRules) fail('components/README.md has no "Rules for every component" section');
 
-// Google Fonts URL for Geist and Geist Mono, as the Storybook canvas loads them.
-const fontUrl = /href="(https:\/\/fonts\.googleapis\.com\/css2\?[^"]+)"/.exec(read('.storybook/preview-head.html'))?.[1];
-if (!fontUrl) fail('no Google Fonts stylesheet found in .storybook/preview-head.html');
+// Google Fonts URL for Geist and Geist Mono, as the test page and the describe-me viewer load them.
+const fontUrl = /href="(https:\/\/fonts\.googleapis\.com\/css2\?[^"]+)"/.exec(read('src/styles/fonts.html'))?.[1];
+if (!fontUrl) fail('no Google Fonts stylesheet found in src/styles/fonts.html');
 
-// Sample copy for each type style, from the Foundations/Type story.
+// Sample copy for each type style, shared with the Type specimen in the viewer.
 const typeSamples = Object.fromEntries(
-  [...(/const samples[^=]*=\s*\{([\s\S]*?)\n\};/.exec(read('src/foundations/Type.stories.tsx'))?.[1] ?? '').matchAll(
+  [...(/const samples[^=]*=\s*\{([\s\S]*?)\n\};/.exec(read('src/foundations/type-samples.ts'))?.[1] ?? '').matchAll(
     /^\s*'?([\w-]+)'?:\s*'((?:[^'\\]|\\.)*)',?\s*$/gm,
   )].map(([, style, sample]) => [style, sample.replace(/\\'/g, "'")]),
 );
@@ -319,7 +319,7 @@ const built = await build({
   logLevel: 'warn',
   publicDir: false,
   define: { 'process.env.NODE_ENV': JSON.stringify('production') },
-  esbuild: { jsx: 'automatic' },
+  oxc: { jsx: { runtime: 'automatic' } },
   plugins: [jsxRuntimeShim],
   css: {
     modules: {
@@ -329,7 +329,7 @@ const built = await build({
   },
   build: {
     write: false,
-    minify: 'esbuild',
+    minify: 'oxc',
     target: 'es2020',
     sourcemap: false,
     cssCodeSplit: false,
