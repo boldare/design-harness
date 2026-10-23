@@ -15,7 +15,10 @@ if (!existsSync(manifestPath)) {
 const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
 const testsByModule = new Map(manifest.modules.map((module) => [module.id, module.tests.map((test) => test.name)]));
 
-/** The state names of a spec: the first column of the States table, or the backticked names after the last "×". */
+/**
+ * The state names of a spec: the first column of the States table, or, in the inline form, the backticked names
+ * in the first sentence of the section after the last "×". Notes in later sentences ("No `error` state: …") do not count.
+ */
 function statesOf(readme) {
   const section = /^## States[^\n]*\n([\s\S]*?)(?=^## |(?![\s\S]))/m.exec(readme)?.[1];
   if (!section) return [];
@@ -27,7 +30,8 @@ function statesOf(readme) {
       return name ? [name] : [];
     });
   }
-  const list = section.split('×').at(-1);
+  const sentence = section.trim().split(/\.(?:\s|$)/)[0];
+  const list = sentence.split('×').at(-1);
   return [...list.matchAll(/`([a-z][a-z-]*)`/g)].map((match) => match[1]);
 }
 
