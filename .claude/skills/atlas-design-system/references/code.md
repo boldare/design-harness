@@ -20,6 +20,7 @@ describe-me records every test as a story: `render` from `vitest-browser-react` 
 - Screens render with `{ wrapper: PhoneFrame }` and answer requests with `respond()` from `src/test/respond.ts`. Both are browser-only, so Live runs them too.
 - Recorded frames cannot show `:hover` or `:focus-visible`; Live in the viewer does. Do not fake them with classes.
 - Text matchers: `toHaveTextContent` is exact in Vitest; use `toMatchTextContent(/…/)` for a part of the text.
+- A throwaway test (for example one that takes screenshots to check a screen by eye) is fine while working, but remove it and its output before the report. Leave only the tests the spec asks for.
 
 ## Checks (all must pass before the report)
 ```
