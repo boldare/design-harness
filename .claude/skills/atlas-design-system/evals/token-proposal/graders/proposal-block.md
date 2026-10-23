@@ -1,5 +1,5 @@
 ---
 type: regex
-pattern: "(?i)why no existing token fits"
+pattern: "[Ww]hy no existing token fits"
 match: contains
 ---
