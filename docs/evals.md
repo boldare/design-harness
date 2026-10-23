@@ -8,7 +8,7 @@ Run them with `claude plugin eval .claude/skills/atlas-design-system --scaffold 
 
 | Case | With skill | Without | Δ | Note |
 |---|---|---|---|---|
-| refuse-hardcode | 1.00 | 0.33 | +0.67 | |
+| refuse-hardcode | 1.00 | 0.33 | +0.67 | `no-hex-edited` had the same `(?i)` bug: it threw whenever Edit was called (the no-skill arm), and passed with the skill only because the skill never edited. Fixed with the other. |
 | reuse-screen | 1.00 | 0.50 | +0.50 | |
 | spec-first | 1.00 | 0.33 | +0.67 | |
 | token-proposal | 0.67 | 0.33 | +0.33 | `proposal-block` threw on `(?i)` in its regex in every run; the other two graders passed 3/3. Fixed on the describe-me branch, so later runs score it. |
