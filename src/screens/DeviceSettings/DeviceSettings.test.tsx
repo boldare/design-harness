@@ -16,7 +16,7 @@ describe('DeviceSettings', () => {
     await expect.element(screen.getByLabelText('Device name')).toHaveValue("Anna's Atlas One");
     await expect.element(screen.getByRole('switch', { name: 'Vibration' })).toBeChecked();
     await expect.element(screen.getByRole('switch', { name: 'Device lock' })).not.toBeChecked();
-    await expect.element(screen.getByRole('radio', { name: 'Medium' })).toBeChecked();
+    await expect.element(screen.getByRole('slider', { name: 'LED brightness' })).toHaveAttribute('aria-valuetext', '50%');
     await expectAccessible();
   });
 
@@ -28,7 +28,8 @@ describe('DeviceSettings', () => {
     await expect.element(screen.getByLabelText('Device name')).toBeDisabled();
     await expect.element(screen.getByRole('switch', { name: 'Vibration' })).toBeDisabled();
     await expect.element(screen.getByRole('switch', { name: 'Vibration' })).toBeChecked();
-    await expect.element(screen.getByRole('radio', { name: 'Medium' })).toBeDisabled();
+    await expect.element(screen.getByRole('slider', { name: 'LED brightness' })).toBeDisabled();
+    await expect.element(screen.getByRole('slider', { name: 'LED brightness' })).toHaveAttribute('aria-valuetext', '50%');
     await expectAccessible();
   });
 
@@ -36,8 +37,12 @@ describe('DeviceSettings', () => {
     const screen = await open('connected');
     await screen.getByRole('switch', { name: 'Device lock' }).click();
     await expect.element(screen.getByRole('switch', { name: 'Device lock' })).toBeChecked();
-    await screen.getByRole('radio', { name: 'High' }).click();
-    await expect.element(screen.getByRole('radio', { name: 'High' })).toBeChecked();
+    // The slider follows the Device lock switch in the tab order.
+    const brightness = screen.getByRole('slider', { name: 'LED brightness' });
+    await userEvent.tab();
+    await expect.element(brightness).toHaveFocus();
+    await userEvent.keyboard('{ArrowRight}');
+    await expect.element(brightness).toHaveAttribute('aria-valuetext', '60%');
   });
 
   it('saves the name when the field loses focus', async () => {

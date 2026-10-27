@@ -3,7 +3,7 @@
 Atlas also exists as a claude.ai Design System artifact, so Claude Design and other agents can build with the same tokens and components as Figma and code.
 
 - Artifact: [Atlas](https://claude.ai/artifact/1tmtuAJXcgkirZ25hAMPY5), made from the claude.ai "Design System" artifact type (`https://claude.ai/artifact/5M7UeXXcx16TP3vzVFNDzd`). It is private: others can open it only after it is shared from the page's Share menu.
-- This repository is the source of truth. The artifact is generated from it by `scripts/build-claude-design.mjs` and is one more output, next to the Figma library (`figma/library.json`) and the code in `src/`. The scope is the same everywhere: every token in `tokens/tokens.json` and the eleven components in `components/README.md`.
+- This repository is the source of truth. The artifact is generated from it by `scripts/build-claude-design.mjs` and is one more output, next to the Figma library (`figma/library.json`) and the code in `src/`. The scope is the same everywhere: every token in `tokens/tokens.json` and every component in `components/README.md`.
 - Edits made on the artifact's page are replaced at the next sync. Change the repository instead.
 
 ## What the script writes

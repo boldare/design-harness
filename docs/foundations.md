@@ -55,6 +55,18 @@ Each of these was needed by a component and had no token yet, so it was proposed
 
 Not added on purpose: a success tone for the alert banner. It would need a `success.border` colour and a new green primitive, and no screen needs it yet. Atlas shows success with the success mark instead.
 
+## Added for the Slider (22.10.2026)
+
+LED brightness in DeviceSettings became a slider from 10 % to 100 % in steps of 10, instead of three radio buttons.
+
+| Token | Value | Needed by | Note |
+|-------|-------|-----------|------|
+| `size.slider-track` | 4 | Slider | The track height. `space.1` has the same value, but it is a gap, not a size. |
+
+The thumb is `size.mark` and the track and thumb are `radius.full`; their usage notes now name the slider.
+
+Contrast, open: the unfilled track is `border.control`, as the off Switch track. On `surface.page` that pair is 2.85:1 in light, below the 3:1 rule (3.5:1 in dark). A darker track (`neutral.600`, 5.0:1) was proposed as a new token and set aside for now: the Switch track and the outer edge of field, select, checkbox and radio borders on `surface.page` use the same pair, so it is better fixed for all of them at once.
+
 ## The rule that follows from all of this
 
 Every value in a component comes from a token: colour, type, spacing, radius, size, stroke and shadow. A value that no token covers is not typed in by hand. It becomes a proposal for a new token, with a name, a usage note and a reason, and it is added here before the component uses it.

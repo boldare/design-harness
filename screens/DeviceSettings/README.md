@@ -10,7 +10,7 @@ Settings of a connected device. Every change applies immediately, so the screen 
 4. Section "Feedback", `space.8` below, gap `space.2` between rows:
    - Switch "Vibration", description "Short vibration when a session starts.", on.
    - Switch "Device lock", description "Asks for your PIN after 5 minutes.", off.
-5. Section "Light", `space.8` below: Radio group, legend "LED brightness": "Low", "Medium" (selected), "High".
+5. Section "Light", `space.8` below: Slider, label "LED brightness", from 10% to 100% in steps of 10, value "50%".
 
 ## States
 
@@ -21,5 +21,5 @@ Settings of a connected device. Every change applies immediately, so the screen 
 
 ## Acceptance
 
-- Each switch and radio change applies at once; if the device does not confirm, the control returns to its previous value and an Alert above the section says why. The prototype device always confirms.
+- Each switch and slider change applies at once; if the device does not confirm, the control returns to its previous value and an Alert above the section says why. The prototype device always confirms.
 - In `disconnected`, the controls show the last known values and cannot be changed.

@@ -37,11 +37,11 @@
       "holds": "space, radius, size, stroke"
     }
   },
-  "syncedAt": "2026-10-14",
+  "syncedAt": "2026-10-22",
   "counts": {
     "primitives": 24,
     "semantic": 14,
-    "dimensions": 27,
+    "dimensions": 28,
     "textStyles": 9,
     "effectStyles": 3
   },
@@ -136,6 +136,14 @@
       "properties": [
         "Label",
         "Description"
+      ]
+    },
+    "Slider": {
+      "setId": "34:220",
+      "axes": "State (default, focus, disabled)",
+      "properties": [
+        "Label",
+        "Value"
       ]
     },
     "Alert": {

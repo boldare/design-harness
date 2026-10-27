@@ -1,0 +1,102 @@
+.slider {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-sans);
+}
+
+.disabled {
+  opacity: var(--opacity-disabled);
+}
+
+/* A long label wraps; the value keeps its place on the right. */
+.labelRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.label {
+  flex: 1;
+  min-width: 0;
+  color: var(--text-primary);
+  font-size: var(--type-label-font-size);
+  line-height: var(--type-label-line-height);
+  font-weight: var(--type-label-font-weight);
+}
+
+.value {
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  font-size: var(--type-body-sm-font-size);
+  line-height: var(--type-body-sm-line-height);
+  font-weight: var(--type-body-sm-font-weight);
+}
+
+/* size.target-min high, directly under the label row: the target's own space above the thumb separates them. */
+.area {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: var(--size-target-min);
+}
+
+/* The native range input lies over the track area for pointer, keyboard and assistive tech; the spans below draw it. */
+.input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* The invisible native thumb has the size of the drawn one, so a press lands where the thumb is drawn. */
+.input::-webkit-slider-thumb {
+  width: var(--size-mark);
+  height: var(--size-mark);
+  appearance: none;
+}
+
+.input::-moz-range-thumb {
+  width: var(--size-mark);
+  height: var(--size-mark);
+  border: none;
+}
+
+.input:disabled {
+  cursor: default;
+}
+
+/* action.primary up to the thumb, border.control after it. The join sits under the thumb. */
+.track {
+  flex: 1;
+  height: var(--size-slider-track);
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    to right,
+    var(--action-primary) calc(var(--rt-fill) * (100% - var(--size-mark))),
+    var(--border-control) calc(var(--rt-fill) * (100% - var(--size-mark)))
+  );
+  pointer-events: none;
+}
+
+/* Inside the track at both ends: its left edge moves from the track start to size.mark before the end. */
+.thumb {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--rt-fill) * (100% - var(--size-mark)));
+  width: var(--size-mark);
+  height: var(--size-mark);
+  translate: 0 -50%;
+  border-radius: var(--radius-full);
+  background: var(--action-primary);
+  pointer-events: none;
+}
+
+.input:focus-visible ~ .thumb {
+  box-shadow: var(--shadow-focus);
+}
