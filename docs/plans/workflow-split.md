@@ -1,6 +1,6 @@
 # Plan: split the workflow from the Atlas design system
 
-Status: draft for review (16.10.2026, decisions added 22.10.2026; decisions 1, 3 and 4 revised, decision 8 and step 1c added 02.11.2026). Step 0 and step 1 done: baseline and branch evals in `docs/evals.md`, the swap in PR #3, the first component built through it (Slider) in PR #5. Owner: Grzegorz Łotysz.
+Status: draft for review (16.10.2026, decisions added 22.10.2026; decisions 1, 3, 4, 6 and 7 revised, decision 8 and steps 1c and 5b added 02.11.2026). Step 0 and step 1 done: baseline and branch evals in `docs/evals.md`, the swap in PR #3, the first component built through it (Slider) in PR #5. Step 2 proposed in `docs/architecture.md`. Owner: Grzegorz Łotysz.
 
 ## Why
 
@@ -13,8 +13,8 @@ The BAT demo (15.10.2026) showed that the way of working is what clients buy: on
 3. **React is the stack** (revised 02.11.2026): React on the web with CSS custom properties, as today, and the only stack the workflow supports for now. It is the default adapter behind the tokens and code contracts (step 2), and the manifest has no `stack` key until a second stack is built (decision 8). React Native is another stack, not a variant of this one. Questions that only another stack raises, such as a Claude Design output without React, wait until that stack is needed.
 4. **Pseudo-states:** Live shows real `:focus-visible` and `:hover`, and since describe-me 0.12 recorded frames do too (02.11.2026): a test that hovers or tabs records `:hover`, `:focus`, `:focus-visible` and `:focus-within` in the frame's snapshot, never in the page. A hover or focus state in a spec is a test that makes the gesture; components put nothing into the DOM for it. PR #3 moved to describe-me 0.12.1 before its merge.
 5. **Claude Design stays as an optional output.** It may be dropped later; nothing in the workflow depends on it.
-6. **Distribution:** like rollout. The repo is the skill, cloned into `~/.claude/skills/design-harness`, with the scripts in `bin/`. npm packaging, and a possible SaaS for both design-harness and rollout, come after the flow is proven on a second system.
-7. **Atlas stays in this repo** as `systems/atlas/`, the reference system and the test bed. Web React only for now.
+6. **Distribution:** one npm package, `@boldare/design-harness`, carries the skill and the runtime (the CLI, the test helpers), and `design-harness init` links the skill into the project, so the lockfile pins both (revised 02.11.2026, `docs/architecture.md`). A designer starts a system in a new repository with `pnpm add -D @boldare/design-harness` and `init`. The owner makes the repository public and sets up publishing. A possible SaaS for both design-harness and rollout comes after the flow is proven on a second system.
+7. **Atlas stays in this repo** as `examples/atlas/`: the example, the eval fixture and the first consumer of the package (revised 02.11.2026). A real system lives in its own repository. Web React only for now.
 8. **Only the default adapters are built** (02.11.2026): Figma, describe-me, React and Claude Design. A team that keeps Storybook keeps it; the workflow does not ask it to migrate, and no Storybook adapter is built until a project needs one. An adapter's interface comes from its second implementation, not from a guess: a spike on Opal (React Native with an Expo web target and Storybook RN) showed that describe-me in browser mode with react-native-web records 257 of the team's 267 existing stories through `composeStories`, so that adapter may belong in describe-me, not here. An adapter here is mostly text for the skill (a file in `references/`), a few scripts and its own evals, so each one also costs eval runs.
 
 ## Goal
@@ -30,41 +30,13 @@ A project plugs its design system into the workflow through one manifest. Atlas 
 
 ## The manifest
 
-`design-harness.yaml` in the project repo (the system is the project's, so its manifest is in its git, unlike a rollout's). Draft shape:
-
-```yaml
-name: Atlas
-paths:
-  tokens: tokens/tokens.json
-  foundations: docs/foundations.md
-  components: components      # specs
-  screens: screens
-  src: src
-  rules: docs/rules.md        # system rules; the core rules live in the skill
-  brand: docs/brand-book.md
-frame: { width: 390, height: 844 }
-text_styles: [display, title, body, caption]
-outputs:
-  figma: { file: XHhJ2l7C09Si5uQu3EBmUH }   # leave out and step 4 is skipped
-  claude_design: { global: Atlas }          # optional
-gates:
-  - { id: frame,  approval: auto }
-  - { id: spec,   approval: human }
-  - { id: tokens, approval: human, when: new-tokens }
-  - { id: figma,  approval: auto, check: screenshot-both-themes }
-  - { id: code,   approval: auto, check: "npm test && npm run lint:tokens && npm run typecheck" }
-  - { id: states, approval: auto, check: spec-states-vs-manifest }
-  - { id: sync,   approval: auto }
-  - { id: report, approval: human }
-```
-
-A gate is data, not prose: a project adds one (for example axe after code) without editing the skill. `approval: human` is where the skill stops and waits; today that moment exists only for the spec.
+`design-harness.yaml` in the project repo (the system is the project's, so its manifest is in its git, unlike a rollout's). Its schema, the core gates and what a project may add to them are in [`docs/architecture.md`](../architecture.md#the-manifest); this plan keeps no draft of it, so the two cannot drift.
 
 ## Constraints
 
 - **Atlas keeps working after every step.** Each step is one PR; the evals and `scripts/eval-e2e.sh` run before and after it, and the result does not get worse.
 - **Spec first.** Each PR starts by changing this plan or the docs it touches, then the code.
-- **Only steps 1, 1b and 1c add capability.** Steps 2-6 move and parametrise; they do not change what the skill does.
+- **Only steps 1, 1b, 1c and 5b add capability.** The others move, parametrise and package; they do not change what the skill does.
 
 ## Steps
 
@@ -88,35 +60,27 @@ Today they disagree: the groups exist only in the Claude Design previews; Figma 
 Done when: the describe-me sidebar, the Figma pages and Claude Design show the same groups in the same order, and a check fails when a component's group or place differs from the table.
 
 ### 2. Boundary spec
-Write `docs/architecture.md`: which file belongs to which layer (the inventory below), the manifest schema above, the contracts between the core and its adapters (decision 1), and how a project uses the workflow. Review it with the guild before any code moves.
-
-The contracts are data the core reads, not an adapter API. No manifest key gets a single allowed value, and each tool's files stay in one place, so a second adapter later is a move, not a rewrite:
-
-| Contract | What the core reads | Default adapter |
-|---|---|---|
-| Tokens for a platform | `tokens/tokens.json` | React with CSS custom properties: `build-tokens`, the raw-value lint |
-| Groups and order | the inventory tables with their Group column (step 1c) | every adapter: the describe-me sidebar, the Figma page sections, the Claude Design groups |
-| States and preview | the states of each component and screen, as the tests recorded them | describe-me: `.describe-me/manifest.json`, read by the states check |
-| Design | the library structure (`figma/library.json`) and the method | Figma: `references/figma.md`, the file key in the manifest |
-| Code | how to write a component and its states | React: `references/code.md`, the Vitest setup |
-| Output | the built design system | Claude Design: `build-claude-design` (optional) |
-
-Done when: the guild agrees on the boundary and the contracts.
+Write `docs/architecture.md`: the layers, the flow and its gates, the contracts between the core and its adapters (decision 1), the adapters, the manifest schema, where every file goes, and how a project uses the workflow. The owner approves it before any code moves; for now the owner takes the decisions, and the guild meets the result in step 8 (02.11.2026).
+Done when: the owner approves `docs/architecture.md`.
 
 ### 3. Manifest instead of hard-coded paths
 Add `design-harness.yaml` for Atlas with today's values. `build-tokens`, `check-raw-values`, `build-claude-design` and the states check read it.
 Done when: the scripts have no Atlas path or name in them, and their output for Atlas is unchanged byte for byte.
 
 ### 4. Core rules and system rules
-Split `references/rules.md` into core rules (every value from a token, states, focus, touch size, themes, contrast, reuse, spec before build, approval gates, report) and Atlas rules (390 × 844 frames, Atlas text styles, Logo and Icon geometry). The skill reads the core rules from itself and the system rules from the path in the manifest. Same for `figma.md` (file key moves to the manifest) and `review-checklist.md`. The gates list drives the workflow section of SKILL.md.
+Split `references/rules.md` into core rules (every value from a token, states, focus, touch size, themes, contrast, reuse, spec before build, approval gates, report) and Atlas rules (390 × 844 frames, Atlas text styles, Logo and Icon geometry). The skill reads the core rules from itself and the system rules from the path in the manifest. Same for `figma.md` (the file key and node ids stay only in `figma/library.json`) and `review-checklist.md`. The gates list drives the workflow section of SKILL.md.
 Done when: no Atlas name is left in the skill except in examples, and the evals pass as in step 0.
 
-### 5. Rename and move
-Rename the skill from `atlas-design-system` to `design-harness`, with a trigger description that does not name Atlas. Move the workflow into `harness/` (skill, references, `bin/`, test helpers, evals) and Atlas into `systems/atlas/`. The eval scaffold copies a system, not the repo.
-Done when: `npm run` commands and the demo flow work as before, from the new layout, and `git clone` of `harness/` into `~/.claude/skills/design-harness` is the install.
+### 5. Package and layout
+Rename the skill from `atlas-design-system` to `design-harness`, with a trigger description that does not name Atlas. Move to the layout of `docs/architecture.md`: a pnpm workspace as in describe-me, with the package in `packages/design-harness/` (skill, adapters, CLI, test helpers, the templates `init` writes) and Atlas in `examples/atlas/`, depending on the package with `workspace:*`. The evals stay at the root and their scaffold copies `examples/atlas/`. `design-harness init` writes the skeleton of a system and links the skill into `.claude/skills/`.
+Done when: Atlas's checks and the demo flow work from `examples/atlas/` as before; in an empty repository, the packed package (`pnpm pack`) plus `design-harness init` gives a skill that Claude Code loads and checks that pass; and the package is on npm once publishing is set up.
+
+### 5b. Foundations first
+The skill's way into an empty system. It asks for a source (a brand book, the variables and styles of the client's Figma, or the CSS the project has; describe-me's Foundations reader already parses custom properties, Tailwind `@theme` and MUI themes), proposes the tokens with usage notes and the foundations, waits at the `tokens` gate, and then builds the Figma variables, styles and Foundations page. With no source it asks for one; it never invents a look. A new eval covers it: an empty repository and a brand book go in, token proposals and a stop at the gate come out.
+Done when: an empty repository goes from `init` to approved foundations in Figma and code, and the new eval passes.
 
 ### 6. Pilot on a second system
-Onboard one real system on React for the web (decision 3), internal first. It will find what is still Atlas-shaped. Most Boldare projects work in the client's Figma, so the pilot likely needs an import step: read the Figma variables and components, or the CSS the project already has (describe-me's Foundations reader already parses custom properties, Tailwind `@theme` and MUI themes), into a draft `tokens.json` and `library.json` that a designer then annotates with usage notes.
+Start one real system with `design-harness init`, on React for the web (decision 3), internal first; most Boldare projects work in the client's Figma, so its foundations will likely come from there (step 5b). It will find what is still Atlas-shaped.
 Done when: the pilot team ships one component and one screen through the workflow, and every gap it found is either fixed or listed.
 
 ### 7. CI quality gates
@@ -126,27 +90,14 @@ Done when: a PR with a raw value, a missing state or an axe failure is blocked.
 ### 8. Guild onboarding
 A short guide for Boldare designers: when to use the workflow, the approval moments, how to read the change report, how to propose a token, how to open Live. Recorded walkthrough of one change.
 
-### Later: packaging
-npm package with a CLI (`design-harness tokens | lint | check | claude-design`) and, if it earns it, a hosted service for both design-harness and rollout. Not before step 6 has run on a real system.
+### Later: a hosted service
+Publishing moved into step 5 (decision 6). A hosted service for both design-harness and rollout, if it earns it, not before step 6 has run on a real system.
 
-Step 1b and this section move to issues when the harness has its own repo (step 5); until then this plan is their record.
+Step 1b and this section move to issues when the repository is public; until then this plan is their record.
 
 ## Inventory (where each file goes)
 
-| Today | Layer | Note |
-|---|---|---|
-| `.claude/skills/atlas-design-system/SKILL.md` | Workflow | Rename; Atlas only in examples; workflow section from the gates list |
-| `references/code.md`, `component-spec.md`, `screens.md`, `tokens.md`, `review-checklist.md` | Workflow | Paths from the manifest; tests instead of stories after step 1 |
-| `references/rules.md` | Split | Core rules to the workflow, Atlas rules to the system |
-| `references/figma.md` | Split | Method to the workflow, file key to the manifest |
-| `evals/` | Workflow | Scaffold copies a test system, not the whole repo |
-| `scripts/build-tokens.mjs`, `check-raw-values.mjs`, `eval-e2e.sh` | Workflow | Read the manifest; move to `bin/` |
-| `scripts/build-claude-design.mjs` | Workflow | 24 Atlas mentions today, including the `window.Atlas` global; optional output |
-| `scripts/claude-design/brand-book.md`, `cover.html`, `previews/*` | System | Per-system content the build reads |
-| `src/storybook/*`, `.storybook/*`, `storybook-static/` | Removed in step 1 | `respond()` stays as a test helper in the workflow; frame size from the manifest |
-| `vitest.config.ts`, test setup, axe helper | Workflow | New in step 1; React only (decision 3) |
-| `tokens/`, `docs/foundations.md`, `components/`, `screens/`, `figma/library.json`, `src/components`, `src/screens`, `src/foundations` | System | |
-| `docs/claude-design.md` | Split | How the sync works to the workflow, the artifact link to the system |
+In [`docs/architecture.md`](../architecture.md#where-every-file-goes), file by file, with its path after step 5.
 
 ## Open questions
 
