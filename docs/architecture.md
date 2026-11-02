@@ -1,26 +1,26 @@
 # Architecture: the harness and a design system
 
-Status: proposed (02.11.2026), step 2 of [`plans/workflow-split.md`](plans/workflow-split.md). The owner approves it before any code moves; steps 3 to 5 implement it.
+Status: proposed (02.11.2026), step 2 of [`plans/workflow-split.md`](plans/workflow-split.md). The owner approves it before any code moves; steps 3 to 5b implement it.
 
-The harness is a workflow: a skill that takes a design change from a spec to a report, with gates where a person approves. A design system plugs into it with one manifest, `design-harness.yaml`. The harness reads the system's files through contracts, which are data formats, and the tools sit behind those contracts as adapters: Figma, describe-me, React and Claude Design. Atlas is the reference system and the harness's first consumer.
+The harness is a workflow in one npm package, `@boldare/design-harness`: a skill that takes a design change from a spec to a report, with gates where a person approves, and the CLI and test helpers that the skill's checks run. A design system lives in its own repository. A designer starts one by adding the package and running `design-harness init`, then builds the system with the skill, one approved piece at a time. The harness reads the system's files through contracts, which are data formats, and the tools sit behind those contracts as adapters: Figma, describe-me, React and Claude Design. Atlas is the example system in this repository and the fixture the evals run on.
 
 ## Decisions this document proposes
 
-The plan left three points open or got them wrong. Each one changes what steps 3 to 5 build.
-
-1. **The repository root is the harness.** The plan's first draft of step 5 moved the workflow into `harness/` and made `git clone` of `harness/` the install, but git cannot clone a directory. The skill (`SKILL.md`, `references/`), the adapters, `bin/` and the evals sit at the root, and Atlas moves to `systems/atlas/`. Cloning the repository into `~/.claude/skills/design-harness` is the install, and Atlas comes along as the example.
-2. **A project gets the runtime from a git dependency.** Part of the harness runs inside the project, not in Claude: the scripts that its CI runs (step 7) and the test helpers that its tests import. A clone in `~/.claude/skills` is not there in CI. A project therefore adds the harness pinned to a tag, `"design-harness": "github:boldare/design-harness#v0.1.0"`, and gets the CLI (`design-harness tokens | lint | states | claude-design`) and the helpers (`design-harness/test`, `design-harness/vitest`). Nothing is published: npm only fetches the tag, so decision 6 still holds for packaging. Atlas uses `"design-harness": "file:../.."` and takes the same path as any project. The skill's clone and the project's dependency must be on the same tag, and the skill checks that before it starts. CI needs read access to the private repository (a deploy key or a token).
-   The alternative: the skill copies the runtime into the project (`.design-harness/`). That works in CI without access, but every project carries its own copy, and an update is a new copy that drifts.
-3. **The Figma file key stays in `figma/library.json`.** The plan's first draft of the manifest also had `outputs.figma.file`, and one key in two places drifts. The manifest points at the library file instead.
+1. **One package, one install.** `@boldare/design-harness` carries the skill and the runtime: the CLI, the test helpers and the Vitest preset. `design-harness init` links `node_modules/@boldare/design-harness/skill` into the project's `.claude/skills/design-harness`, so the skill is always the version the lockfile pins, and CI gets everything from the install. Claude Code 2.1.309 loads a skill through that link, a pnpm store link included (checked 02.11.2026). Nothing is cloned into `~/.claude/skills`. The name `design-harness` is taken on npm by an unrelated package, so the package is scoped; the command stays `design-harness`.
+2. **A system lives in its own repository.** This repository holds the package (`packages/design-harness/`), the evals and the docs, and Atlas as `examples/atlas/`: the example, the eval fixture and the first consumer, which depends on the package through the workspace as a project does through npm.
+3. **A system can start from an empty repository.** `design-harness init` writes the skeleton: the manifest, an empty tokens file, the two inventories, the npm scripts, the Vitest config and the skill link. The skill then works foundations first: from a source the designer names (a brand book, the variables of the client's Figma, CSS the project already has) it proposes the tokens and the foundations, the designer approves them at the `tokens` gate, and only then come components. The skill still never invents a look; with nothing to extend, it asks for a source.
+4. **The Figma file key stays in `figma/library.json`.** The plan's first draft of the manifest also had `outputs.figma.file`, and one key in two places drifts. The manifest points at the library file instead.
 
 ## Layers
 
 | Layer | What it holds | Owned by |
 |---|---|---|
-| **Core** | The flow and its gates, the core rules, the spec and token templates, the review checklist and the report, the evals, the CLI | The harness, versioned by tag |
-| **Adapters** | One folder per tool: what the skill needs to know about the tool, and the scripts and helpers that implement the contracts with it | The harness |
-| **System** | Tokens, foundations, system rules, specs, the Figma library record, components and screens in code, Claude Design content, the manifest | The project team |
+| **Core** | The flow and its gates, the core rules, the spec and token templates, the review checklist and the report, the CLI, what `init` writes | The package, versioned and published |
+| **Adapters** | One folder per tool: what the skill needs to know about the tool, and the scripts and helpers that implement the contracts with it | The package |
+| **System** | Tokens, foundations, system rules, specs, the Figma library record, components and screens in code, Claude Design content, the manifest | The project team, in its repository |
 | **Generated** | `tokens.css`, `.describe-me/`, the Claude Design build | Written by the adapters into the system; only `tokens.css` is tracked, because the app imports it |
+
+The evals belong to this repository, not to the package: they test the skill before a release.
 
 ## The flow
 
@@ -37,42 +37,44 @@ The skill runs seven steps. A gate closes each one; `human` is where the skill s
 | `sync` | 6. Claude Design | auto | The build and the publish |
 | `report` | 7. Review and report | human | The change report |
 
-These gates are the core and come with the harness. A system adds its own in the manifest (for example `visual` from step 1b), and can make an `auto` gate `human`. It cannot remove `spec` or `report`. An output the manifest leaves out (Figma, Claude Design) skips its step and its gate.
+These gates are the core and come with the package. A system adds its own in the manifest (for example `visual` from step 1b), and can make an `auto` gate `human`. It cannot remove `spec` or `report`. An output the manifest leaves out (Figma, Claude Design) skips its step and its gate.
+
+With an empty tokens file the first change is the foundations: the spec is the source and the token proposals, the `tokens` gate approves them, and the figma step builds the variables, the text and effect styles and the Foundations page. Components and screens come after, through the same seven steps.
 
 ## Contracts
 
-What the core reads, in what shape, and who writes it. The paths are the defaults; the manifest can change them.
+What the core reads, in what shape, and who writes it. The paths are relative to the system's root and are the defaults; the manifest can change them.
 
 | Contract | File | Shape the core relies on | Written by | Read by |
 |---|---|---|---|---|
-| Tokens | `tokens/tokens.json` | `name`, `version`, `meta`, then one family per kind (`color`, `type`, `spacing`, …), each with tokens of `name`, `value` (or a value per theme) and `usage`; text styles in `type.groups[].styles[]` | The skill, after an approved proposal | Every adapter, the raw-value lint |
-| Specs | `components/<Name>/README.md`, `screens/<Name>/README.md` | The sections of the templates in `references/`; the states in `## States`, as the first column of its table or the backticked names in its first sentence | The skill, approved by the designer | The skill, the states check, Claude Design |
-| Inventory | `components/README.md`, `screens/README.md` | A table whose first column links `[Name](Name/README.md)`, in library order; a Group column from step 1c; "Rules for every component" below it | The skill | Every adapter: the order and the groups |
+| Tokens | `tokens/tokens.json` | `name`, `version`, `meta`, then one family per kind (`color`, `type`, `spacing`, …), each with tokens of `name`, `value` (or a value per theme) and `usage`; text styles in `type.groups[].styles[]` | `init` (empty), then the skill after an approved proposal | Every adapter, the raw-value lint |
+| Specs | `components/<Name>/README.md`, `screens/<Name>/README.md` | The sections of the templates in the skill; the states in `## States`, as the first column of its table or the backticked names in its first sentence | The skill, approved by the designer | The skill, the states check, Claude Design |
+| Inventory | `components/README.md`, `screens/README.md` | A table whose first column links `[Name](Name/README.md)`, in library order; a Group column from step 1c; "Rules for every component" below it | `init` (empty), then the skill | Every adapter: the order and the groups |
 | System rules | `docs/rules.md` | Requirements on top of the core rules, one per line (step 4) | The team | The skill, the review checklist |
 | Foundations | `docs/foundations.md` | Where values came from and what was decided; every token decision recorded | The skill, with each new token | The skill, Claude Design |
 | Figma library | `figma/library.json` | The file key and URL, the naming rules, the variable collections with ids and modes, the pages, the components with their node ids, notes | The Figma adapter, after each change | The skill, to find nodes |
 | States record | `.describe-me/manifest.json` | `modules[].id`, `modules[].tests[].name`, from step 1c `modules[].group`; a test file `<src>/components/<Name>/<Name>.test.tsx` with `describe('<Name>')` and one `it('<state>')` per state | The describe-me adapter, on every test run | The states check |
-| Checks | `package.json` | Scripts `tokens`, `lint:tokens`, `typecheck`, `test`, `check-states` and `check`, calling the CLI | The project, once | The `code` gate, CI |
-| Report | the skill's last message | The change report in `references/review-checklist.md` | The skill | The reviewer |
+| Checks | `package.json` | Scripts `tokens`, `lint:tokens`, `typecheck`, `test`, `check-states` and `check`, calling the CLI | `init` | The `code` gate, CI |
+| Report | the skill's last message | The change report in the review checklist | The skill | The reviewer |
 
 The contracts are data, not an adapter API. No manifest key gets a single allowed value, and each tool's files stay in one folder, so a second adapter later is a move, not a rewrite.
 
 ## Adapters
 
-All four are the defaults and, for now, the only ones (decisions 3 and 8 of the plan).
+All four are the defaults and, for now, the only ones (decisions 3 and 8 of the plan). Each is a folder in `packages/design-harness/adapters/`.
 
 | Adapter | Implements | Holds |
 |---|---|---|
-| `adapters/react/` | Tokens for the platform, code | `code.md`; the token build (`tokens.json` to CSS custom properties, `surface.page` to `--surface-page`); the raw-value lint for CSS Modules; the test helpers (setup, axe in both themes, the phone frame sized from the manifest, the layout classes, `respond()`); the Vitest preset |
-| `adapters/describe-me/` | States and preview | The Vitest plugin options (fonts from the system's preview head, the sidebar groups from the inventory from step 1c); the reader of `.describe-me/manifest.json` for the states check. Tested with describe-me 0.12.1 |
-| `adapters/figma/` | Design | `figma.md`, the method: variables, text and effect styles, components with variants, screens from instances, the screenshot check. Uses the Figma MCP |
-| `adapters/claude-design/` | Output (optional) | `claude-design.md`, how the sync works; the build; the preview helpers shared by every card. The global is `window[name]`, not `window.Atlas` |
+| `react/` | Tokens for the platform, code | `code.md`; the token build (`tokens.json` to CSS custom properties, `surface.page` to `--surface-page`); the raw-value lint for CSS Modules; the test helpers (setup, axe in both themes, the phone frame sized from the manifest, the layout classes, `respond()`), exported as `@boldare/design-harness/test`; the Vitest preset, exported as `@boldare/design-harness/vitest` |
+| `describe-me/` | States and preview | The plugin options (fonts from the system's preview head, the sidebar groups from the inventory from step 1c); the reader of `.describe-me/manifest.json` for the states check. Tested with describe-me 0.12.1, a dependency of the package |
+| `figma/` | Design | `figma.md`, the method: variables, text and effect styles, components with variants, screens from instances, the screenshot check. Uses the Figma MCP |
+| `claude-design/` | Output (optional) | `claude-design.md`, how the sync works; the build; the preview helpers shared by every card. The global is `window[name]`, not `window.Atlas` |
 
-The states check has two halves: the comparison of specs with recorded states is core, and the reader of the manifest is the describe-me adapter's. Until a second adapter exists they stay in one file in `adapters/describe-me/`.
+The states check has two halves: the comparison of specs with recorded states is core, and the reader of the manifest is the describe-me adapter's. Until a second adapter exists they stay in one file in `describe-me/`.
 
 ## The manifest
 
-`design-harness.yaml` at the root of the system: the project root, or `systems/atlas/` in this repository. Only `name` is required.
+`design-harness.yaml` at the root of the system: the project's repository, or `examples/atlas/` here. Only `name` is required.
 
 ```yaml
 name: Atlas                          # reports, Figma pages, the Claude Design namespace and global
@@ -93,47 +95,72 @@ gates:                               # added to the core gates
   - { id: visual, after: code, approval: auto, check: "npm run test:visual" }
 ```
 
-The text styles are not listed: they are the `type.groups` of the tokens file. The harness version is not listed either: the project's dependency pins it, and the skill reads it from there.
+The text styles are not listed: they are the `type.groups` of the tokens file. The harness version is not listed either: the project's lockfile pins it, and the skill comes from the same install.
+
+## Repositories
+
+```
+design-harness/                      this repository, a pnpm workspace as in describe-me
+  packages/design-harness/           @boldare/design-harness, published
+    skill/                           SKILL.md and references/: the core
+    adapters/                        react/, describe-me/, figma/, claude-design/
+    bin/design-harness.mjs           init · tokens · lint · states · claude-design
+    templates/                       what init writes
+  examples/atlas/                    the example system and the eval fixture
+  evals/                             the skill evals; the scaffold copies examples/atlas
+  scripts/eval-e2e.sh
+  docs/                              the plan, this file
+
+design-project-x/                    a designer's repository
+  package.json                       devDependencies: @boldare/design-harness
+  design-harness.yaml
+  .claude/skills/design-harness      link to node_modules/@boldare/design-harness/skill
+  tokens/  docs/  components/  screens/  figma/  src/
+```
 
 ## Where every file goes
 
-Today's path, its path after step 5, and its layer. Paths under the skill are short for `.claude/skills/atlas-design-system/`.
+Today's path, its path after step 5, and its layer. `skill:` is short for `.claude/skills/atlas-design-system/` today, and `pkg/` for `packages/design-harness/` after the move.
 
 | Today | After step 5 | Layer |
 |---|---|---|
-| `SKILL.md` | `SKILL.md`, skill `design-harness` | Core |
-| `references/component-spec.md`, `screens.md`, `tokens.md`, `review-checklist.md` | `references/` | Core |
-| `references/rules.md` | `references/rules.md` (core rules) and `systems/atlas/docs/rules.md` (Atlas rules), step 4 | Split |
-| `references/code.md` | `adapters/react/code.md` | React |
-| `references/figma.md` | `adapters/figma/figma.md`; the file key and ids stay only in `library.json` | Figma |
-| `evals/*` | `evals/*`; the scaffold copies `systems/atlas/`, not the repository | Core |
-| `scripts/eval-e2e.sh` | `bin/eval-e2e.sh` | Core |
-| `scripts/build-tokens.mjs`, `check-raw-values.mjs` | `adapters/react/` | React |
-| `scripts/check-states.mjs` | `adapters/describe-me/` | describe-me |
-| `scripts/build-claude-design.mjs`, `scripts/claude-design/preview.js`, `preview.css` | `adapters/claude-design/` | Claude Design |
-| `scripts/claude-design/brand-book.md`, `cover.html`, `previews/*` | `systems/atlas/claude-design/` | System |
-| `docs/claude-design.md` | `adapters/claude-design/claude-design.md`; the artifact link in `systems/atlas/README.md` | Split |
+| `skill:SKILL.md` | `pkg/skill/SKILL.md`, skill `design-harness` | Core |
+| `skill:references/component-spec.md`, `screens.md`, `tokens.md`, `review-checklist.md` | `pkg/skill/references/` | Core |
+| `skill:references/rules.md` | `pkg/skill/references/rules.md` (core rules) and `examples/atlas/docs/rules.md` (Atlas rules), step 4 | Split |
+| `skill:references/code.md` | `pkg/adapters/react/code.md` | React |
+| `skill:references/figma.md` | `pkg/adapters/figma/figma.md`; the file key and ids stay only in `library.json` | Figma |
+| `skill:evals/*` | `evals/*`, not published; the scaffold copies `examples/atlas/` | Core |
+| `scripts/eval-e2e.sh` | `scripts/eval-e2e.sh`, not published | Core |
+| `scripts/build-tokens.mjs`, `check-raw-values.mjs` | `pkg/adapters/react/` | React |
+| `scripts/check-states.mjs` | `pkg/adapters/describe-me/` | describe-me |
+| `scripts/build-claude-design.mjs`, `scripts/claude-design/preview.js`, `preview.css` | `pkg/adapters/claude-design/` | Claude Design |
+| `scripts/claude-design/brand-book.md`, `cover.html`, `previews/*` | `examples/atlas/claude-design/` | System |
+| `docs/claude-design.md` | `pkg/adapters/claude-design/claude-design.md`; the artifact link in `examples/atlas/README.md` | Split |
 | `docs/evals.md` | `evals/README.md` | Core |
 | `docs/plans/`, `docs/architecture.md` | `docs/` | Core |
-| `src/test/setup.ts`, `a11y.ts`, `PhoneFrame.tsx`, `PhoneFrame.module.css`, `layout.module.css`, `respond.ts` | `adapters/react/test/`, exported as `design-harness/test` | React |
-| `src/test/canvas.css` | `systems/atlas/src/test/canvas.css`; it names Atlas tokens | System |
-| `vitest.config.ts` | `systems/atlas/vitest.config.ts`, built on the preset from `design-harness/vitest` | Split |
-| `tokens/`, `docs/foundations.md`, `components/`, `screens/`, `figma/library.json` | `systems/atlas/` | System |
-| `src/components/`, `src/screens/`, `src/foundations/`, `src/styles/`, `src/index.ts`, `src/vite-env.d.ts` | `systems/atlas/src/` | System |
-| `package.json`, `tsconfig.json`, `vite.config.ts` | The root package is the harness (CLI, exports); `systems/atlas/` gets its own, depending on `file:../..` | Split |
-| `README.md` | The root README is the harness's; `systems/atlas/README.md` describes Atlas | Split |
+| `src/test/setup.ts`, `a11y.ts`, `PhoneFrame.tsx`, `PhoneFrame.module.css`, `layout.module.css`, `respond.ts` | `pkg/adapters/react/test/` | React |
+| `src/test/canvas.css` | `examples/atlas/src/test/canvas.css`; it names Atlas tokens | System |
+| `vitest.config.ts` | `examples/atlas/vitest.config.ts` on the preset; `init` writes the same for a new system | Split |
+| `tokens/`, `docs/foundations.md`, `components/`, `screens/`, `figma/library.json` | `examples/atlas/` | System |
+| `src/components/`, `src/screens/`, `src/foundations/`, `src/styles/`, `src/index.ts`, `src/vite-env.d.ts` | `examples/atlas/src/` | System |
+| `package.json`, `package-lock.json`, `tsconfig.json`, `vite.config.ts` | A private workspace root with `pnpm-lock.yaml`; `pkg/package.json` is the package; `examples/atlas/package.json` depends on it with `workspace:*` | Split |
+| `README.md` | The root README is the repository's; `pkg/README.md` is the npm page and how to start; `examples/atlas/README.md` describes Atlas | Split |
 | `.idea/` | Removed from git | None |
 
-## How a project uses the harness
+## How a designer starts a system
 
-1. Clone the harness into `~/.claude/skills/design-harness` at a tag.
-2. In the project, add `design-harness` as a git dependency at the same tag, the npm scripts of the checks contract, a `vitest.config.ts` on the preset, and `design-harness.yaml`.
-3. Write the tokens file and the Figma library record, or import them from the project's Figma or CSS (step 6).
-4. Ask for the first change; the skill reads the manifest and starts at the `frame` gate.
+```
+mkdir design-project-x && cd design-project-x && git init
+pnpm add -D @boldare/design-harness
+pnpm exec design-harness init
+claude        # "Start the system from the brand book in docs/brand-book.pdf"
+```
+
+`init` writes the skeleton and links the skill. The first session builds the foundations from the source, the next ones the components and screens. An update is `pnpm up @boldare/design-harness`; the skill follows through the link.
 
 ## Not decided here
 
 - Which rules are core and which are Atlas's: step 4.
 - How the inventory sets the order in the three outputs: step 1c.
-- The CI action and its access to the repository: step 7.
-- What the skill does in a repository without a manifest (offer to set one up, or stay silent): step 5, with the trigger description.
+- The release process (versions, changelog, publishing from CI): the owner sets it up.
+- The CI action for a system repository: step 7.
