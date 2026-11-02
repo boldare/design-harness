@@ -1,26 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import styles from './Foundations.module.css';
 import { tokens } from './tokens';
-
-const meta = {
-  title: 'Foundations/Type',
-} satisfies Meta;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-// Sample copy from Atlas screens. Styles come from tokens/tokens.json; a new style shows its own name.
-const samples: Record<string, string> = {
-  title: 'Sign in to Atlas',
-  heading: 'Device settings',
-  body: 'Pair a device to see its readings here.',
-  'body-strong': 'Maja Nowak',
-  label: 'Email',
-  'body-sm': 'Enter a valid email, like name@company.com',
-  caption: 'Signed in as',
-  button: 'Sign in',
-  input: 'maja.nowak@company.com',
-};
+import { samples } from './type-samples';
 
 type Style = (typeof tokens.type.groups)[number]['styles'][number];
 
@@ -29,9 +9,12 @@ const specOf = (style: Style) =>
     .filter((value) => value !== null)
     .join(' / ');
 
-/** Every type style, grouped as in Figma (Headings, Text, Controls). Each sample uses its .type-<style> class. */
-export const TypeStyles: Story = {
-  render: () => (
+/**
+ * Every type style, grouped as in Figma (Headings, Text, Controls), each sample in its .type-<style> class.
+ * Colour, spacing, radius and shadow tokens need no specimen: Foundations in the viewer reads them from tokens.css.
+ */
+export function TypeSpecimen() {
+  return (
     <div>
       {tokens.type.groups.map((group) => (
         <section key={group.name} className={styles.group}>
@@ -50,5 +33,5 @@ export const TypeStyles: Story = {
         </section>
       ))}
     </div>
-  ),
-};
+  );
+}

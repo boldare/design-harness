@@ -1,4 +1,4 @@
-/* Preview canvas, as the Storybook canvas (.storybook/preview.css): page colour and default text from the tokens. */
+/* Preview canvas, as the test canvas (src/test/canvas.css): page colour and default text from the tokens. */
 html,
 body {
   margin: 0;
@@ -22,7 +22,7 @@ body {
   gap: var(--space-8);
 }
 
-/* State matrix, as src/storybook/StateMatrix: a heading column, then one column per variant. */
+/* State matrix, as the state rows of the tests: a heading column, then one column per variant. */
 .pv-matrix {
   display: grid;
   grid-template-columns: max-content repeat(var(--pv-columns), minmax(0, 1fr));

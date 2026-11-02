@@ -6,8 +6,8 @@ import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
-// Screens add layout only, never new visual values (screens/README.md), so they follow the same rule.
-const scannedDirs = ['src/components', 'src/screens'].map((dir) => join(root, dir));
+// Screens add layout only, never new visual values (screens/README.md), so they follow the same rule. So do the test helpers.
+const scannedDirs = ['src/components', 'src/screens', 'src/test', 'src/foundations'].map((dir) => join(root, dir));
 
 const rules = [
   { name: 'raw colour', test: (line) => /#[0-9a-f]{3,8}\b|\b(rgba?|hsla?)\(/i.test(line) },
@@ -44,4 +44,4 @@ if (problems.length > 0) {
   process.exit(1);
 }
 
-console.log(`No raw values in ${files.length} component and screen stylesheets.`);
+console.log(`No raw values in ${files.length} component, screen and test stylesheets.`);

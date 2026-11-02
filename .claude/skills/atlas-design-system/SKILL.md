@@ -40,7 +40,7 @@ Add approved tokens to `tokens/tokens.json` with usage notes, record them in `do
 Build the component or screen in the Atlas Figma file following `references/figma.md`: every fill, stroke, padding, gap, radius, size and opacity bound to a variable, every text on an Atlas text style, every state from the spec as a variant, and a screenshot to check it in both themes.
 
 ### 5. Code
-Implement in `src/` following `references/code.md`: the component or screen, a story with every state, and the checks (`npm run lint:tokens`, `npm run typecheck`, `npm run build-storybook`) passing.
+Implement in `src/` following `references/code.md`: the component or screen, a test for every state (the tests are the stories), and the checks (`npm run check`: lint:tokens, typecheck, test, check-states) passing.
 
 ### 6. Claude Design
 Re-sync the published design system as described in `docs/claude-design.md`.

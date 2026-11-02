@@ -1,0 +1,18 @@
+/* Test layout only: the cells of one state side by side, as the state matrices in the specs. */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-8);
+}
+
+.cell {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}

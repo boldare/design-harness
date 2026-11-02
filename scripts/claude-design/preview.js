@@ -1,4 +1,4 @@
-// Shared by every preview: helpers that mirror src/storybook/StateMatrix and the Storybook focus addon.
+// Shared by every preview: helpers that mirror the state rows of the tests (src/test/layout.module.css) and force focus styles.
 // The page preloads React 18, the tokens, bundle.css and bundle.js (window.Atlas) into each preview frame.
 var Atlas = window.Atlas;
 var React = window.React;
@@ -66,8 +66,8 @@ function grid(columns, examples) {
 
 /**
  * Shows the components' own :focus-visible styles inside elements marked data-forced-focus, without a keyboard.
- * Each :focus-visible rule of the loaded stylesheets is copied once, scoped to [data-forced-focus] (as the
- * storybook-addon-pseudo-states addon does in the repository's Storybook).
+ * Each :focus-visible rule of the loaded stylesheets is copied once, scoped to [data-forced-focus], as the describe-me
+ * viewer does when it replays a frame recorded after userEvent.tab().
  */
 function forceFocusStyles() {
   Array.prototype.forEach.call(document.styleSheets, function (sheet) {
