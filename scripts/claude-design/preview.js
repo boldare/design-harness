@@ -66,8 +66,8 @@ function grid(columns, examples) {
 
 /**
  * Shows the components' own :focus-visible styles inside elements marked data-forced-focus, without a keyboard.
- * Each :focus-visible rule of the loaded stylesheets is copied once, scoped to [data-forced-focus] (as the
- * storybook-addon-pseudo-states addon did in Storybook; recorded test frames cannot hold pseudo-states, Live shows them).
+ * Each :focus-visible rule of the loaded stylesheets is copied once, scoped to [data-forced-focus], as the describe-me
+ * viewer does when it replays a frame recorded after userEvent.tab().
  */
 function forceFocusStyles() {
   Array.prototype.forEach.call(document.styleSheets, function (sheet) {
