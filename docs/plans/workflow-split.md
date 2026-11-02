@@ -1,6 +1,6 @@
 # Plan: split the workflow from the Atlas design system
 
-Status: draft for review (16.10.2026, decisions added 22.10.2026). Step 0 and step 1 done: baseline and branch evals in `docs/evals.md`, the swap in PR #3, the first component built through it (Slider) in PR #5. Owner: Grzegorz Łotysz.
+Status: draft for review (16.10.2026, decisions added 22.10.2026; decisions 1 and 4 revised, decision 8 and step 1c added 02.11.2026). Step 0 and step 1 done: baseline and branch evals in `docs/evals.md`, the swap in PR #3, the first component built through it (Slider) in PR #5. Owner: Grzegorz Łotysz.
 
 ## Why
 
@@ -8,13 +8,14 @@ The BAT demo (15.10.2026) showed that the way of working is what clients buy: on
 
 ## Decisions (22.10.2026)
 
-1. **Core of the harness:** an ordered Figma library and a Live mount preview in describe-me. Everything else (Claude Design, CI, npm) is an output or a packaging of those two.
+1. **Core of the harness:** the flow (spec, approval, tokens, design, code, states, report) and the contracts between its steps (step 2). The tools are adapters behind those contracts, as frameworks are in describe-me: Figma for the library, describe-me for the states and Live, React for the code, Claude Design for the optional output. What a project gets is still an ordered Figma library and a Live preview; CI and npm are packaging.
 2. **Storybook is replaced by describe-me**, on Atlas, before the split (step 1 below). Tests are the stories; Foundations reads the tokens from the CSS the tests load; Live mounts a component or screen for the designer. The swap removes `src/storybook/*` and `.storybook/*` from the inventory, so the split moves less.
 3. **Stack default is React** with CSS custom properties, as today. Other stacks are profiles the manifest selects; none is built until a project needs it. A DOM adapter for vanilla JS has been ordered on the describe-me side.
-4. **Pseudo-states:** Live shows real `:focus-visible` and `:hover`. Recorded frames cannot, so until describe-me captures matched pseudo-classes as attributes (on its roadmap, to be filed again), components put the states they need in the frames into the DOM (`data-state`, `data-focus-visible`).
+4. **Pseudo-states:** Live shows real `:focus-visible` and `:hover`, and since describe-me 0.12 recorded frames do too (02.11.2026): a test that hovers or tabs records `:hover`, `:focus`, `:focus-visible` and `:focus-within` in the frame's snapshot, never in the page. A hover or focus state in a spec is a test that makes the gesture; components put nothing into the DOM for it. PR #3 still pins describe-me 0.11 and says frames cannot show these states, so it moves to 0.12 first.
 5. **Claude Design stays as an optional output.** It may be dropped later; nothing in the workflow depends on it.
 6. **Distribution:** like rollout. The repo is the skill, cloned into `~/.claude/skills/design-harness`, with the scripts in `bin/`. npm packaging, and a possible SaaS for both design-harness and rollout, come after the flow is proven on a second system.
 7. **Atlas stays in this repo** as `systems/atlas/`, the reference system and the test bed. Web React only for now.
+8. **Only the default adapters are built** (02.11.2026): Figma, describe-me, React and Claude Design. A team that keeps Storybook keeps it; the workflow does not ask it to migrate, and no Storybook adapter is built until a project needs one. An adapter's interface comes from its second implementation, not from a guess: a spike on Opal (React Native with an Expo web target and Storybook RN) showed that describe-me in browser mode with react-native-web records 257 of the team's 267 existing stories through `composeStories`, so that adapter may belong in describe-me, not here. An adapter here is mostly text for the skill (a file in `references/`), a few scripts and its own evals, so each one also costs eval runs.
 
 ## Goal
 
@@ -64,7 +65,7 @@ A gate is data, not prose: a project adds one (for example axe after code) witho
 
 - **Atlas keeps working after every step.** Each step is one PR; the evals and `scripts/eval-e2e.sh` run before and after it, and the result does not get worse.
 - **Spec first.** Each PR starts by changing this plan or the docs it touches, then the code.
-- **Only steps 1 and 1b add capability.** Steps 2-6 move and parametrise; they do not change what the skill does.
+- **Only steps 1, 1b and 1c add capability.** Steps 2-6 move and parametrise; they do not change what the skill does.
 
 ## Steps
 
@@ -74,7 +75,7 @@ Done when: one clean run of all four evals and the e2e script is recorded.
 
 ### 1. Storybook to describe-me
 Replace Storybook with Vitest (browser mode, so layout and fonts are real) and describe-me. Each state from a component README becomes an `it` that asserts what the README says (`aria-invalid`, `aria-describedby`, `aria-busy`, roles) and so records a story. Screens keep `respond()` from the prototype helper, which is browser-only already, so Live can click through them. Foundations replaces the three foundation stories. axe runs in every test in both themes. `references/code.md` and the review checklist change from "States story" to "a test per state", and a script compares the states in the specs with the stories in `.describe-me/manifest.json`.
-What is lost: controls on `Default` (Live covers part of it), and forced pseudo-states in recorded frames (decision 4).
+What is lost: controls on `Default` (Live covers part of it). Pseudo-states in recorded frames were lost with describe-me 0.11 and are back in 0.12 (decision 4).
 Done when: every component and screen shows every README state in the viewer, Live mounts the three screens, the evals pass as in step 0, and `storybook-static`, `.storybook/` and `src/storybook/` are gone.
 
 ### 1b. Visual tests
@@ -82,9 +83,26 @@ Browser mode already runs Playwright, so each recorded state gets a screenshot c
 Not part of the step 1 PR, so that PR stays about the swap. It goes to the issue tracker once the harness has its own repo.
 Done when: every component state has a baseline image in both themes, a one-token colour change fails the check, and the baselines update with one command.
 
+### 1c. One order for the library
+The inventory tables in `components/README.md` and `screens/README.md` get a Group column and become the only place that sets the groups of the library and their order. The describe-me sidebar (`sidebar.groups`, describe-me 0.12) is built from them in `vitest.config.ts`, the Claude Design build takes each card's group from them instead of the `@dsCard group=` line of each preview, and the figma gate checks the sections of the Components and Screens pages against them. The skill puts a new component or screen in its group in the table, and the three outputs follow.
+Today they disagree: the groups exist only in the Claude Design previews; Figma and the table share one order, which splits Feedback (Alert, then StatusMark after Identity); describe-me lists the files by path. Inside a group describe-me sorts the files by path too, so each component gets its own subgroup named after its `describe`, which the viewer shows as the file, and the table order holds inside groups as well.
+Done when: the describe-me sidebar, the Figma pages and Claude Design show the same groups in the same order, and a check fails when a component's group or place differs from the table.
+
 ### 2. Boundary spec
-Write `docs/architecture.md`: which file belongs to which layer (the inventory below), the manifest schema above, and how a project uses the workflow. Review it with the guild before any code moves.
-Done when: the guild agrees on the boundary.
+Write `docs/architecture.md`: which file belongs to which layer (the inventory below), the manifest schema above, the contracts between the core and its adapters (decision 1), and how a project uses the workflow. Review it with the guild before any code moves.
+
+The contracts are data the core reads, not an adapter API. No manifest key gets a single allowed value, and each tool's files stay in one place, so a second adapter later is a move, not a rewrite:
+
+| Contract | What the core reads | Default adapter |
+|---|---|---|
+| Tokens for a platform | `tokens/tokens.json` | React with CSS custom properties: `build-tokens`, the raw-value lint |
+| Groups and order | the inventory tables with their Group column (step 1c) | every adapter: the describe-me sidebar, the Figma page sections, the Claude Design groups |
+| States and preview | the states of each component and screen, as the tests recorded them | describe-me: `.describe-me/manifest.json`, read by the states check |
+| Design | the library structure (`figma/library.json`) and the method | Figma: `references/figma.md`, the file key in the manifest |
+| Code | how to write a component and its states | React: `references/code.md`, the Vitest setup |
+| Output | the built design system | Claude Design: `build-claude-design` (optional) |
+
+Done when: the guild agrees on the boundary and the contracts.
 
 ### 3. Manifest instead of hard-coded paths
 Add `design-harness.yaml` for Atlas with today's values. `build-tokens`, `check-raw-values`, `build-claude-design` and the states check read it.
@@ -134,7 +152,7 @@ Step 1b and this section move to issues when the harness has its own repo (step 
 ## Open questions
 
 1. Does the claude.ai Design System artifact type accept components without React? It decides whether the vanilla profile can have a Claude Design output. Check before promising vanilla to any project.
-2. describe-me features the workflow waits for: pseudo-classes captured as attributes in recorded frames, and the DOM adapter. Both filed on the describe-me side; pin the version the workflow is tested with.
+2. describe-me features the workflow waits for: the DOM adapter, filed on the describe-me side. Pseudo-states in recorded frames shipped in 0.12 (decision 4). Pin the version the workflow is tested with.
 3. Which internal system is the pilot for step 6.
 
 ## Lessons that shape the work
