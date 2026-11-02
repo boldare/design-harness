@@ -1,6 +1,6 @@
 # Plan: split the workflow from the Atlas design system
 
-Status: draft for review (16.10.2026, decisions added 22.10.2026; decisions 1 and 4 revised, decision 8 and step 1c added 02.11.2026). Step 0 and step 1 done: baseline and branch evals in `docs/evals.md`, the swap in PR #3, the first component built through it (Slider) in PR #5. Owner: Grzegorz Łotysz.
+Status: draft for review (16.10.2026, decisions added 22.10.2026; decisions 1, 3 and 4 revised, decision 8 and step 1c added 02.11.2026). Step 0 and step 1 done: baseline and branch evals in `docs/evals.md`, the swap in PR #3, the first component built through it (Slider) in PR #5. Owner: Grzegorz Łotysz.
 
 ## Why
 
@@ -10,8 +10,8 @@ The BAT demo (15.10.2026) showed that the way of working is what clients buy: on
 
 1. **Core of the harness:** the flow (spec, approval, tokens, design, code, states, report) and the contracts between its steps (step 2). The tools are adapters behind those contracts, as frameworks are in describe-me: Figma for the library, describe-me for the states and Live, React for the code, Claude Design for the optional output. What a project gets is still an ordered Figma library and a Live preview; CI and npm are packaging.
 2. **Storybook is replaced by describe-me**, on Atlas, before the split (step 1 below). Tests are the stories; Foundations reads the tokens from the CSS the tests load; Live mounts a component or screen for the designer. The swap removes `src/storybook/*` and `.storybook/*` from the inventory, so the split moves less.
-3. **Stack default is React** with CSS custom properties, as today. Other stacks are profiles the manifest selects; none is built until a project needs it. A DOM adapter for vanilla JS has been ordered on the describe-me side.
-4. **Pseudo-states:** Live shows real `:focus-visible` and `:hover`, and since describe-me 0.12 recorded frames do too (02.11.2026): a test that hovers or tabs records `:hover`, `:focus`, `:focus-visible` and `:focus-within` in the frame's snapshot, never in the page. A hover or focus state in a spec is a test that makes the gesture; components put nothing into the DOM for it. PR #3 still pins describe-me 0.11 and says frames cannot show these states, so it moves to 0.12 first.
+3. **React is the stack** (revised 02.11.2026): React on the web with CSS custom properties, as today, and the only stack the workflow supports for now. It is the default adapter behind the tokens and code contracts (step 2), and the manifest has no `stack` key until a second stack is built (decision 8). React Native is another stack, not a variant of this one. Questions that only another stack raises, such as a Claude Design output without React, wait until that stack is needed.
+4. **Pseudo-states:** Live shows real `:focus-visible` and `:hover`, and since describe-me 0.12 recorded frames do too (02.11.2026): a test that hovers or tabs records `:hover`, `:focus`, `:focus-visible` and `:focus-within` in the frame's snapshot, never in the page. A hover or focus state in a spec is a test that makes the gesture; components put nothing into the DOM for it. PR #3 moved to describe-me 0.12.1 before its merge.
 5. **Claude Design stays as an optional output.** It may be dropped later; nothing in the workflow depends on it.
 6. **Distribution:** like rollout. The repo is the skill, cloned into `~/.claude/skills/design-harness`, with the scripts in `bin/`. npm packaging, and a possible SaaS for both design-harness and rollout, come after the flow is proven on a second system.
 7. **Atlas stays in this repo** as `systems/atlas/`, the reference system and the test bed. Web React only for now.
@@ -34,7 +34,6 @@ A project plugs its design system into the workflow through one manifest. Atlas 
 
 ```yaml
 name: Atlas
-stack: react              # profile: code rules, lint, test adapter, Claude Design builder
 paths:
   tokens: tokens/tokens.json
   foundations: docs/foundations.md
@@ -117,7 +116,7 @@ Rename the skill from `atlas-design-system` to `design-harness`, with a trigger 
 Done when: `npm run` commands and the demo flow work as before, from the new layout, and `git clone` of `harness/` into `~/.claude/skills/design-harness` is the install.
 
 ### 6. Pilot on a second system
-Onboard one real system (internal first). It will find what is still Atlas-shaped. Most Boldare projects work in the client's Figma, so the pilot likely needs an import step: read the Figma variables and components, or the CSS the project already has (describe-me's Foundations reader already parses custom properties, Tailwind `@theme` and MUI themes), into a draft `tokens.json` and `library.json` that a designer then annotates with usage notes.
+Onboard one real system on React for the web (decision 3), internal first. It will find what is still Atlas-shaped. Most Boldare projects work in the client's Figma, so the pilot likely needs an import step: read the Figma variables and components, or the CSS the project already has (describe-me's Foundations reader already parses custom properties, Tailwind `@theme` and MUI themes), into a draft `tokens.json` and `library.json` that a designer then annotates with usage notes.
 Done when: the pilot team ships one component and one screen through the workflow, and every gap it found is either fixed or listed.
 
 ### 7. CI quality gates
@@ -145,15 +144,15 @@ Step 1b and this section move to issues when the harness has its own repo (step 
 | `scripts/build-claude-design.mjs` | Workflow | 24 Atlas mentions today, including the `window.Atlas` global; optional output |
 | `scripts/claude-design/brand-book.md`, `cover.html`, `previews/*` | System | Per-system content the build reads |
 | `src/storybook/*`, `.storybook/*`, `storybook-static/` | Removed in step 1 | `respond()` stays as a test helper in the workflow; frame size from the manifest |
-| `vitest.config.ts`, test setup, axe helper | Workflow | New in step 1; a profile per stack |
+| `vitest.config.ts`, test setup, axe helper | Workflow | New in step 1; React only (decision 3) |
 | `tokens/`, `docs/foundations.md`, `components/`, `screens/`, `figma/library.json`, `src/components`, `src/screens`, `src/foundations` | System | |
 | `docs/claude-design.md` | Split | How the sync works to the workflow, the artifact link to the system |
 
 ## Open questions
 
-1. Does the claude.ai Design System artifact type accept components without React? It decides whether the vanilla profile can have a Claude Design output. Check before promising vanilla to any project.
-2. describe-me features the workflow waits for: the DOM adapter, filed on the describe-me side. Pseudo-states in recorded frames shipped in 0.12 (decision 4). Pin the version the workflow is tested with.
-3. Which internal system is the pilot for step 6.
+1. Which internal system is the pilot for step 6.
+
+The workflow waits for no describe-me feature: pseudo-states in recorded frames shipped in 0.12 (decision 4), and the DOM adapter for vanilla JS matters only with another stack (decision 3). The workflow is tested with 0.12.1, and `^0.12.1` keeps 0.13 out until it is tested.
 
 ## Lessons that shape the work
 
