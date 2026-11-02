@@ -15,6 +15,7 @@ Every component has a folder with a `README.md`: what it is for, its anatomy, pr
 | [Checkbox](Checkbox/README.md) | Independent yes / no choices, consents | Icon |
 | [Radio](Radio/README.md) | One choice from a short visible list | - |
 | [Switch](Switch/README.md) | A setting that takes effect immediately | - |
+| [Slider](Slider/README.md) | A value on a range, such as brightness, that takes effect immediately | - |
 | [Alert](Alert/README.md) | A message about the whole form or screen | Icon |
 | [AccountCard](AccountCard/README.md) | The signed-in person, with avatar | - |
 | [Logo](Logo/README.md) | The Atlas mark and wordmark | - |

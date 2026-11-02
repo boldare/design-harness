@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Alert } from '../../components/Alert';
-import { RadioGroup } from '../../components/Radio';
+import { Slider } from '../../components/Slider';
 import { Switch } from '../../components/Switch';
 import { TextField } from '../../components/TextField';
 import layout from '../layout.module.css';
@@ -16,11 +16,7 @@ export interface DeviceSettingsProps {
   onSaveName: (name: string) => void;
 }
 
-const brightnessLevels = [
-  { value: 'low', label: 'Low' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'high', label: 'High' },
-];
+const percent = (value: number) => `${value}%`;
 
 /** Settings of a connected device. Every change applies immediately, so there is no save button. */
 export function DeviceSettings({ state = 'connected', onSaveName }: DeviceSettingsProps) {
@@ -28,7 +24,7 @@ export function DeviceSettings({ state = 'connected', onSaveName }: DeviceSettin
   const [savedName, setSavedName] = useState(name);
   const [vibration, setVibration] = useState(true);
   const [deviceLock, setDeviceLock] = useState(false);
-  const [brightness, setBrightness] = useState('medium');
+  const [brightness, setBrightness] = useState(50);
   const disconnected = state === 'disconnected';
 
   function saveName() {
@@ -76,10 +72,13 @@ export function DeviceSettings({ state = 'connected', onSaveName }: DeviceSettin
 
       <section className={layout.section}>
         <h2 className={layout.heading}>Light</h2>
-        <RadioGroup
-          legend="LED brightness"
-          options={brightnessLevels}
+        <Slider
+          label="LED brightness"
+          min={10}
+          max={100}
+          step={10}
           value={brightness}
+          formatValue={percent}
           onChange={setBrightness}
           disabled={disconnected}
         />

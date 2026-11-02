@@ -19,7 +19,7 @@ Atlas speaks to the person holding the device as "you" and names itself in the t
 - Use semantic tokens in screens and components. The primitives (`neutral.50`, `blue.600`, `red.700` and the rest) exist only so semantic tokens can point at them per theme.
 - Put screens on `surface.page`. Anything that sits on the page (fields, cards, the account card, menus) uses `surface.raised`.
 - Set text in `text.primary`. Supporting text, hints and quiet buttons use `text.secondary`. Both hold at least 6:1 on `surface.page` in both themes.
-- Fill the one primary button on a screen, and every selected control (checkbox, radio, switch on), with `action.primary`. Text and marks on it use `text.on-action`.
+- Fill the one primary button on a screen, and every selected control (checkbox, radio, switch on, the slider thumb and the track up to it), with `action.primary`. Text and marks on it use `text.on-action`.
 - Keep `accent` for text links and the focus ring.
 - Outline cards and draw dividers with `border.subtle`, which is decorative. Inputs and unselected controls use `border.control`, which holds 3:1 on `surface.raised`.
 - Show errors with the danger set: `danger.text` for messages, error icons and the border of an invalid field; `danger.surface` for the alert fill and the halo around an invalid field; `danger.border` for the alert outline. An error is always written out, never shown by colour alone.
@@ -40,11 +40,11 @@ Atlas speaks to the person holding the device as "you" and names itself in the t
 - Inside components: `space.1` between a title and its description, `space.2` from label to field and from icon to text, `space.3` inside banners and cards, `space.4` as the padding of fields, banners and cards.
 - On a screen: `space.5` between fields, `space.6` for the side margins, `space.8` from intro to form and between form sections, `space.10` between screen regions, `space.12` above a bottom action area, `space.14` from header to title on entry screens.
 - Make every text field, select and button `size.control` (52) tall, quiet buttons included. Give anything tappable, text links included, a target of at least `size.target-min` (44).
-- Draw icons at `size.icon-sm` (16) in text-sized elements and `size.icon-md` (20) in controls and banners. Checkbox boxes, radio circles and switch thumbs are `size.mark` (24).
+- Draw icons at `size.icon-sm` (16) in text-sized elements and `size.icon-md` (20) in controls and banners. Checkbox boxes, radio circles, switch thumbs and slider thumbs are `size.mark` (24). A slider track is `size.slider-track` (4) high.
 
 ### Shape, borders and depth
 
-- Round fields, buttons, icon buttons, banners, cards and menus with `radius.md` (12). Use `radius.sm` (6) for the checkbox and other small marks and `radius.full` for avatars, the success mark, switch tracks and radio dots.
+- Round fields, buttons, icon buttons, banners, cards and menus with `radius.md` (12). Use `radius.sm` (6) for the checkbox and other small marks and `radius.full` for avatars, the success mark, switch tracks, radio dots, and slider tracks and thumbs.
 - Draw borders at `stroke.default` (1 px). Surfaces are told apart by `border.subtle` outlines, not by shadows.
 - Use `shadow.overlay` only for menus and popovers that float above content, such as the select menu, and stack them with `layer.overlay`. Nothing else casts a shadow.
 - Give every interactive element `shadow.focus` when it has keyboard focus: a `stroke.focus` gap of `surface.page`, then a `stroke.focus` ring of `accent`. An invalid field adds `shadow.danger-halo` to its `danger.text` border; keyboard focus shows the focus ring instead of the halo, and the danger border stays.
