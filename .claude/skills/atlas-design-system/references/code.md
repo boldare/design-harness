@@ -18,7 +18,7 @@ describe-me records every test as a story: `render` from `vitest-browser-react` 
 - Each test asserts what the README promises for that state: roles and names, `aria-invalid` and the message (`toHaveAccessibleDescription`), `aria-busy`, disabled, focus (`userEvent.tab()` then `toHaveFocus()`). It ends with `await expectAccessible()` from `src/test/a11y.ts`, which runs axe in both themes. Behaviour beyond the states (a flow through a screen, a toggle) gets its own tests. Realistic copy from the spec, never lorem ipsum.
 - Controlled components keep local state in a `Controlled<Name>` wrapper defined in the test file. Never pass a registered component (such as a Link) in the props of such a wrapper: describe-me would name the test after it. Make it inside the wrapper instead.
 - Screens render with `{ wrapper: PhoneFrame }` and answer requests with `respond()` from `src/test/respond.ts`. Both are browser-only, so Live runs them too.
-- Recorded frames cannot show `:hover` or `:focus-visible`; Live in the viewer does. Do not fake them with classes.
+- Recorded frames show `:focus-visible` and `:hover` as the browser had them: a `focus` state ends on `userEvent.tab()`, a hover state on `userEvent.hover()` as the test's last pointer gesture (a click after it ends the hover). Do not fake them with classes or data attributes.
 - Text matchers: `toHaveTextContent` is exact in Vitest; use `toMatchTextContent(/…/)` for a part of the text.
 - A throwaway test (for example one that takes screenshots to check a screen by eye) is fine while working, but remove it and its output before the report. Leave only the tests the spec asks for.
 
