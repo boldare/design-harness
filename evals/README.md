@@ -1,8 +1,8 @@
 # Eval results
 
-The yardstick for every change to the skill (`docs/plans/workflow-split.md`, step 0). The four cases live in `.claude/skills/atlas-design-system/evals/`, the end-to-end script is `scripts/eval-e2e.sh`. Single runs are noisy; these numbers are three runs per case, one at a time, with a no-skill arm for the delta.
+The yardstick for every change to the skill (`docs/plans/workflow-split.md`, step 0). The four cases live in `evals/`, the end-to-end script is `scripts/eval-e2e.sh`. Single runs are noisy; these numbers are three runs per case, one at a time, with a no-skill arm for the delta.
 
-Run them with `claude plugin eval .claude/skills/atlas-design-system --scaffold --allow-tools Write Edit -j 1` from a detached worktree of the commit under test, then `scripts/eval-e2e.sh`.
+Run them with `claude plugin eval . --scaffold --allow-tools Write Edit -j 1` from the root of a detached worktree of the commit under test, then `scripts/eval-e2e.sh`. The runner takes the skill from `.claude-plugin/plugin.json`, so the no-skill arm runs without it loaded. The scaffold copies `examples/atlas/` and the package into the workspace.
 
 ## Baseline: `5a0322b` (before the describe-me swap), 23.10.2026
 

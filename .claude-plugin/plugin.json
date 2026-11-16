@@ -1,0 +1,5 @@
+{
+  "name": "design-harness",
+  "description": "The design-harness skill from packages/design-harness, for claude plugin eval.",
+  "skills": ["./packages/design-harness/skill"]
+}
