@@ -1,6 +1,6 @@
 ---
-name: atlas-design-system
-description: Use for ANY change to how Atlas looks or behaves, so the change stays inside the design system: a new component (for example a range slider or a badge), a new screen or flow (for example a multi-step onboarding), a new state or variant, a change of colour, size, spacing or type on an existing component or screen ("make this button red", "make the field taller"), or a change to tokens. Keeps the spec, tokens, Figma library, code and Claude Design in step, and refuses values that bypass the tokens.
+name: design-harness
+description: Use for ANY change to how the design system looks or behaves, so the change stays inside it: a new component (for example a range slider or a badge), a new screen or flow (for example a multi-step onboarding), a new state or variant, a change of colour, size, spacing or type on an existing component or screen ("make this button red", "make the field taller"), or a change to tokens. Keeps the spec, tokens, Figma library, code and Claude Design in step, and refuses values that bypass the tokens.
 ---
 
 # Design system workflow
@@ -48,16 +48,16 @@ State in two or three lines what is being added, which existing components it re
 Show the spec and any token proposals and wait for the designer's go-ahead, unless the request says to go straight through. This is the moment where a person decides; everything after it is execution.
 
 ### 3. Tokens (`tokens`)
-Add approved tokens to the tokens file with usage notes, record them in the foundations, run `npm run tokens`, and create the matching Figma variables (`references/figma.md`, "Variables").
+Add approved tokens to the tokens file with usage notes, record them in the foundations, run `npm run tokens`, and create the matching Figma variables (`../adapters/figma/figma.md`, "Variables").
 
 ### 4. Figma (`figma`)
-Build the component or screen in the system's Figma file following `references/figma.md`: every fill, stroke, padding, gap, radius, size and opacity bound to a variable, every text on one of the system's text styles, every state from the spec as a variant, and a screenshot to check it in every theme.
+Build the component or screen in the system's Figma file following `../adapters/figma/figma.md`: every fill, stroke, padding, gap, radius, size and opacity bound to a variable, every text on one of the system's text styles, every state from the spec as a variant, and a screenshot to check it in every theme.
 
 ### 5. Code (`code`, `states`)
-Implement in `src/` (`paths.src`) following `references/code.md`: the component or screen, a test for every state (the tests are the stories), and the checks passing: `npm run check` (lint:tokens, typecheck, test, check-states) closes `code`, and `check-states` closes `states`.
+Implement in `src/` (`paths.src`) following `../adapters/react/code.md`: the component or screen, a test for every state (the tests are the stories), and the checks passing: `npm run check` (lint:tokens, typecheck, test, check-states) closes `code`, and `check-states` closes `states`.
 
 ### 6. Claude Design (`sync`)
-Re-sync the published design system as described in `docs/claude-design.md`.
+Re-sync the published design system as described in `../adapters/claude-design/claude-design.md`.
 
 ### 7. Review and report (`report`)
 Go through `references/review-checklist.md`. Finish with the change report it defines. If anything in the spec turned out to be unclear while building, fix the spec, not only the output.
