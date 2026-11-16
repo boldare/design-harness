@@ -1,4 +1,4 @@
-// @dsCard group="Selection" height=272
+// @dsCard height=272
 // Checked by State, as in the Switch README. Each switch toggles.
 function row(label, disabled, focus) {
   return {

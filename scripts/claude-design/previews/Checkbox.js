@@ -1,4 +1,4 @@
-// @dsCard group="Selection" height=480
+// @dsCard height=480
 // Checked by State, as in the Checkbox README, with the consent from Atlas sign-up, and a box with a description.
 var consent = {
   label: 'I accept the Atlas terms of use',

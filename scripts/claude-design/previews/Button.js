@@ -1,4 +1,4 @@
-// @dsCard group="Actions" height=376
+// @dsCard height=376
 // Variant by State, as in the Button README. Primary says what is happening while loading; quiet keeps its label.
 var variants = [
   { variant: 'primary', label: 'Sign in', loadingLabel: 'Signing in…' },

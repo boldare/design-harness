@@ -1,4 +1,4 @@
-// @dsCard group="Feedback" height=216
+// @dsCard height=216
 // The Alert with and without its description, as in the Alert story. Only the danger tone exists.
 mount(
   matrix(null, [

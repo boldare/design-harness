@@ -1,4 +1,4 @@
-// @dsCard group="Actions" height=128
+// @dsCard height=128
 // States from the IconButton README, and the password toggle, which names the next action ("Show password").
 function cell(props) {
   return h(Atlas.IconButton, Object.assign({ icon: 'eye', label: 'Show password', onPress: noop }, props));

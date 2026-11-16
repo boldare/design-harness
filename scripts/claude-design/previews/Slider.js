@@ -1,4 +1,4 @@
-// @dsCard group="Selection" height=272
+// @dsCard height=272
 // State rows, as in the Slider README, with LED brightness from DeviceSettings at the minimum, in the middle and at the maximum. Each thumb moves.
 function percent(value) {
   return value + '%';

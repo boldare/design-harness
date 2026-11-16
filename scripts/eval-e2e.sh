@@ -46,7 +46,7 @@ check "tokens build"                             "npm run -s tokens"
 check "lint:tokens (no raw values in CSS)"       "npm run -s lint:tokens"
 check "typecheck"                                "npm run -s typecheck"
 check "tests (the stories, axe in both themes)"  "npm run -s test"
-check "every spec state has a test"              "npm run -s check-states"
+check "every spec state has a test, the sidebar follows the inventory"  "npm run -s check-states"
 check "no hex colours added in src/"             "! { git diff HEAD -- src ':!src/styles/tokens.css' | grep '^+' ; git ls-files -o --exclude-standard src | xargs cat 2>/dev/null; } | grep -qE '#[0-9a-fA-F]{6}\\b'"
 check "new tokens recorded in foundations.md"    "git diff --quiet HEAD -- tokens/tokens.json || ! git diff --quiet HEAD -- docs/foundations.md"
 for f in 'Change:' 'Reused:' 'New:' 'Tokens used:' 'States:' 'Checks:'; do
