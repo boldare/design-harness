@@ -1,7 +1,7 @@
 # Tokens
 
 ## Reading them
-`tokens/tokens.json` holds families: `color` (primitives with one value, semantic tokens with a light and a dark alias), `type` (families and styles), `spacing`, `radius`, `size`, `stroke`, `shadow`, `opacity`, `duration`, `layer`. Each token has a `usage` note. Choose a token by its usage note, not by its value: `space.5` is "between fields in a form", so it is the gap between fields even where `space.4` would look similar.
+`tokens/tokens.json` holds families: `color` (primitives with one value, semantic tokens with an alias per theme, light and dark in Atlas), `type` (families and styles), `spacing`, `radius`, `size`, `stroke`, `shadow`, `opacity`, `duration`, `layer`. Each token has a `usage` note. Choose a token by its usage note, not by its value: `space.5` is "between fields in a form", so it is the gap between fields even where `space.4` would look similar.
 
 ## Names in every output
 | Where | Rule | Example |
