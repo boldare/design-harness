@@ -1,6 +1,6 @@
 # Plan: split the workflow from the Atlas design system
 
-Status: draft for review (16.10.2026, decisions added 22.10.2026; decisions 1, 3, 4, 6 and 7 revised, decision 8 and steps 1c and 5b added 02.11.2026). Step 0 and step 1 done: baseline and branch evals in `docs/evals.md`, the swap in PR #3, the first component built through it (Slider) in PR #5. Step 2 done in `docs/architecture.md`, steps 3 and 4 done (16.11.2026). The code part of step 1c done (16.11.2026). Owner: Grzegorz Łotysz.
+Status: draft for review (16.10.2026, decisions added 22.10.2026; decisions 1, 3, 4, 6 and 7 revised, decision 8 and steps 1c and 5b added 02.11.2026). Step 0 and step 1 done: baseline and branch evals in `evals/README.md`, the swap in PR #3, the first component built through it (Slider) in PR #5. Step 2 done in `docs/architecture.md`, steps 3 and 4 done (16.11.2026). The code part of step 1c done (16.11.2026). Owner: Grzegorz Łotysz.
 
 ## Why
 
@@ -41,7 +41,7 @@ A project plugs its design system into the workflow through one manifest. Atlas 
 ## Steps
 
 ### 0. Baseline
-Run the four evals one at a time (`-j 1`, quiet account) and the first full `scripts/eval-e2e.sh`. Record the results in `docs/evals.md`. This is the yardstick for every later step.
+Run the four evals one at a time (`-j 1`, quiet account) and the first full `scripts/eval-e2e.sh`. Record the results in `evals/README.md`. This is the yardstick for every later step.
 Done when: one clean run of all four evals and the e2e script is recorded.
 
 ### 1. Storybook to describe-me
@@ -77,6 +77,7 @@ Done (16.11.2026): `references/rules.md` holds the core rules, which name roles 
 ### 5. Package and layout
 Rename the skill from `atlas-design-system` to `design-harness`, with a trigger description that does not name Atlas. Move to the layout of `docs/architecture.md`: a pnpm workspace as in describe-me, with the package in `packages/design-harness/` (skill, adapters, CLI, test helpers, the templates `init` writes) and Atlas in `examples/atlas/`, depending on the package with `workspace:*`. The evals stay at the root and their scaffold copies `examples/atlas/`. `design-harness init` writes the skeleton of a system and links the skill into `.claude/skills/`.
 Done when: Atlas's checks and the demo flow work from `examples/atlas/` as before; in an empty repository, the packed package (`pnpm pack`) plus `design-harness init` gives a skill that Claude Code loads and checks that pass; and the package is on npm once publishing is set up.
+Done, the layout (16.11.2026): the repository is a pnpm workspace. `packages/design-harness/` is `@boldare/design-harness` at version 0.0.0, unpublished: the skill, renamed `design-harness` with a description that does not name Atlas, the adapters, `lib/`, and the `design-harness` CLI with four commands (`tokens`, `lint`, `states`, `claude-design`). Atlas is `examples/atlas/`. It depends on the package with `workspace:*`, its scripts call the CLI, and it links the skill from `.claude/skills/design-harness`. Its outputs did not change: the same tests, states and sidebar, `tokens.css` byte for byte, and the same Claude Design files. The evals live in `evals/`, and `claude plugin eval .` loads the skill through `.claude-plugin/plugin.json`. Their scaffold copies `examples/atlas/` and the package. What is left of step 5: the Vitest preset and the `./test` export, with the test setup that still sits in Atlas, then `init` and its templates, and publishing.
 
 ### 5b. Foundations first
 The skill's way into an empty system. It asks for a source (a brand book, the variables and styles of the client's Figma, or the CSS the project has; describe-me's Foundations reader already parses custom properties, Tailwind `@theme` and MUI themes), proposes the tokens with usage notes and the foundations, waits at the `tokens` gate, and then builds the Figma variables, styles and Foundations page. With no source it asks for one; it never invents a look. A new eval covers it: an empty repository and a brand book go in, token proposals and a stop at the gate come out.

@@ -2,22 +2,22 @@
 
 Atlas also exists as a claude.ai Design System artifact, so Claude Design and other agents can build with the same tokens and components as Figma and code.
 
-- Artifact: [Atlas](https://claude.ai/artifact/1tmtuAJXcgkirZ25hAMPY5), made from the claude.ai "Design System" artifact type (`https://claude.ai/artifact/5M7UeXXcx16TP3vzVFNDzd`). It is private: others can open it only after it is shared from the page's Share menu.
-- This repository is the source of truth. The artifact is generated from it by `scripts/build-claude-design.mjs` and is one more output, next to the Figma library (`figma/library.json`) and the code in `src/`. The scope is the same everywhere: every token in `tokens/tokens.json` and every component in `components/README.md`.
+- Artifact: made from the claude.ai "Design System" artifact type (`https://claude.ai/artifact/5M7UeXXcx16TP3vzVFNDzd`). Its URL is in the system's README (for Atlas, `examples/atlas/README.md`). It is private: others can open it only after it is shared from the page's Share menu.
+- This repository is the source of truth. The artifact is generated from it by `design-harness claude-design`, the build in `adapters/claude-design/` of the package, and is one more output, next to the Figma library (`figma/library.json`) and the code in `src/`. The scope is the same everywhere: every token in `tokens/tokens.json` and every component in `components/README.md`.
 - Edits made on the artifact's page are replaced at the next sync. Change the repository instead.
 
 ## What the script writes
 
-`npm run claude-design` writes `claude-design/project/` (gitignored, never committed) and `claude-design/publish.json`, the file map for the publish call. Every path below is a file of the artifact under `project/`.
+`design-harness claude-design` writes `claude-design/project/` (gitignored, never committed) and `claude-design/publish.json`, the file map for the publish call. Every path below is a file of the artifact under `project/`.
 
 | File | Built from |
 |------|-----------|
 | `tokens.json` | `tokens/tokens.json`, in the list shape the page reads (decisions below) |
-| `README.md` | The brand book: `scripts/claude-design/brand-book.md` (the sources folder is `outputs.claude_design.sources` in `design-harness.yaml`), with the component table and rules from `components/README.md`. The component table is the inventory table without its Group column |
+| `README.md` | The brand book: `claude-design/brand-book.md` (the sources folder is `outputs.claude_design.sources` in `design-harness.yaml`), with the component table and rules from `components/README.md`. The component table is the inventory table without its Group column |
 | `foundations.md` | `docs/foundations.md`, copied as a further section |
 | `components/<Name>/README.md` | `components/<Name>/README.md`, copied as written |
-| `components/<Name>/preview.html` | `scripts/claude-design/previews/<Name>.js`, wrapped with `preview.js` and `preview.css`, the helpers next to the build script. `preview.js` gets the system's global (`window.Atlas`, from the name in `design-harness.yaml`). Line 1 of a preview script is `// @dsCard height=N`, and the build adds the card's group from the Group column of `components/README.md` |
-| `components/Cover/preview.html` | `scripts/claude-design/cover.html` |
+| `components/<Name>/preview.html` | `claude-design/previews/<Name>.js`, wrapped with `preview.js` and `preview.css`, the helpers next to the build script. `preview.js` gets the system's global (`window.Atlas`, from the name in `design-harness.yaml`). Line 1 of a preview script is `// @dsCard height=N`, and the build adds the card's group from the Group column of `components/README.md` |
+| `components/Cover/preview.html` | `claude-design/cover.html` |
 | `components/bundle.js` | `src/index.ts`, built with Vite as one classic script that assigns `window.Atlas` |
 | `components/bundle.css` | The token bridge and type classes (generated from `tokens/tokens.json`), then the CSS Modules from `src/components` |
 | `components/index.d.ts` | The component props, emitted by TypeScript from `src/components` |
@@ -29,9 +29,9 @@ The script stops with a message when the output would not work on the page: a to
 
 Run it after any change to tokens, component specs or component code.
 
-1. `npm run claude-design`. Options: `--out <directory>` (default `claude-design`; may be absolute, because the Artifact tool publishes only from its session's working directory or scratchpad), `--by "<name>"` (defaults to `git config user.name`), `--note "<one line>"`, `--via "<surface>"` (defaults to `design-harness scripts/build-claude-design.mjs`; a pipeline passes a value starting with `CI`, such as `CI · boldare/design-harness@<sha>`, so the page warns that edits there may be overwritten), `--at <ISO date>`.
+1. `design-harness claude-design`, through the system's `claude-design` script. Options: `--out <directory>` (default `claude-design`; may be absolute, because the Artifact tool publishes only from its session's working directory or scratchpad), `--by "<name>"` (defaults to `git config user.name`), `--note "<one line>"`, `--via "<surface>"` (defaults to `design-harness claude-design`; a pipeline passes a value starting with `CI`, such as `CI · boldare/design-harness@<sha>`, so the page warns that edits there may be overwritten), `--at <ISO date>`.
 2. Keep the artifact's own index. Read `project/design-system.json` from the artifact (Artifact tool, `action: "read"`, `path: "project/design-system.json"`), then build again with `--index-from <that saved file>`. The script keeps every key of the current index, its `createdOnFiles` marker included, and changes only `title`, `namespace`, `libraries` and `lastChange`.
-3. Publish with the Artifact tool, using `publish.json` in the output directory: `url` = the artifact URL above, `root` and `file_path` as written there (`file_path` is the index, so it is written last), `files` = its `files` map (it sends `index.d.ts` with `contentType: "text/plain"`, because the store does not serve `.ts` without one). One call carries everything (the system is far below the 255 paths a call allows).
+3. Publish with the Artifact tool, using `publish.json` in the output directory: `url` = the artifact URL in the system's README (for Atlas, `examples/atlas/README.md`), `root` and `file_path` as written there (`file_path` is the index, so it is written last), `files` = its `files` map (it sends `index.d.ts` with `contentType: "text/plain"`, because the store does not serve `.ts` without one). One call carries everything (the system is far below the 255 paths a call allows).
 4. A file the repository no longer produces (a removed component) is deleted by adding `"project/<path>": null` to `files` in the same call.
 5. Read `project/README.md` back from the artifact to confirm the new version is served.
 
