@@ -1,4 +1,4 @@
-// Builds the Atlas design system for Claude Design (a claude.ai "Design System" artifact) from this repository.
+// Builds a design system for Claude Design (a claude.ai "Design System" artifact) from its repository.
 //
 // The repository is the source of truth. This script turns it into the files the artifact keeps under project/,
 // in claude-design/project/ (gitignored), so a re-sync after a token or component change is: run it, publish.
@@ -7,21 +7,37 @@
 //   node scripts/build-claude-design.mjs [--out claude-design (or an absolute directory)] [--by "Name"] [--via "..."] [--note "..."]
 //                                        [--at 2026-10-14T12:00:00Z] [--index-from <design-system.json read from the artifact>]
 //
-// Inputs: tokens/tokens.json, components/README.md, components/<Name>/README.md, docs/foundations.md,
-// src/index.ts (built with Vite), src/foundations/type-samples.ts (type samples), src/styles/fonts.html (font URL)
-// and scripts/claude-design/ (brand book text, preview scripts, cover).
+// Inputs, at the paths of design-harness.yaml: the tokens file, the components inventory and READMEs, the foundations,
+// <src>/index.ts (built with Vite), <src>/foundations/type-samples.ts (type samples, optional), the preview head (font URL)
+// and outputs.claude_design.sources (brand book text, one preview script per component, cover).
+// The preview helpers shared by every card are this script's own, in claude-design/ next to it.
 
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import vm from 'node:vm';
+import { loadSystem } from './lib/manifest.mjs';
 
 const require = createRequire(import.meta.url);
-const root = fileURLToPath(new URL('..', import.meta.url));
-const here = join(root, 'scripts/claude-design');
+const system = loadSystem();
+const { root, name: systemName, paths } = system;
+if (!system.outputs.claude_design) {
+  console.error('build-claude-design: design-harness.yaml has no outputs.claude_design, so this system has no Claude Design output.');
+  process.exit(1);
+}
+// The global the bundle assigns and the previews read (window.Atlas). Derived from the name unless the manifest sets it.
+const namespace = system.outputs.claude_design.namespace ?? systemName.replace(/[^A-Za-z0-9_$]/g, '');
+if (!/^[A-Za-z_$][\w$]*$/.test(namespace)) {
+  console.error(`build-claude-design: "${namespace}" is not a JavaScript name; set outputs.claude_design.namespace in design-harness.yaml.`);
+  process.exit(1);
+}
+const escapedNamespace = namespace.replaceAll('$', '\\$');
+// The preview helpers shared by every system, and the system's own sources (brand book, cover, previews).
+const helpers = fileURLToPath(new URL('./claude-design', import.meta.url));
+const sources = system.at(system.outputs.claude_design.sources);
 const read = (path) => readFileSync(join(root, path), 'utf8');
 
 const { values: args } = parseArgs({
@@ -57,10 +73,10 @@ const git = (...gitArgs) => {
 
 const at = args.at ?? new Date().toISOString();
 if (Number.isNaN(Date.parse(at))) fail(`--at is not an ISO-8601 date: ${at}`);
-const repo = /github\.com[:/](.+?)(?:\.git)?$/.exec(git('remote', 'get-url', 'origin'))?.[1] ?? 'boldare/design-harness';
+const repo = /github\.com[:/](.+?)(?:\.git)?$/.exec(git('remote', 'get-url', 'origin'))?.[1] ?? basename(root);
 const sha = git('rev-parse', '--short', 'HEAD') || 'unknown';
 const branch = git('rev-parse', '--abbrev-ref', 'HEAD') || 'HEAD';
-const inputs = ['tokens', 'components', 'docs/foundations.md', 'src', 'scripts/claude-design', 'scripts/build-claude-design.mjs'];
+const inputs = [paths.tokens, paths.components, paths.foundations, paths.src, system.rel(sources), system.rel(helpers), system.rel(fileURLToPath(import.meta.url))];
 const dirty = git('status', '--porcelain', '--', ...inputs) !== '';
 const ref = `${branch}@${sha}${dirty ? '+uncommitted' : ''}`;
 const by = args.by ?? (git('config', 'user.name') || 'Claude');
@@ -69,29 +85,32 @@ const by = args.by ?? (git('config', 'user.name') || 'Claude');
 // Sources
 // ---------------------------------------------------------------------------------------------------------------
 
-const tokens = JSON.parse(read('tokens/tokens.json'));
-const componentsIndex = read('components/README.md');
+const inventory = `${paths.components}/README.md`;
+const tokens = JSON.parse(read(paths.tokens));
+const componentsIndex = read(inventory);
 
-// The component inventory is the table in components/README.md, in its order.
+// The component inventory is the table in the components README, in its order.
 const componentRows = [...componentsIndex.matchAll(/^\|\s*\[([A-Za-z]+)\]\(\1\/README\.md\)\s*\|([^|]*)\|([^|]*)\|\s*$/gm)].map(
   ([, name, purpose, buildsOn]) => ({ name, purpose: purpose.trim(), buildsOn: buildsOn.trim() }),
 );
 const components = componentRows.map((row) => row.name);
-const exported = [...read('src/index.ts').matchAll(/export \* from '\.\/components\/(\w+)'/g)].map((match) => match[1]);
-if (components.length === 0) fail('no components found in the table of components/README.md');
-for (const name of components) if (!exported.includes(name)) fail(`${name} is in components/README.md but not exported from src/index.ts`);
-for (const name of exported) if (!components.includes(name)) fail(`${name} is exported from src/index.ts but missing from components/README.md`);
+const entry = `${paths.src}/index.ts`;
+const exported = [...read(entry).matchAll(/export \* from '\.\/components\/(\w+)'/g)].map((match) => match[1]);
+if (components.length === 0) fail(`no components found in the table of ${inventory}`);
+for (const name of components) if (!exported.includes(name)) fail(`${name} is in ${inventory} but not exported from ${entry}`);
+for (const name of exported) if (!components.includes(name)) fail(`${name} is exported from ${entry} but missing from ${inventory}`);
 
 const componentRules = /## Rules for every component\n+([\s\S]*?)(?:\n## |\s*$)/.exec(componentsIndex)?.[1].trim();
-if (!componentRules) fail('components/README.md has no "Rules for every component" section');
+if (!componentRules) fail(`${inventory} has no "Rules for every component" section`);
 
-// Google Fonts URL for Geist and Geist Mono, as the test page and the describe-me viewer load them.
-const fontUrl = /href="(https:\/\/fonts\.googleapis\.com\/css2\?[^"]+)"/.exec(read('src/styles/fonts.html'))?.[1];
-if (!fontUrl) fail('no Google Fonts stylesheet found in src/styles/fonts.html');
+// Google Fonts URL of the text styles, as the test page and the describe-me viewer load them.
+const fontUrl = /href="(https:\/\/fonts\.googleapis\.com\/css2\?[^"]+)"/.exec(read(paths.preview_head))?.[1];
+if (!fontUrl) fail(`no Google Fonts stylesheet found in ${paths.preview_head}`);
 
-// Sample copy for each type style, shared with the Type specimen in the viewer.
+// Sample copy for each type style, shared with the Type specimen in the viewer. Without the file, the page's own samples.
+const typeSamplesPath = `${paths.src}/foundations/type-samples.ts`;
 const typeSamples = Object.fromEntries(
-  [...(/const samples[^=]*=\s*\{([\s\S]*?)\n\};/.exec(read('src/foundations/type-samples.ts'))?.[1] ?? '').matchAll(
+  [...(/const samples[^=]*=\s*\{([\s\S]*?)\n\};/.exec(existsSync(join(root, typeSamplesPath)) ? read(typeSamplesPath) : '')?.[1] ?? '').matchAll(
     /^\s*'?([\w-]+)'?:\s*'((?:[^'\\]|\\.)*)',?\s*$/gm,
   )].map(([, style, sample]) => [style, sample.replace(/\\'/g, "'")]),
 );
@@ -150,12 +169,12 @@ const meta = {
   ref,
   package: '.',
   paths: {
-    tokens: ['tokens/tokens.json'],
+    tokens: [paths.tokens],
     fonts: [],
     assets: [],
-    docs: ['docs/foundations.md', 'components/README.md', ...components.map((name) => `components/${name}/README.md`)],
+    docs: [paths.foundations, inventory, ...components.map((name) => `${paths.components}/${name}/README.md`)],
   },
-  components: Object.fromEntries(components.map((name) => [name, `src/components/${name}/${name}.tsx`])),
+  components: Object.fromEntries(components.map((name) => [name, `${paths.src}/components/${name}/${name}.tsx`])),
   synced: at.slice(0, 10),
   ...(tokens.meta?.source && { origin: tokens.meta.source }),
   generatedBy: 'scripts/build-claude-design.mjs',
@@ -253,9 +272,9 @@ const typeVars = typeStyles.flatMap(({ style }) =>
 );
 
 const bridgeCss = [
-  '/* Token bridge, generated from tokens/tokens.json.',
+  `/* Token bridge, generated from ${paths.tokens}.`,
   ' * The page compiles tokens.json into tokens.css with each token name as written (--surface\\.page).',
-  ' * Atlas components read the repository names, "." replaced by "-" (--surface-page). Same values, two names. */',
+  ` * ${systemName} components read the repository names, "." replaced by "-" (--surface-page). Same values, two names. */`,
   ':root, [data-theme] {',
   // A name without a dot (accent) is the same variable on both sides and is left to the page.
   ...bridgedNames.filter((name) => name.includes('.')).map((name) => `  ${repoVar(name)}: var(${pageVar(name)});`),
@@ -264,7 +283,7 @@ const bridgeCss = [
   ...typeVars.map(([name, value]) => `  ${name}: ${value};`),
   '}',
   '',
-  '/* Type utility classes, as in src/styles/tokens.css. */',
+  `/* Type utility classes, as in ${paths.tokens_css}. */`,
   ...typeStyles.map(({ style, family }) =>
     [
       `.type-${style.name} {`,
@@ -282,7 +301,7 @@ const defined = new Set([
   ...typeVars.map(([name]) => name),
 ]);
 // Names starting with --rt- are runtime values a component sets inline from its props (a position, a fraction),
-// by the convention in .claude/skills/atlas-design-system/references/code.md. They are not tokens and are allowed.
+// by the convention in the skill's references/code.md. They are not tokens and are allowed.
 const checkVars = (label, css, local = []) => {
   for (const [, name] of css.matchAll(/var\((--[A-Za-z0-9_-]+)/g)) {
     if (!defined.has(name) && !local.includes(name) && !name.startsWith('--rt-')) fail(`${label} reads ${name}, which no token defines in the preview`);
@@ -290,18 +309,18 @@ const checkVars = (label, css, local = []) => {
 };
 
 // ---------------------------------------------------------------------------------------------------------------
-// Bundle: the real components from src/index.ts, as ONE classic script assigning window.Atlas
+// Bundle: the real components from <src>/index.ts, as ONE classic script assigning window[namespace]
 // ---------------------------------------------------------------------------------------------------------------
 
 const { build } = await import('vite');
 
 // The automatic JSX runtime, shimmed over window.React.createElement (React 18 ships no global jsx-runtime).
 const jsxRuntimeShim = {
-  name: 'atlas-jsx-runtime-shim',
+  name: 'design-harness-jsx-runtime-shim',
   enforce: 'pre',
-  resolveId: (id) => (id === 'react/jsx-runtime' ? '\0atlas-jsx-runtime' : null),
+  resolveId: (id) => (id === 'react/jsx-runtime' ? '\0design-harness-jsx-runtime' : null),
   load: (id) =>
-    id === '\0atlas-jsx-runtime'
+    id === '\0design-harness-jsx-runtime'
       ? [
           "import * as React from 'react';",
           'export const Fragment = React.Fragment;',
@@ -324,7 +343,8 @@ const built = await build({
   css: {
     modules: {
       // Readable, stable class names (atlas-Button-primary) that cannot meet the page's own type classes (.label, .body).
-      generateScopedName: (local, filename) => `atlas-${basename(filename.split('?')[0]).replace(/\.module\.css$/, '')}-${local}`,
+      generateScopedName: (local, filename) =>
+        `${namespace.toLowerCase()}-${basename(filename.split('?')[0]).replace(/\.module\.css$/, '')}-${local}`,
     },
   },
   build: {
@@ -334,7 +354,7 @@ const built = await build({
     sourcemap: false,
     cssCodeSplit: false,
     reportCompressedSize: false,
-    lib: { entry: join(root, 'src/index.ts'), formats: ['iife'], name: 'Atlas', fileName: () => 'bundle.js' },
+    lib: { entry: join(root, entry), formats: ['iife'], name: namespace, fileName: () => 'bundle.js' },
     rollupOptions: {
       external: ['react', 'react-dom'],
       output: { globals: { react: 'React', 'react-dom': 'ReactDOM' } },
@@ -346,33 +366,34 @@ const rollupOutput = (Array.isArray(built) ? built[0] : built).output;
 const bundleCode = rollupOutput.find((item) => item.type === 'chunk')?.code ?? '';
 const componentCss = rollupOutput.find((item) => item.type === 'asset' && item.fileName.endsWith('.css'))?.source?.toString() ?? '';
 
-// Vite writes `var Atlas=...`; the type asks for an explicit window.Atlas.
-if (!/^var Atlas=/.test(bundleCode)) fail('unexpected bundle start (expected "var Atlas=")');
-const bundleHeader = `/* @ds-bundle: ${JSON.stringify({ format: 4, namespace: 'Atlas', components: components.map((name) => ({ name })) })} */`;
-const bundleJs = `${bundleHeader}\n/* Atlas ${ref}, built from src/index.ts by scripts/build-claude-design.mjs. Reads window.React. */\n${bundleCode
-  .replace(/^var Atlas=/, 'window.Atlas=')
+// Vite writes `var <namespace>=...` (var Atlas=); the type asks for an explicit window.<namespace>.
+const bundleStart = new RegExp(`^var ${escapedNamespace}=`);
+if (!bundleStart.test(bundleCode)) fail(`unexpected bundle start (expected "var ${namespace}=")`);
+const bundleHeader = `/* @ds-bundle: ${JSON.stringify({ format: 4, namespace, components: components.map((name) => ({ name })) })} */`;
+const bundleJs = `${bundleHeader}\n/* ${systemName} ${ref}, built from ${entry} by scripts/build-claude-design.mjs. Reads window.React. */\n${bundleCode
+  .replace(bundleStart, () => `window.${namespace}=`)
   .trim()}\n`;
 
 if (/<\/script|<!--/i.test(bundleJs)) fail('bundle.js contains </script or <!--');
 if (!componentCss) fail('Vite produced no component stylesheet');
 
-// Run the bundle once with real React to check it assigns window.Atlas with every component.
+// Run the bundle once with real React to check it assigns window[namespace] with every component.
 const namespaceKeys = (() => {
   const React = require('react');
   const ReactDOM = require('react-dom');
   const sandbox = { window: { React, ReactDOM }, React, ReactDOM };
   vm.runInNewContext(bundleJs, sandbox);
-  const namespace = sandbox.window.Atlas ?? {};
-  for (const name of components) if (typeof namespace[name] !== 'function') fail(`window.Atlas.${name} is missing after running bundle.js`);
-  return Object.keys(namespace);
+  const assigned = sandbox.window[namespace] ?? {};
+  for (const name of components) if (typeof assigned[name] !== 'function') fail(`window.${namespace}.${name} is missing after running bundle.js`);
+  return Object.keys(assigned);
 })();
 
 const bundleCss = [
-  `/* Atlas ${ref}, generated by scripts/build-claude-design.mjs from ${repo}. Do not edit here: change the repository and re-sync. */`,
+  `/* ${systemName} ${ref}, generated by scripts/build-claude-design.mjs from ${repo}. Do not edit here: change the repository and re-sync. */`,
   '',
   bridgeCss,
   '',
-  '/* Component styles: the CSS Modules from src/components. */',
+  `/* Component styles: the CSS Modules from ${paths.src}/components. */`,
   componentCss.trim(),
   '',
 ].join('\n');
@@ -386,8 +407,8 @@ stopIfProblems('bundle');
 // ---------------------------------------------------------------------------------------------------------------
 
 const ts = (await import('typescript')).default;
-const componentFiles = components.map((name) => join(root, `src/components/${name}/${name}.tsx`));
-const program = ts.createProgram([...componentFiles, join(root, 'src/vite-env.d.ts')], {
+const componentFiles = components.map((name) => join(root, `${paths.src}/components/${name}/${name}.tsx`));
+const program = ts.createProgram([...componentFiles, join(root, `${paths.src}/vite-env.d.ts`)], {
   declaration: true,
   emitDeclarationOnly: true,
   jsx: ts.JsxEmit.ReactJSX,
@@ -403,7 +424,7 @@ program.emit(undefined, (fileName, text) => declarations.set(fileName, text), un
 
 const reactTypes = new Set();
 const sections = components.map((name) => {
-  const text = [...declarations].find(([fileName]) => fileName.endsWith(`/src/components/${name}/${name}.d.ts`))?.[1];
+  const text = [...declarations].find(([fileName]) => fileName.endsWith(`/${paths.src}/components/${name}/${name}.d.ts`))?.[1];
   if (!text) {
     fail(`TypeScript emitted no declarations for ${name}`);
     return '';
@@ -421,12 +442,12 @@ const sections = components.map((name) => {
     .join('\n')
     .replaceAll('import("react/jsx-runtime").JSX.Element', 'React.JSX.Element')
     .trim();
-  return `// ${name} (src/components/${name}/${name}.tsx)\n${body}`;
+  return `// ${name} (${paths.src}/components/${name}/${name}.tsx)\n${body}`;
 });
 stopIfProblems('types');
 
 const indexDts = [
-  `// Atlas ${ref}: props of the components on window.Atlas, emitted by TypeScript from src/components.`,
+  `// ${systemName} ${ref}: props of the components on window.${namespace}, emitted by TypeScript from ${paths.src}/components.`,
   '// Generated by scripts/build-claude-design.mjs. Documentation, not type-checked by the page.',
   "import type * as React from 'react';",
   ...(reactTypes.size > 0 ? [`import type { ${[...reactTypes].filter(Boolean).sort().join(', ')} } from 'react';`] : []),
@@ -435,7 +456,7 @@ const indexDts = [
   '',
   'declare global {',
   '  interface Window {',
-  '    Atlas: {',
+  `    ${namespace}: {`,
   ...namespaceKeys.map((key) => `      ${key}: typeof ${key};`),
   '    };',
   '  }',
@@ -448,13 +469,13 @@ const indexDts = [
 // ---------------------------------------------------------------------------------------------------------------
 
 const htmlAttr = (value) => value.replaceAll('&', '&amp;').replaceAll('"', '&quot;');
-const previewCss = readFileSync(join(here, 'preview.css'), 'utf8').trim();
-const previewJs = readFileSync(join(here, 'preview.js'), 'utf8').trim();
-checkVars('scripts/claude-design/preview.css', previewCss, ['--pv-columns']);
+const previewCss = readFileSync(join(helpers, 'preview.css'), 'utf8').trim();
+const previewJs = readFileSync(join(helpers, 'preview.js'), 'utf8').trim().replaceAll('{{namespace}}', namespace);
+checkVars(system.rel(join(helpers, 'preview.css')), previewCss, ['--pv-columns']);
 
 const previews = {};
 for (const name of components) {
-  const path = join(here, 'previews', `${name}.js`);
+  const path = join(sources, 'previews', `${name}.js`);
   let source;
   try {
     source = readFileSync(path, 'utf8');
@@ -493,10 +514,11 @@ for (const name of components) {
   ].join('\n');
 }
 
-const cover = readFileSync(join(here, 'cover.html'), 'utf8').replaceAll('{{font-url}}', htmlAttr(fontUrl));
-checkVars('scripts/claude-design/cover.html', cover);
+const coverPath = join(sources, 'cover.html');
+const cover = readFileSync(coverPath, 'utf8').replaceAll('{{font-url}}', htmlAttr(fontUrl));
+checkVars(system.rel(coverPath), cover);
 
-// Brand book: the text in scripts/claude-design/brand-book.md, with the component table and rules from components/README.md.
+// Brand book: the text in the sources' brand-book.md, with the component table and rules from the components inventory.
 const tokenNames = new Set([...pageTokens.color.tokens, ...listFamilies.flatMap((family) => pageTokens[family].tokens)].map((t) => t.name));
 const styleRefs = new Set(tokens.type.groups.flatMap((group) => group.styles.flatMap((style) => [style.name, `${group.name}/${style.name}`])));
 const familyPrefixes = new Set([...tokenNames].map((name) => name.split('.')[0]));
@@ -516,19 +538,20 @@ const componentsTable = [
   ...componentRows.map((row) => `| ${row.name} | ${row.purpose} | ${row.buildsOn} |`),
 ].join('\n');
 
-const brandBook = readFileSync(join(here, 'brand-book.md'), 'utf8')
+const brandBookPath = join(sources, 'brand-book.md');
+const brandBook = readFileSync(brandBookPath, 'utf8')
   .replaceAll('{{components-table}}', componentsTable)
   .replaceAll('{{component-rules}}', componentRules)
   .replaceAll('{{font-url}}', fontUrl)
   .replaceAll('{{repo}}', repo)
   .replaceAll('{{ref}}', ref);
-if (/\{\{[\w-]+\}\}/.test(brandBook)) fail('scripts/claude-design/brand-book.md has an unknown {{placeholder}}');
-for (const ref of unknownTokenRefs(brandBook)) fail(`scripts/claude-design/brand-book.md names ${ref}, which tokens.json does not define`);
+if (/\{\{[\w-]+\}\}/.test(brandBook)) fail(`${system.rel(brandBookPath)} has an unknown {{placeholder}}`);
+for (const ref of unknownTokenRefs(brandBook)) fail(`${system.rel(brandBookPath)} names ${ref}, which tokens.json does not define`);
 
 // The component READMEs are copied as written; a name they use that tokens.json lacks is reported, not fixed here.
-const componentReadmes = Object.fromEntries(components.map((name) => [name, read(`components/${name}/README.md`)]));
+const componentReadmes = Object.fromEntries(components.map((name) => [name, read(`${paths.components}/${name}/README.md`)]));
 for (const [name, text] of Object.entries(componentReadmes)) {
-  for (const ref of unknownTokenRefs(text)) console.warn(`note: components/${name}/README.md names ${ref}, which tokens.json does not define`);
+  for (const ref of unknownTokenRefs(text)) console.warn(`note: ${paths.components}/${name}/README.md names ${ref}, which tokens.json does not define`);
 }
 
 for (const text of [brandBook, ...Object.values(previews), cover]) {
@@ -556,14 +579,14 @@ if (args['index-from']) {
   // Re-sync: keep every key of the artifact's current index and its marker; change only what this build owns.
   const current = JSON.parse(readFileSync(args['index-from'], 'utf8'));
   if (!current.createdOnFiles && !current.convertedFrom) fail(`${args['index-from']} has no createdOnFiles or convertedFrom marker`);
-  index = { ...current, title: 'Atlas', namespace: 'Atlas', libraries, lastChange };
+  index = { ...current, title: systemName, namespace, libraries, lastChange };
 } else {
   index = {
     v: 3,
     layout: 'files',
     createdOnFiles: { v: 1, at },
-    title: 'Atlas',
-    namespace: 'Atlas',
+    title: systemName,
+    namespace,
     libraries,
     sections: {},
     groups: [],
@@ -587,7 +610,7 @@ rmSync(projectDir, { recursive: true, force: true });
 const files = {
   'tokens.json': `${JSON.stringify(pageTokens, null, 2)}\n`,
   'README.md': brandBook.endsWith('\n') ? brandBook : `${brandBook}\n`,
-  'foundations.md': read('docs/foundations.md'),
+  'foundations.md': read(paths.foundations),
   'components/bundle.js': bundleJs,
   'components/bundle.css': bundleCss,
   'components/index.d.ts': indexDts,
