@@ -33,7 +33,7 @@ The skill runs seven steps. A gate closes each one; `human` is where the skill s
 | `tokens` | 3. Tokens | human, only with new tokens | Approved tokens in the tokens file and the foundations, `design-harness tokens` run |
 | `figma` | 4. Figma | auto | A screenshot in both themes; the sections in the order of the inventory (step 1c) |
 | `code` | 5. Code | auto | `npm run check` |
-| `states` | 5. Code | auto | `design-harness states`: every state in a spec has a recorded test |
+| `states` | 5. Code | auto | `design-harness states`: every state in a spec has a recorded test, and the recorded sidebar follows the inventory |
 | `sync` | 6. Claude Design | auto | The build and the publish |
 | `report` | 7. Review and report | human | The change report |
 
@@ -49,11 +49,11 @@ What the core reads, in what shape, and who writes it. The paths are relative to
 |---|---|---|---|---|
 | Tokens | `tokens/tokens.json` | `name`, `version`, `meta`, then one family per kind (`color`, `type`, `spacing`, …), each with tokens of `name`, `value` (or a value per theme) and `usage`; text styles in `type.groups[].styles[]` | `init` (empty), then the skill after an approved proposal | Every adapter, the raw-value lint |
 | Specs | `components/<Name>/README.md`, `screens/<Name>/README.md` | The sections of the templates in the skill; the states in `## States`, as the first column of its table or the backticked names in its first sentence | The skill, approved by the designer | The skill, the states check, Claude Design |
-| Inventory | `components/README.md`, `screens/README.md` | A table whose first column links `[Name](Name/README.md)`, in library order; a Group column from step 1c; "Rules for every component" below it | `init` (empty), then the skill | Every adapter: the order and the groups |
+| Inventory | `components/README.md`, `screens/README.md` | A table whose first column links `[Name](Name/README.md)` and whose second column, Group, names the row's group. The rows of a group stand together. The table order is the library order, of the groups and of the rows in each group. "Rules for every component" below it | `init` (empty), then the skill | Every adapter, through the inventory reader: the order and the groups |
 | System rules | `docs/rules.md` | Requirements on top of the core rules, one per line (step 4) | The team | The skill, the review checklist |
 | Foundations | `docs/foundations.md` | Where values came from and what was decided; every token decision recorded | The skill, with each new token | The skill, Claude Design |
 | Figma library | `figma/library.json` | The file key and URL, the naming rules, the variable collections with ids and modes, the pages, the components with their node ids, notes | The Figma adapter, after each change | The skill, to find nodes |
-| States record | `.describe-me/manifest.json` | `modules[].id`, `modules[].tests[].name`, from step 1c `modules[].group`; a test file `<src>/components/<Name>/<Name>.test.tsx` with `describe('<Name>')` and one `it('<state>')` per state | The describe-me adapter, on every test run | The states check |
+| States record | `.describe-me/manifest.json` | `modules[].id`, `modules[].tests[].name`, `modules[].group` and `sidebar.groups`. A test file `<src>/components/<Name>/<Name>.test.tsx` with `describe('<Name>')` and one `it('<state>')` per state | The describe-me adapter, on every test run | The states check |
 | Checks | `package.json` | Scripts `tokens`, `lint:tokens`, `typecheck`, `test`, `check-states` and `check`, calling the CLI | `init` | The `code` gate, CI |
 | Report | the skill's last message | The change report in the review checklist | The skill | The reviewer |
 
@@ -66,11 +66,11 @@ All four are the defaults and, for now, the only ones (decisions 3 and 8 of the 
 | Adapter | Implements | Holds |
 |---|---|---|
 | `react/` | Tokens for the platform, code | `code.md`; the token build (`tokens.json` to CSS custom properties, `surface.page` to `--surface-page`); the raw-value lint for CSS Modules; the test helpers (setup, axe in both themes, the phone frame sized from the manifest, the layout classes, `respond()`), exported as `@boldare/design-harness/test`; the Vitest preset, exported as `@boldare/design-harness/vitest` |
-| `describe-me/` | States and preview | The plugin options (fonts from the system's preview head, the sidebar groups from the inventory from step 1c); the reader of `.describe-me/manifest.json` for the states check. Tested with describe-me 0.12.1, a dependency of the package |
+| `describe-me/` | States and preview | The plugin options: fonts from the system's preview head, and the sidebar groups from the inventory. The reader of `.describe-me/manifest.json` for the states and order check. Tested with describe-me 0.12.1, a dependency of the package |
 | `figma/` | Design | `figma.md`, the method: variables, text and effect styles, components with variants, screens from instances, the screenshot check. Uses the Figma MCP |
 | `claude-design/` | Output (optional) | `claude-design.md`, how the sync works; the build; the preview helpers shared by every card. The global is `window[name]`, not `window.Atlas` |
 
-The states check has two halves: the comparison of specs with recorded states is core, and the reader of the manifest is the describe-me adapter's. Until a second adapter exists they stay in one file in `describe-me/`.
+The states check has two halves: the comparison of specs with recorded states is core, and the reader of the manifest is the describe-me adapter's. Until a second adapter exists they stay in one file in `describe-me/`. The same file also holds the order check, which compares the recorded sidebar with the inventory.
 
 ## The manifest
 
@@ -131,6 +131,7 @@ Today's path, its path after step 5, and its layer. `skill:` is short for `.clau
 | `skill:references/figma.md` | `pkg/adapters/figma/figma.md`; the file key and ids stay only in `library.json` | Figma |
 | `skill:evals/*` | `evals/*`, not published; the scaffold copies `examples/atlas/` | Core |
 | `scripts/eval-e2e.sh` | `scripts/eval-e2e.sh`, not published | Core |
+| `scripts/lib/manifest.mjs`, `inventory.mjs` and their `.d.mts` | `pkg/lib/` | Core |
 | `scripts/build-tokens.mjs`, `check-raw-values.mjs` | `pkg/adapters/react/` | React |
 | `scripts/check-states.mjs` | `pkg/adapters/describe-me/` | describe-me |
 | `scripts/build-claude-design.mjs`, `scripts/claude-design/preview.js`, `preview.css` | `pkg/adapters/claude-design/` | Claude Design |
@@ -161,6 +162,6 @@ claude        # "Start the system from the brand book in docs/brand-book.pdf"
 ## Not decided here
 
 - Which rules are core and which are Atlas's: step 4.
-- How the inventory sets the order in the three outputs: step 1c.
+- How the figma gate checks the sections of the Components and Screens pages against the inventory: what remains of step 1c.
 - The release process (versions, changelog, publishing from CI): the owner sets it up.
 - The CI action for a system repository: step 7.
