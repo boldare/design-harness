@@ -1,6 +1,6 @@
 # Component spec template
 
-Every component README has these sections, in this order. `components/TextField/README.md` and `components/Switch/README.md` are good models.
+Every component README has these sections, in this order. Two existing components of the system are the models (in Atlas, `components/TextField/README.md` and `components/Switch/README.md`).
 
 ```
 # <Name>
@@ -15,7 +15,7 @@ Every component README has these sections, in this order. `components/TextField/
 <Only what a screen needs to control. Names match existing components (label, description, disabled, error, onChange).>
 
 ## Variants and states (Figma: <Axis> × <Axis>)
-<Every state from rules.md that applies, and what changes in each, by token.>
+<Every state from the rules that applies, and what changes in each, by token.>
 
 ## Tokens
 <Every token used, in one line. Review checks this list against Figma bindings and CSS.>
@@ -28,6 +28,6 @@ Every component README has these sections, in this order. `components/TextField/
 ```
 
 ## Before you write it
-- List which existing components it composes (Icon, IconButton, the TextField shell, the message row).
+- List which existing components it composes (in Atlas, for example Icon, IconButton, the TextField shell, the message row).
 - Check the closest existing component for naming: an on / off control is `checked`, a choice is `selected`, a field problem is `error`.
 - If it needs a value no token covers, write the proposal now, not later.

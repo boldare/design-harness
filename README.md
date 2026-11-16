@@ -4,6 +4,7 @@ The Atlas design system, kept as files that people and agents read and change in
 
 - `tokens/tokens.json` is the source of truth: colours (light and dark), type, spacing, radius, size, stroke and shadow. Every token carries a usage note.
 - `docs/foundations.md` records where each value came from and the decisions behind it.
+- `docs/rules.md` holds the Atlas rules on top of the skill's core rules: the tokens for focus, disabled, errors and touch size, the frame, the text styles, the icon and logo geometry, the persona.
 - `figma/library.json` maps tokens to the Figma library ([design-harness](https://www.figma.com/design/XHhJ2l7C09Si5uQu3EBmUH), Boldare S.A. / Gildia designu): file and collection ids, and the naming rules from token to Figma variable, CSS variable and Android name.
 - `docs/claude-design.md` covers the same system in Claude Design ([Atlas](https://claude.ai/artifact/1tmtuAJXcgkirZ25hAMPY5)), generated from this repository by `npm run claude-design`.
 

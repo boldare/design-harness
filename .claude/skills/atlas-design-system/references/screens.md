@@ -1,6 +1,6 @@
 # Screens
 
-A screen is a composition. It adds layout and copy, never new visual values. Read `screens/README.md` for the layout rules (margins, title block, gaps between fields and sections) and use `screens/SignIn/README.md` as the model spec.
+A screen is a composition. It adds layout and copy, never new visual values. Read the screens inventory (`screens/README.md` under `paths.screens`) for the layout rules (frame, margins, title block, gaps between fields and sections) and use one existing screen spec as the model (in Atlas, `screens/SignIn/README.md`). A system without `frame` in the manifest has no screens.
 
 ## Spec sections
 1. **Layout**: the blocks top to bottom, each with the component, its variant and its copy, and the gap to the previous block by token.
@@ -14,4 +14,4 @@ A screen is a composition. It adds layout and copy, never new visual values. Rea
 - Copy says what the step is for, in the title, before asking for anything.
 
 ## Copy
-Realistic, short, in the voice of the existing screens: say what happened and what to do. No lorem ipsum, no placeholder names other than the Atlas persona (Anna Kowalska, anna.kowalska@example.com, device "Atlas One").
+Realistic, short, in the voice of the existing screens: say what happened and what to do. No lorem ipsum; placeholder names only from the persona in the system's rules.

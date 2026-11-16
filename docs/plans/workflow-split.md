@@ -1,6 +1,6 @@
 # Plan: split the workflow from the Atlas design system
 
-Status: draft for review (16.10.2026, decisions added 22.10.2026; decisions 1, 3, 4, 6 and 7 revised, decision 8 and steps 1c and 5b added 02.11.2026). Step 0 and step 1 done: baseline and branch evals in `docs/evals.md`, the swap in PR #3, the first component built through it (Slider) in PR #5. Step 2 done in `docs/architecture.md`, step 3 done (16.11.2026). Owner: Grzegorz Łotysz.
+Status: draft for review (16.10.2026, decisions added 22.10.2026; decisions 1, 3, 4, 6 and 7 revised, decision 8 and steps 1c and 5b added 02.11.2026). Step 0 and step 1 done: baseline and branch evals in `docs/evals.md`, the swap in PR #3, the first component built through it (Slider) in PR #5. Step 2 done in `docs/architecture.md`, steps 3 and 4 done (16.11.2026). Owner: Grzegorz Łotysz.
 
 ## Why
 
@@ -71,6 +71,7 @@ Done (16.11.2026): `scripts/lib/manifest.mjs` finds the manifest from the workin
 ### 4. Core rules and system rules
 Split `references/rules.md` into core rules (every value from a token, states, focus, touch size, themes, contrast, reuse, spec before build, approval gates, report) and Atlas rules (390 × 844 frames, Atlas text styles, Logo and Icon geometry). The skill reads the core rules from itself and the system rules from the path in the manifest. Same for `figma.md` (the file key and node ids stay only in `figma/library.json`) and `review-checklist.md`. The gates list drives the workflow section of SKILL.md.
 Done when: no Atlas name is left in the skill except in examples, and the evals pass as in step 0.
+Done (16.11.2026): `references/rules.md` holds the core rules, which name roles (the focus token, the disabled opacity, the minimum target), and `docs/rules.md` the Atlas rules, which name the tokens for them and add the frame, the text styles, the icon and logo geometry and the persona. `figma.md` reads the file, collections and naming from `figma/library.json` and loads the fonts of the text styles. SKILL.md reads the manifest first, uses its paths, and runs the seven steps as gates, with the gates the manifest adds and the outputs it leaves out. The skill's name and description still say Atlas; step 5 renames it.
 
 ### 5. Package and layout
 Rename the skill from `atlas-design-system` to `design-harness`, with a trigger description that does not name Atlas. Move to the layout of `docs/architecture.md`: a pnpm workspace as in describe-me, with the package in `packages/design-harness/` (skill, adapters, CLI, test helpers, the templates `init` writes) and Atlas in `examples/atlas/`, depending on the package with `workspace:*`. The evals stay at the root and their scaffold copies `examples/atlas/`. `design-harness init` writes the skeleton of a system and links the skill into `.claude/skills/`.
