@@ -3,7 +3,7 @@
 
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { loadSystem } from './lib/manifest.mjs';
+import { loadSystem } from '../../lib/manifest.mjs';
 
 const system = loadSystem();
 

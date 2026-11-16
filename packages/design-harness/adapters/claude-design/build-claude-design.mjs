@@ -2,16 +2,16 @@
 //
 // The repository is the source of truth. This script turns it into the files the artifact keeps under project/,
 // in claude-design/project/ (gitignored), so a re-sync after a token or component change is: run it, publish.
-// What the artifact is, how to publish and every format decision: docs/claude-design.md.
+// What the artifact is, how to publish and every format decision: claude-design.md, next to this script.
 //
-//   node scripts/build-claude-design.mjs [--out claude-design (or an absolute directory)] [--by "Name"] [--via "..."] [--note "..."]
-//                                        [--at 2026-10-14T12:00:00Z] [--index-from <design-system.json read from the artifact>]
+//   design-harness claude-design [--out claude-design (or an absolute directory)] [--by "Name"] [--via "..."] [--note "..."]
+//                                [--at 2026-10-14T12:00:00Z] [--index-from <design-system.json read from the artifact>]
 //
 // Inputs, at the paths of design-harness.yaml: the tokens file, the inventory (each card's group and the order of the
 // components), the component READMEs, the foundations, <src>/index.ts (built with Vite), <src>/foundations/type-samples.ts
 // (type samples, optional), the preview head (font URL) and outputs.claude_design.sources (brand book text, one preview
 // script per component, cover).
-// The preview helpers shared by every card are this script's own, in claude-design/ next to it.
+// The preview helpers shared by every card are this script's own, next to it.
 
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
@@ -20,8 +20,8 @@ import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import vm from 'node:vm';
-import { readInventory } from './lib/inventory.mjs';
-import { loadSystem } from './lib/manifest.mjs';
+import { readInventory } from '../../lib/inventory.mjs';
+import { loadSystem } from '../../lib/manifest.mjs';
 
 const require = createRequire(import.meta.url);
 const system = loadSystem();
@@ -38,7 +38,7 @@ if (!/^[A-Za-z_$][\w$]*$/.test(namespace)) {
 }
 const escapedNamespace = namespace.replaceAll('$', '\\$');
 // The preview helpers shared by every system, and the system's own sources (brand book, cover, previews).
-const helpers = fileURLToPath(new URL('./claude-design', import.meta.url));
+const helpers = fileURLToPath(new URL('.', import.meta.url));
 const sources = system.at(system.outputs.claude_design.sources);
 const read = (path) => readFileSync(join(root, path), 'utf8');
 
@@ -46,7 +46,7 @@ const { values: args } = parseArgs({
   options: {
     out: { type: 'string', default: 'claude-design' },
     by: { type: 'string' },
-    via: { type: 'string', default: 'design-harness scripts/build-claude-design.mjs' },
+    via: { type: 'string', default: 'design-harness claude-design' },
     note: { type: 'string' },
     at: { type: 'string' },
     'index-from': { type: 'string' },
@@ -300,7 +300,7 @@ const defined = new Set([
   ...typeVars.map(([name]) => name),
 ]);
 // Names starting with --rt- are runtime values a component sets inline from its props (a position, a fraction),
-// by the convention in the skill's references/code.md. They are not tokens and are allowed.
+// by the convention in the React adapter's code.md. They are not tokens and are allowed.
 const checkVars = (label, css, local = []) => {
   for (const [, name] of css.matchAll(/var\((--[A-Za-z0-9_-]+)/g)) {
     if (!defined.has(name) && !local.includes(name) && !name.startsWith('--rt-')) fail(`${label} reads ${name}, which no token defines in the preview`);

@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-react';
 import { userEvent } from 'vitest/browser';
-import { expectAccessible } from '../../test/a11y';
-import layout from '../../test/layout.module.css';
+import { expectAccessible } from '@boldare/design-harness/adapters/react/test/a11y';
+import layout from '@boldare/design-harness/adapters/react/test/layout.module.css';
 import { Link } from '../Link';
 import { TextField, type TextFieldProps } from './TextField';
 

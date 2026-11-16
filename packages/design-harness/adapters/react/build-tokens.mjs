@@ -3,7 +3,7 @@
 
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { loadSystem } from './lib/manifest.mjs';
+import { loadSystem } from '../../lib/manifest.mjs';
 
 const system = loadSystem();
 const source = system.at(system.paths.tokens);

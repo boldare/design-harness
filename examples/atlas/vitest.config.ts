@@ -5,8 +5,8 @@ import react from '@vitejs/plugin-react';
 import { playwright } from '@vitest/browser-playwright';
 import { defineConfig } from 'vitest/config';
 import { searchForWorkspaceRoot } from 'vite';
-import { readInventory, sidebarGroups } from './scripts/lib/inventory.mjs';
-import { loadSystem } from './scripts/lib/manifest.mjs';
+import { readInventory, sidebarGroups } from '@boldare/design-harness/lib/inventory.mjs';
+import { loadSystem } from '@boldare/design-harness/lib/manifest.mjs';
 
 // The web fonts of the Atlas text styles. The test page loads them in src/test/setup.ts; every replayed frame gets them here.
 const previewHead = readFileSync(new URL('./src/styles/fonts.html', import.meta.url), 'utf8');

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { render } from 'vitest-browser-react';
-import { expectAccessible } from '../../test/a11y';
-import layout from '../../test/layout.module.css';
+import { expectAccessible } from '@boldare/design-harness/adapters/react/test/a11y';
+import layout from '@boldare/design-harness/adapters/react/test/layout.module.css';
 import { Icon, iconNames, type IconSize } from './Icon';
 
 // The whole set at each size. The spinner turns once per duration.spin.

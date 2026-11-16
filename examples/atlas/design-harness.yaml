@@ -12,4 +12,4 @@ paths:
 frame: { width: 390, height: 844 }     # the phone mockup of screens/README.md
 outputs:
   figma: { library: figma/library.json }
-  claude_design: { sources: scripts/claude-design }   # brand book, cover, one preview per component
+  claude_design: { sources: claude-design }   # brand book, cover, one preview per component

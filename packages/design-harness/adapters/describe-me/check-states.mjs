@@ -5,8 +5,8 @@
 
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, posix } from 'node:path';
-import { readInventory, sidebarGroups } from './lib/inventory.mjs';
-import { loadSystem } from './lib/manifest.mjs';
+import { readInventory, sidebarGroups } from '../../lib/inventory.mjs';
+import { loadSystem } from '../../lib/manifest.mjs';
 
 const system = loadSystem();
 const inventory = readInventory(system);
