@@ -1,6 +1,6 @@
 # Plan: split the workflow from the Atlas design system
 
-Status: draft for review (16.10.2026, decisions added 22.10.2026; decisions 1, 3, 4, 6 and 7 revised, decision 8 and steps 1c and 5b added 02.11.2026). Step 0 and step 1 done: baseline and branch evals in `docs/evals.md`, the swap in PR #3, the first component built through it (Slider) in PR #5. Step 2 proposed in `docs/architecture.md`. Owner: Grzegorz Łotysz.
+Status: draft for review (16.10.2026, decisions added 22.10.2026; decisions 1, 3, 4, 6 and 7 revised, decision 8 and steps 1c and 5b added 02.11.2026). Step 0 and step 1 done: baseline and branch evals in `docs/evals.md`, the swap in PR #3, the first component built through it (Slider) in PR #5. Step 2 done in `docs/architecture.md`, step 3 done (16.11.2026). Owner: Grzegorz Łotysz.
 
 ## Why
 
@@ -66,6 +66,7 @@ Done when: the owner approves `docs/architecture.md`.
 ### 3. Manifest instead of hard-coded paths
 Add `design-harness.yaml` for Atlas with today's values. `build-tokens`, `check-raw-values`, `build-claude-design` and the states check read it.
 Done when: the scripts have no Atlas path or name in them, and their output for Atlas is unchanged byte for byte.
+Done (16.11.2026): `scripts/lib/manifest.mjs` finds the manifest from the working directory up, validates it and fills in the defaults. Every output for Atlas is the same byte for byte except the Claude Design previews, which inline `preview.js`: two comments and the name of its internal flag changed, because the helper no longer names Atlas. The global comes from the name (`outputs.claude_design.namespace` overrides it). Two Atlas values stay in files that are not scripts, and move with the Vitest preset in step 5: the frame size in `src/test/PhoneFrame.tsx` and the preview head path in `vitest.config.ts`.
 
 ### 4. Core rules and system rules
 Split `references/rules.md` into core rules (every value from a token, states, focus, touch size, themes, contrast, reuse, spec before build, approval gates, report) and Atlas rules (390 × 844 frames, Atlas text styles, Logo and Icon geometry). The skill reads the core rules from itself and the system rules from the path in the manifest. Same for `figma.md` (the file key and node ids stay only in `figma/library.json`) and `review-checklist.md`. The gates list drives the workflow section of SKILL.md.

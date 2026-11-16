@@ -1,6 +1,7 @@
 // Shared by every preview: helpers that mirror the state rows of the tests (src/test/layout.module.css) and force focus styles.
-// The page preloads React 18, the tokens, bundle.css and bundle.js (window.Atlas) into each preview frame.
-var Atlas = window.Atlas;
+// The page preloads React 18, the tokens, bundle.css and bundle.js (window.{{namespace}}) into each preview frame.
+// build-claude-design fills in the global (outputs.claude_design.namespace) before it inlines this file.
+var {{namespace}} = window.{{namespace}};
 var React = window.React;
 var h = React.createElement;
 
@@ -10,7 +11,7 @@ function mount(element) {
   window.ReactDOM.createRoot(document.getElementById('root')).render(element);
 }
 
-/** Keeps a value in local state, so a controlled Atlas component can be used in the preview. */
+/** Keeps a value in local state, so a controlled component can be used in the preview. */
 function Controlled(props) {
   var state = React.useState(props.initial);
   return props.render(state[0], state[1]);
@@ -77,8 +78,8 @@ function forceFocusStyles() {
     } catch (error) {
       return;
     }
-    if (!rules || sheet.atlasForcedFocus) return;
-    sheet.atlasForcedFocus = true;
+    if (!rules || sheet.forcedFocusCopied) return;
+    sheet.forcedFocusCopied = true;
     Array.prototype.slice.call(rules).forEach(function (rule) {
       if (!rule.selectorText || rule.selectorText.indexOf(':focus-visible') === -1) return;
       var selectors = rule.selectorText

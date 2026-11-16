@@ -4,9 +4,10 @@
 
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { loadSystem } from './lib/manifest.mjs';
 
-const root = fileURLToPath(new URL('..', import.meta.url));
+const system = loadSystem();
+const root = system.root;
 const manifestPath = join(root, '.describe-me/manifest.json');
 if (!existsSync(manifestPath)) {
   console.error('No .describe-me/manifest.json. Run `npm test` first: the tests record the stories this check reads.');
@@ -36,8 +37,8 @@ function statesOf(readme) {
 }
 
 const kinds = [
-  { dir: 'components', src: 'src/components' },
-  { dir: 'screens', src: 'src/screens' },
+  { dir: system.paths.components, src: join(system.paths.src, 'components') },
+  { dir: system.paths.screens, src: join(system.paths.src, 'screens') },
 ];
 const problems = [];
 let checked = 0;

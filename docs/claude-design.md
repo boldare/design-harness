@@ -13,10 +13,10 @@ Atlas also exists as a claude.ai Design System artifact, so Claude Design and ot
 | File | Built from |
 |------|-----------|
 | `tokens.json` | `tokens/tokens.json`, in the list shape the page reads (decisions below) |
-| `README.md` | The brand book: `scripts/claude-design/brand-book.md`, with the component table and rules from `components/README.md` |
+| `README.md` | The brand book: `scripts/claude-design/brand-book.md` (the sources folder is `outputs.claude_design.sources` in `design-harness.yaml`), with the component table and rules from `components/README.md` |
 | `foundations.md` | `docs/foundations.md`, copied as a further section |
 | `components/<Name>/README.md` | `components/<Name>/README.md`, copied as written |
-| `components/<Name>/preview.html` | `scripts/claude-design/previews/<Name>.js`, wrapped with `preview.js` and `preview.css` from the same folder |
+| `components/<Name>/preview.html` | `scripts/claude-design/previews/<Name>.js`, wrapped with `preview.js` and `preview.css`, the helpers next to the build script; `preview.js` gets the system's global (`window.Atlas`, from the name in `design-harness.yaml`) |
 | `components/Cover/preview.html` | `scripts/claude-design/cover.html` |
 | `components/bundle.js` | `src/index.ts`, built with Vite as one classic script that assigns `window.Atlas` |
 | `components/bundle.css` | The token bridge and type classes (generated from `tokens/tokens.json`), then the CSS Modules from `src/components` |
