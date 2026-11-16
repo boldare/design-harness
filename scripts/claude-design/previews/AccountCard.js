@@ -1,4 +1,4 @@
-// @dsCard group="Identity" height=320
+// @dsCard height=320
 // Initials from the name, given initials, and a long email truncated, as in the AccountCard story.
 mount(
   matrix(null, [

@@ -1,4 +1,4 @@
-// @dsCard group="Identity" height=176
+// @dsCard height=176
 // The Atlas mark with and without the wordmark, as in the Logo story.
 mount(
   matrix(null, [

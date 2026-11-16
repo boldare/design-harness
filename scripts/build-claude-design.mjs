@@ -7,9 +7,10 @@
 //   node scripts/build-claude-design.mjs [--out claude-design (or an absolute directory)] [--by "Name"] [--via "..."] [--note "..."]
 //                                        [--at 2026-10-14T12:00:00Z] [--index-from <design-system.json read from the artifact>]
 //
-// Inputs, at the paths of design-harness.yaml: the tokens file, the components inventory and READMEs, the foundations,
-// <src>/index.ts (built with Vite), <src>/foundations/type-samples.ts (type samples, optional), the preview head (font URL)
-// and outputs.claude_design.sources (brand book text, one preview script per component, cover).
+// Inputs, at the paths of design-harness.yaml: the tokens file, the inventory (each card's group and the order of the
+// components), the component READMEs, the foundations, <src>/index.ts (built with Vite), <src>/foundations/type-samples.ts
+// (type samples, optional), the preview head (font URL) and outputs.claude_design.sources (brand book text, one preview
+// script per component, cover).
 // The preview helpers shared by every card are this script's own, in claude-design/ next to it.
 
 import { execFileSync } from 'node:child_process';
@@ -19,6 +20,7 @@ import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import vm from 'node:vm';
+import { readInventory } from './lib/inventory.mjs';
 import { loadSystem } from './lib/manifest.mjs';
 
 const require = createRequire(import.meta.url);
@@ -86,14 +88,11 @@ const by = args.by ?? (git('config', 'user.name') || 'Claude');
 // ---------------------------------------------------------------------------------------------------------------
 
 const inventory = `${paths.components}/README.md`;
+const componentTable = readInventory(system).components;
+const components = componentTable.rows.map((row) => row.name);
 const tokens = JSON.parse(read(paths.tokens));
 const componentsIndex = read(inventory);
 
-// The component inventory is the table in the components README, in its order.
-const componentRows = [...componentsIndex.matchAll(/^\|\s*\[([A-Za-z]+)\]\(\1\/README\.md\)\s*\|([^|]*)\|([^|]*)\|\s*$/gm)].map(
-  ([, name, purpose, buildsOn]) => ({ name, purpose: purpose.trim(), buildsOn: buildsOn.trim() }),
-);
-const components = componentRows.map((row) => row.name);
 const entry = `${paths.src}/index.ts`;
 const exported = [...read(entry).matchAll(/export \* from '\.\/components\/(\w+)'/g)].map((match) => match[1]);
 if (components.length === 0) fail(`no components found in the table of ${inventory}`);
@@ -474,7 +473,7 @@ const previewJs = readFileSync(join(helpers, 'preview.js'), 'utf8').trim().repla
 checkVars(system.rel(join(helpers, 'preview.css')), previewCss, ['--pv-columns']);
 
 const previews = {};
-for (const name of components) {
+for (const { name, group } of componentTable.rows) {
   const path = join(sources, 'previews', `${name}.js`);
   let source;
   try {
@@ -483,16 +482,20 @@ for (const name of components) {
     fail(`no preview script at ${relative(root, path)}`);
     continue;
   }
-  const marker = /^\/\/ (@dsCard [^\n]+)\n/.exec(source);
+  const marker = /^\/\/ @dsCard ([^\n]+)\n/.exec(source);
   if (!marker) {
-    fail(`${relative(root, path)}: line 1 must be "// @dsCard group=\\"...\\" height=N"`);
+    fail(`${relative(root, path)}: line 1 must be "// @dsCard height=N"`);
+    continue;
+  }
+  if (marker[1].includes('group=')) {
+    fail(`${relative(root, path)}: line 1 sets group=, but a card's group comes from the Group column of ${inventory}. Remove it from the preview.`);
     continue;
   }
   const script = `(function () {\n'use strict';\n${previewJs}\n\n${source.slice(marker[0].length).trim()}\n})();`;
   if (/<\/script|<!--/i.test(script)) fail(`${relative(root, path)} contains </script or <!--`);
   checkVars(relative(root, path), script);
   previews[name] = [
-    `<!-- ${marker[1]} -->`,
+    `<!-- @dsCard group="${group}" ${marker[1]} -->`,
     '<!doctype html>',
     '<html lang="en">',
     '<head>',
@@ -532,10 +535,13 @@ const unknownTokenRefs = (text) =>
         : /^[a-z][\w-]*\.[\w.-]+$/.test(ref) && familyPrefixes.has(ref.split('.')[0]) && !tokenNames.has(ref),
     );
 
+// The inventory table without its Group column, the second, and with plain names in place of the links.
+const brandBookColumns = componentTable.columns.map((_, index) => index).filter((index) => index !== 1);
+const brandBookRow = (cells) => `| ${brandBookColumns.map((index) => cells[index]).join(' | ')} |`;
 const componentsTable = [
-  '| Component | Purpose | Builds on |',
-  '|-----------|---------|-----------|',
-  ...componentRows.map((row) => `| ${row.name} | ${row.purpose} | ${row.buildsOn} |`),
+  brandBookRow(componentTable.columns),
+  `|${brandBookColumns.map((index) => '-'.repeat(componentTable.columns[index].length + 2)).join('|')}|`,
+  ...componentTable.rows.map((row) => brandBookRow([row.name, ...row.cells.slice(1)])),
 ].join('\n');
 
 const brandBookPath = join(sources, 'brand-book.md');

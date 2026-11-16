@@ -1,6 +1,6 @@
 # Plan: split the workflow from the Atlas design system
 
-Status: draft for review (16.10.2026, decisions added 22.10.2026; decisions 1, 3, 4, 6 and 7 revised, decision 8 and steps 1c and 5b added 02.11.2026). Step 0 and step 1 done: baseline and branch evals in `docs/evals.md`, the swap in PR #3, the first component built through it (Slider) in PR #5. Step 2 done in `docs/architecture.md`, steps 3 and 4 done (16.11.2026). Owner: Grzegorz Łotysz.
+Status: draft for review (16.10.2026, decisions added 22.10.2026; decisions 1, 3, 4, 6 and 7 revised, decision 8 and steps 1c and 5b added 02.11.2026). Step 0 and step 1 done: baseline and branch evals in `docs/evals.md`, the swap in PR #3, the first component built through it (Slider) in PR #5. Step 2 done in `docs/architecture.md`, steps 3 and 4 done (16.11.2026). The code part of step 1c done (16.11.2026). Owner: Grzegorz Łotysz.
 
 ## Why
 
@@ -56,8 +56,9 @@ Done when: every component state has a baseline image in both themes, a one-toke
 
 ### 1c. One order for the library
 The inventory tables in `components/README.md` and `screens/README.md` get a Group column and become the only place that sets the groups of the library and their order. The describe-me sidebar (`sidebar.groups`, describe-me 0.12) is built from them in `vitest.config.ts`, the Claude Design build takes each card's group from them instead of the `@dsCard group=` line of each preview, and the figma gate checks the sections of the Components and Screens pages against them. The skill puts a new component or screen in its group in the table, and the three outputs follow.
-Today they disagree: the groups exist only in the Claude Design previews; Figma and the table share one order, which splits Feedback (Alert, then StatusMark after Identity); describe-me lists the files by path. Inside a group describe-me sorts the files by path too, so each component gets its own subgroup named after its `describe`, which the viewer shows as the file, and the table order holds inside groups as well.
+Before this step they disagreed. The groups existed only in the Claude Design previews. Figma and the table shared one order, which split Feedback (Alert, then StatusMark after Identity). describe-me listed the files by path. Inside a group describe-me sorts the files by path too, so each component gets its own subgroup named after its `describe`, which the viewer shows as the file, and the table order holds inside groups as well.
 Done when: the describe-me sidebar, the Figma pages and Claude Design show the same groups in the same order, and a check fails when a component's group or place differs from the table.
+Done, the code part (16.11.2026): both tables have the Group column, and StatusMark moved under Alert, so Feedback stays together. `scripts/lib/inventory.mjs` reads the tables, and `vitest.config.ts` builds the sidebar from them. The Claude Design build takes each card's group and the order from them, and fails on a `group=` left in a preview. `check-states` fails when the recorded sidebar differs from the tables. The owner does the rest by hand: the Figma sections of the Components and Screens pages, `references/figma.md`, and the skill text, so that the skill puts a new component in its group.
 
 ### 2. Boundary spec
 Write `docs/architecture.md`: the layers, the flow and its gates, the contracts between the core and its adapters (decision 1), the adapters, the manifest schema, where every file goes, and how a project uses the workflow. The owner approves it before any code moves; for now the owner takes the decisions, and the guild meets the result in step 8 (02.11.2026).

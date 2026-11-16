@@ -1,4 +1,4 @@
-// @dsCard group="Actions" height=352
+// @dsCard height=352
 // Tone by Size by State, as in the Link README (strong exists only at body size), and a link inside a sentence.
 var appearances = [
   { label: 'accent / body', props: { tone: 'accent', size: 'body', href: '#forgot-password' }, text: 'Forgot password?' },

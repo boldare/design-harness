@@ -13,17 +13,17 @@ Atlas also exists as a claude.ai Design System artifact, so Claude Design and ot
 | File | Built from |
 |------|-----------|
 | `tokens.json` | `tokens/tokens.json`, in the list shape the page reads (decisions below) |
-| `README.md` | The brand book: `scripts/claude-design/brand-book.md` (the sources folder is `outputs.claude_design.sources` in `design-harness.yaml`), with the component table and rules from `components/README.md` |
+| `README.md` | The brand book: `scripts/claude-design/brand-book.md` (the sources folder is `outputs.claude_design.sources` in `design-harness.yaml`), with the component table and rules from `components/README.md`. The component table is the inventory table without its Group column |
 | `foundations.md` | `docs/foundations.md`, copied as a further section |
 | `components/<Name>/README.md` | `components/<Name>/README.md`, copied as written |
-| `components/<Name>/preview.html` | `scripts/claude-design/previews/<Name>.js`, wrapped with `preview.js` and `preview.css`, the helpers next to the build script; `preview.js` gets the system's global (`window.Atlas`, from the name in `design-harness.yaml`) |
+| `components/<Name>/preview.html` | `scripts/claude-design/previews/<Name>.js`, wrapped with `preview.js` and `preview.css`, the helpers next to the build script. `preview.js` gets the system's global (`window.Atlas`, from the name in `design-harness.yaml`). Line 1 of a preview script is `// @dsCard height=N`, and the build adds the card's group from the Group column of `components/README.md` |
 | `components/Cover/preview.html` | `scripts/claude-design/cover.html` |
 | `components/bundle.js` | `src/index.ts`, built with Vite as one classic script that assigns `window.Atlas` |
 | `components/bundle.css` | The token bridge and type classes (generated from `tokens/tokens.json`), then the CSS Modules from `src/components` |
 | `components/index.d.ts` | The component props, emitted by TypeScript from `src/components` |
 | `design-system.json` | The artifact's index (title, namespace `Atlas`, React 18, `lastChange`) |
 
-The script stops with a message when the output would not work on the page: a token name or value the page drops, a variable used by a component or preview that nothing defines, a component in `components/README.md` that `src/index.ts` does not export (or the reverse), a missing preview, a token named in the brand book that does not exist, an em dash, or a file over the page's size limits.
+The script stops with a message when the output would not work on the page: a token name or value the page drops, a variable used by a component or preview that nothing defines, an inventory table in `components/README.md` or `screens/README.md` that is not valid, a component in `components/README.md` that `src/index.ts` does not export (or the reverse), a missing preview, a preview whose line 1 still sets `group=`, a token named in the brand book that does not exist, an em dash, or a file over the page's size limits.
 
 ## Re-sync
 
@@ -39,6 +39,7 @@ Without `--index-from`, the script writes a new index with `createdOnFiles` set 
 
 ## Format decisions and limitations
 
+- **Groups and order come from the inventory.** Each card's group is the Group of its row in `components/README.md`. The cards, the `@ds-bundle` header of `bundle.js`, the sections of `index.d.ts` and the brand book table follow the order of the table.
 - **Token names stay as in the repository** (`surface.page`, `space.4`). The page compiles `tokens.json` into its own `tokens.css` and names each variable after the token as written, with the dot escaped (`--surface\.page`). The components read the repository's CSS names (`--surface-page`, the `naming.web` rule in `figma/library.json`). `bundle.css` starts with a token bridge, generated from `tokens/tokens.json`, that maps one to the other (`--surface-page: var(--surface\.page)`) on `:root` and on any `[data-theme]` element. `accent` has no dot, so it is the same variable on both sides and is not bridged. The bridge holds names, not values: a colour, spacing, radius, size, stroke, shadow, opacity, duration or layer edited on the page reaches the previews.
 - **Type styles are carried as values.** The page compiles type styles into classes named after the style (`.title`, `.body`, `.caption`) and defines no variables for them. The components read `--type-<style>-<property>`, so the bridge defines those variables with the values from `tokens/tokens.json`, plus the `.type-<style>` utility classes from `src/styles/tokens.css`. A type style edited on the page changes the page's own specimens, not the components.
 - **Shadows with aliases are written out per theme.** `shadow.focus` and `shadow.danger-halo` point at colour tokens in the repository (`{surface.page}`, `{accent}`, `{danger.surface}`). A shadow on the page cannot hold an alias, so the script resolves them for light and dark and writes the two values, with a note on the shadow family. Usage notes are unchanged. On the page, editing `accent` or `surface.page` does not move the focus ring; a re-sync does.

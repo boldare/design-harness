@@ -1,4 +1,4 @@
-// @dsCard group="Inputs" height=680
+// @dsCard height=680
 // States from the Select README, with the room picker from Atlas device settings. The open state shows the menu.
 var rooms = [
   { value: 'living-room', label: 'Living room' },

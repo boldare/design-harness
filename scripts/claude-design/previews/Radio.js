@@ -1,4 +1,4 @@
-// @dsCard group="Selection" height=504
+// @dsCard height=504
 // Selected by State, one option row per cell, as in the Radio README; then the whole group, enabled and disabled.
 var notifications = [
   { value: 'all', label: 'All activity', description: 'Every reading and every alert' },

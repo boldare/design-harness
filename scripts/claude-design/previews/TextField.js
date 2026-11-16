@@ -1,4 +1,4 @@
-// @dsCard group="Inputs" height=640
+// @dsCard height=640
 // Type by State, as in the TextField README, with copy from Atlas sign-in and device settings. Every field takes input.
 var fields = [
   {
