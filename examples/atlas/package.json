@@ -1,25 +1,26 @@
 {
-  "name": "atlas-design-system",
+  "name": "atlas",
   "version": "0.1.0",
   "private": true,
   "description": "Atlas base components built from tokens/tokens.json, documented by their tests.",
   "type": "module",
   "scripts": {
-    "tokens": "node scripts/build-tokens.mjs",
-    "lint:tokens": "node scripts/check-raw-values.mjs",
+    "tokens": "design-harness tokens",
+    "lint:tokens": "design-harness lint",
     "typecheck": "tsc --noEmit",
-    "test": "npm run tokens && vitest run",
-    "check-states": "node scripts/check-states.mjs",
-    "check": "npm run lint:tokens && npm run typecheck && npm test && npm run check-states",
-    "dev": "npm run tokens && (vitest & describe-me dev; wait)",
-    "docs": "npm test && describe-me build --live --out describe-me-dist",
-    "claude-design": "node scripts/build-claude-design.mjs"
+    "test": "pnpm run tokens && vitest run",
+    "check-states": "design-harness states",
+    "check": "pnpm run lint:tokens && pnpm run typecheck && pnpm test && pnpm run check-states",
+    "dev": "pnpm run tokens && (vitest & describe-me dev; wait)",
+    "docs": "pnpm test && describe-me build --live --out describe-me-dist",
+    "claude-design": "design-harness claude-design"
   },
   "dependencies": {
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },
   "devDependencies": {
+    "@boldare/design-harness": "workspace:*",
     "@describe-me/react": "^0.12.1",
     "@describe-me/vitest": "^0.12.1",
     "@types/node": "^22.20.5",
@@ -27,13 +28,11 @@
     "@types/react-dom": "18.3.1",
     "@vitejs/plugin-react": "^6.1.2",
     "@vitest/browser-playwright": "^5.0.5",
-    "axe-core": "^4.14.0",
     "describe-me": "^0.12.1",
     "playwright": "^1.64.1",
     "typescript": "5.6.3",
     "vite": "^8.3.5",
     "vitest": "^5.0.5",
-    "vitest-browser-react": "^2.3.0",
-    "yaml": "^2.9.1"
+    "vitest-browser-react": "^2.3.0"
   }
 }

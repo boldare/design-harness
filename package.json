@@ -1,0 +1,10 @@
+{
+  "name": "design-harness-monorepo",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.15.0",
+  "scripts": {
+    "check": "pnpm --filter ./examples/atlas check",
+    "claude-design": "pnpm --filter ./examples/atlas claude-design"
+  }
+}
