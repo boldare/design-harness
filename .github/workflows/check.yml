@@ -1,0 +1,28 @@
+# The checks every pull request must pass before it merges: the same npm run check a designer runs, plus the Claude Design build.
+name: check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # The tests run in a real Chromium (vitest.config.ts).
+      - run: npx playwright install --with-deps chromium
+      - run: npm run check
+      # Builds the artifact files without publishing them; the script stops when the output would not work on the page.
+      - run: npm run claude-design -- --out "$RUNNER_TEMP/claude-design" --via "CI · ${{ github.repository }}@${{ github.sha }}"
