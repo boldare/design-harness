@@ -46,3 +46,21 @@ End-to-end after the fix (`e5c5c51`): all 15 checks pass. Spec phase 290 s, tota
 Before: 526 s, 3.26 USD. After: 571 s, 3.61 USD, plus 1.09 USD for the rerun.
 
 End-to-end. The default prompt (the LED slider) is already on `main` since PR #5, so both commits ran `On the Profile screen, add a short bio field: several lines of text, up to 160 characters, with a character counter.` All 16 checks pass on both. Before: 379 s, 0.59 + 2.12 USD. After: 412 s, 0.66 + 2.20 USD. Both made a `multiline` TextField with a counter and a new text style for it, and recorded it in `docs/foundations.md`. After step 4 the skill read `design-harness.yaml` and `docs/rules.md` in the spec phase; before it, `docs/rules.md` did not exist.
+
+## Step 5, the layout (PR #12), 17.11.2026
+
+The branch at `c377d14` (merged as `a6fb0f3`), with-skill arm only. The skill is now `packages/design-harness/skill`, named `design-harness` with a description that does not name Atlas; `claude plugin eval .` loads it through `.claude-plugin/plugin.json`, and Atlas through `examples/atlas/.claude/skills/design-harness`. The graders moved to `evals/` unchanged.
+
+| Case | Step 4 | After | Note |
+|---|---|---|---|
+| refuse-hardcode | 1.00 | 1.00 | |
+| reuse-screen | 1.00 | 1.00 | |
+| spec-first | 1.00 | 1.00 | |
+| token-proposal | 1.00 | 1.00 | |
+
+537 s, 3.65 USD.
+
+End-to-end, the bio prompt of step 4, three runs:
+1. From a worktree of a checkout still on the old layout: Claude Code also loads the skills of the main checkout, so the session had `design-harness` and the old `atlas-design-system`, and chose the old one. Not counted. `scripts/eval-e2e.sh` now works in a clone, not a worktree.
+2. From a fresh clone: the skill loaded as `design-harness`, read `design-harness.yaml`, both rule files and the references, and wrote the spec. In phase 2 its one command was `pnpm run check`, which the script did not allow (neither `check` with npm nor with pnpm ever was; earlier runs fell back to the single commands). It stopped running commands and left a failing test: 15 of 16. The script now allows `check`.
+3. With `check` allowed: all 16 pass. 424 s, 0.66 + 2.38 USD.
