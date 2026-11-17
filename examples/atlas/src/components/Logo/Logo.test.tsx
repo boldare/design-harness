@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { render } from 'vitest-browser-react';
-import { expectAccessible } from '@boldare/design-harness/adapters/react/test/a11y';
+import { expectAccessible } from '@boldare/design-harness/test';
 import { Logo } from './Logo';
 
 // The README has no states table: the mark with and without the wordmark.

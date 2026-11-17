@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-react';
 import { userEvent } from 'vitest/browser';
-import { expectAccessible } from '@boldare/design-harness/adapters/react/test/a11y';
+import { expectAccessible } from '@boldare/design-harness/test';
 import { IconButton } from './IconButton';
 
 /** A toggle with a fixed label: aria-pressed carries the state. The password toggle in TextField changes its label instead. */

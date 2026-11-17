@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { render } from 'vitest-browser-react';
-import { expectAccessible } from '@boldare/design-harness/adapters/react/test/a11y';
-import layout from '@boldare/design-harness/adapters/react/test/layout.module.css';
+import { expectAccessible, layout } from '@boldare/design-harness/test';
 import { AccountCard } from './AccountCard';
 
 // The README has no states table: initials from the name, given initials, and a long email truncated.

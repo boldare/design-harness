@@ -65,7 +65,7 @@ All four are the defaults and, for now, the only ones (decisions 3 and 8 of the 
 
 | Adapter | Implements | Holds |
 |---|---|---|
-| `react/` | Tokens for the platform, code | `code.md`; the token build (`tokens.json` to CSS custom properties, `surface.page` to `--surface-page`); the raw-value lint for CSS Modules; the test helpers (setup, axe in both themes, the phone frame sized from the manifest, the layout classes, `respond()`), exported as `@boldare/design-harness/test`; the Vitest preset, exported as `@boldare/design-harness/vitest` |
+| `react/` | Tokens for the platform, code | `code.md`; the token build (`tokens.json` to CSS custom properties, `surface.page` to `--surface-page`); the raw-value lint for CSS Modules; the test helpers (axe in both themes, the phone frame sized from the manifest, the layout classes, `respond()`), exported as `@boldare/design-harness/test`; the Vitest preset, exported as `@boldare/design-harness/vitest`, which registers the test setup |
 | `describe-me/` | States and preview | The plugin options: fonts from the system's preview head, and the sidebar groups from the inventory. The reader of `.describe-me/manifest.json` for the states and order check. Tested with describe-me 0.12.1, a dependency of the package |
 | `figma/` | Design | `figma.md`, the method: variables, text and effect styles, components with variants, screens from instances, the screenshot check. Uses the Figma MCP |
 | `claude-design/` | Output (optional) | `claude-design.md`, how the sync works; the build; the preview helpers shared by every card. The global is `window[name]`, not `window.Atlas` |
@@ -122,7 +122,7 @@ design-project-x/                    a designer's repository
 
 ## Where every file goes
 
-The path before step 5, the path after it, and the layer. `skill:` is short for `.claude/skills/atlas-design-system/` before step 5, and `pkg/` for `packages/design-harness/` after it. The move is done, except `src/test/setup.ts`, which stays in `examples/atlas/src/test/` until the Vitest preset, and `templates/`, which come with `init`.
+The path before step 5, the path after it, and the layer. `skill:` is short for `.claude/skills/atlas-design-system/` before step 5, and `pkg/` for `packages/design-harness/` after it. The move is done, except `templates/`, which come with `init`.
 
 | Before step 5 | After step 5 | Layer |
 |---|---|---|
@@ -133,7 +133,7 @@ The path before step 5, the path after it, and the layer. `skill:` is short for 
 | `skill:references/figma.md` | `pkg/adapters/figma/figma.md`; the file key and ids stay only in `library.json` | Figma |
 | `skill:evals/*` | `evals/*`, not published; the scaffold copies `examples/atlas/` | Core |
 | `scripts/eval-e2e.sh` | `scripts/eval-e2e.sh`, not published | Core |
-| `scripts/lib/manifest.mjs`, `inventory.mjs` and their `.d.mts` | `pkg/lib/` | Core |
+| `scripts/lib/manifest.mjs`, `inventory.mjs` and their `.d.mts` | `pkg/lib/`, without the `.d.mts`, which were removed with the Vitest preset | Core |
 | `scripts/build-tokens.mjs`, `check-raw-values.mjs` | `pkg/adapters/react/` | React |
 | `scripts/check-states.mjs` | `pkg/adapters/describe-me/` | describe-me |
 | `scripts/build-claude-design.mjs`, `scripts/claude-design/preview.js`, `preview.css` | `pkg/adapters/claude-design/` | Claude Design |
@@ -142,7 +142,7 @@ The path before step 5, the path after it, and the layer. `skill:` is short for 
 | `docs/evals.md` | `evals/README.md` | Core |
 | `docs/plans/`, `docs/architecture.md` | `docs/` | Core |
 | `src/test/setup.ts`, `a11y.ts`, `PhoneFrame.tsx`, `PhoneFrame.module.css`, `layout.module.css`, `respond.ts` | `pkg/adapters/react/test/` | React |
-| `src/test/canvas.css` | `examples/atlas/src/test/canvas.css`; it names Atlas tokens | System |
+| `src/test/canvas.css` | `examples/atlas/src/test/canvas.css`, as it names Atlas tokens. The package's setup loads `<src>/test/canvas.css` when the system has one | System |
 | `vitest.config.ts` | `examples/atlas/vitest.config.ts` on the preset; `init` writes the same for a new system | Split |
 | `tokens/`, `docs/foundations.md`, `components/`, `screens/`, `figma/library.json` | `examples/atlas/` | System |
 | `src/components/`, `src/screens/`, `src/foundations/`, `src/styles/`, `src/index.ts`, `src/vite-env.d.ts` | `examples/atlas/src/` | System |

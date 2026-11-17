@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { render } from 'vitest-browser-react';
-import { expectAccessible } from '@boldare/design-harness/adapters/react/test/a11y';
+import { expectAccessible } from '@boldare/design-harness/test';
 import { TypeSpecimen } from './TypeSpecimen';
 import { tokens } from './tokens';
 

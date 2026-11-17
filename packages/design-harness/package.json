@@ -4,6 +4,11 @@
   "description": "The design-harness workflow for Claude: the skill, the CLI and the test helpers its checks run.",
   "type": "module",
   "bin": { "design-harness": "bin/design-harness.mjs" },
+  "exports": {
+    "./vitest": { "types": "./adapters/react/vitest.d.mts", "default": "./adapters/react/vitest.mjs" },
+    "./test": "./adapters/react/test/index.ts",
+    "./package.json": "./package.json"
+  },
   "files": ["bin", "lib", "skill", "adapters", "templates", "README.md"],
   "dependencies": {
     "@describe-me/vitest": "^0.12.1",
@@ -13,6 +18,20 @@
     "vite": "^8.3.5",
     "yaml": "^2.9.1"
   },
-  "peerDependencies": { "react": "^18.3.1", "react-dom": "^18.3.1", "vitest": "^5.0.5" },
-  "devDependencies": { "@types/react": "18.3.12", "react": "18.3.1", "react-dom": "18.3.1", "vitest": "^5.0.5" }
+  "peerDependencies": {
+    "@vitejs/plugin-react": "^6.1.2",
+    "@vitest/browser-playwright": "^5.0.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "vitest": "^5.0.5"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "@vitejs/plugin-react": "^6.1.2",
+    "@vitest/browser-playwright": "^5.0.5",
+    "playwright": "^1.64.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "vitest": "^5.0.5"
+  }
 }
