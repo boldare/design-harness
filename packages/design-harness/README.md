@@ -18,9 +18,37 @@ Each command finds the system's `design-harness.yaml` from the working directory
 ## Folders
 
 - `skill/`: `SKILL.md` and `references/`, the core: the flow and its gates, the core rules, the spec and token templates, the review checklist.
-- `adapters/`: one folder per tool. `react/` holds `code.md`, the token build, the raw-value lint and the test helpers in `test/`, which tests import as `@boldare/design-harness/adapters/react/test/<helper>`. `describe-me/` holds the states check, `figma/` holds `figma.md`, and `claude-design/` holds `claude-design.md`, the build and the preview helpers.
+- `adapters/`: one folder per tool. `react/` holds `code.md`, the token build, the raw-value lint, the Vitest preset (`vitest.mjs`, exported as `@boldare/design-harness/vitest`) and the test helpers in `test/`, exported as `@boldare/design-harness/test`. `describe-me/` holds the plugin options and the states check, `figma/` holds `figma.md`, and `claude-design/` holds `claude-design.md`, the build and the preview helpers.
 - `bin/`: `design-harness.mjs`, the CLI.
 - `lib/`: the readers of the manifest and the inventory that the adapters share.
+
+## A system's Vitest config
+
+A system's `vitest.config.ts` is the preset:
+
+```ts
+import { defineHarnessConfig } from '@boldare/design-harness/vitest';
+
+export default defineHarnessConfig();
+```
+
+The preset finds the system's `design-harness.yaml` from the working directory up and takes from it:
+
+- `paths.src`: the tests are the `*.test.tsx` files under it, and they run in a headless Chromium.
+- `paths.tokens_css`, and `<src>/test/canvas.css` when it exists: the package's setup loads both before every test file.
+- `paths.preview_head`: the fonts of every recorded frame in describe-me.
+- The inventory tables: the groups of the describe-me sidebar and their order.
+- `frame`: the size of `PhoneFrame`. A system without a frame has no screens, and `PhoneFrame` throws when it renders.
+
+Overrides go in as the argument and merge with Vitest's `mergeConfig`, so arrays such as `plugins` and `test.setupFiles` add to the preset's.
+
+The tests import the helpers from one place:
+
+```ts
+import { expectAccessible, layout, PhoneFrame, respond, responseDelay } from '@boldare/design-harness/test';
+```
+
+The preset and the helpers need these next to the package: `vitest`, `@vitest/browser-playwright` with `playwright`, `@vitejs/plugin-react`, `react` and `react-dom`.
 
 ## How a designer starts a system
 

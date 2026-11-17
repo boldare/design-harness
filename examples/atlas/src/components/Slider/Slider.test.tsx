@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-react';
 import { userEvent } from 'vitest/browser';
-import { expectAccessible } from '@boldare/design-harness/adapters/react/test/a11y';
-import layout from '@boldare/design-harness/adapters/react/test/layout.module.css';
+import { expectAccessible, layout } from '@boldare/design-harness/test';
 import { Slider, type SliderProps } from './Slider';
 
 /** Keeps the value locally, so the thumb moves. */

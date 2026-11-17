@@ -1,8 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-react';
 import { userEvent } from 'vitest/browser';
-import { expectAccessible } from '@boldare/design-harness/adapters/react/test/a11y';
-import { PhoneFrame } from '@boldare/design-harness/adapters/react/test/PhoneFrame';
+import { expectAccessible, PhoneFrame } from '@boldare/design-harness/test';
 import { DeviceSettings, type DeviceSettingsState } from './DeviceSettings';
 
 // The screen in a phone frame. The wrapper keeps the test named after the screen.

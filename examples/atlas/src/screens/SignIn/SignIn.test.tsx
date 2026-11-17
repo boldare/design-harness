@@ -1,9 +1,7 @@
 import { useRef } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-react';
-import { expectAccessible } from '@boldare/design-harness/adapters/react/test/a11y';
-import { PhoneFrame } from '@boldare/design-harness/adapters/react/test/PhoneFrame';
-import { respond, responseDelay } from '@boldare/design-harness/adapters/react/test/respond';
+import { expectAccessible, PhoneFrame, respond, responseDelay } from '@boldare/design-harness/test';
 import { SignIn, type SignInCredentials, type SignInProps, type SignInState } from './SignIn';
 
 /**

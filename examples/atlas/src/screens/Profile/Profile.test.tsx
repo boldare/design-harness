@@ -1,8 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-react';
-import { expectAccessible } from '@boldare/design-harness/adapters/react/test/a11y';
-import { PhoneFrame } from '@boldare/design-harness/adapters/react/test/PhoneFrame';
-import { respond, responseDelay } from '@boldare/design-harness/adapters/react/test/respond';
+import { expectAccessible, PhoneFrame, respond, responseDelay } from '@boldare/design-harness/test';
 import { Profile, type ProfileProps, type ProfileState, type ProfileValues } from './Profile';
 
 /** The prototype server: it saves every valid profile after responseDelay. Browser-only, so Live runs it too. */

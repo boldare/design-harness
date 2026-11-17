@@ -1,8 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-react';
 import { userEvent } from 'vitest/browser';
-import { expectAccessible } from '@boldare/design-harness/adapters/react/test/a11y';
-import layout from '@boldare/design-harness/adapters/react/test/layout.module.css';
+import { expectAccessible, layout } from '@boldare/design-harness/test';
 import { Button, type ButtonProps } from './Button';
 
 // Variant × State, as in the README. Primary says what is happening while loading; quiet keeps its label.
