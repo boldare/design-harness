@@ -42,7 +42,9 @@ check "phase 1 writes a spec"                    "[ -n \"\$(git status --porcela
 check "phase 1 asks for approval"                "grep -qiE 'approv|go-ahead|go ahead|decide' '$OUT/spec-reply.md'"
 } | tee "$OUT/summary.txt"
 
-claude -p "Approved, go ahead. Figma and Claude Design are not available in this run: skip those steps and say so in the report." \
+# Without this the agent can read one denied command (dontAsk gives no prompt) as "the shell is blocked" and stop checking.
+SHELL_NOTE="The shell runs only the checks, with npm or pnpm: check, tokens, lint:tokens, typecheck, test, check-states, and vitest through npx or pnpm exec. Other commands are denied; read and search with the file tools."
+claude -p "Approved, go ahead. Figma and Claude Design are not available in this run: skip those steps and say so in the report. $SHELL_NOTE" \
   --resume "$SID" --permission-mode dontAsk --allowedTools "$READ,$BUILD" --disallowedTools "$OFF" \
   --max-budget-usd 6 --output-format stream-json --verbose > "$OUT/phase2.jsonl" 2>"$OUT/phase2.err"
 jq -r 'select(.type=="result") | .result' "$OUT/phase2.jsonl" > "$OUT/report.md"
