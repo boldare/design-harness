@@ -88,15 +88,16 @@ export function readInventory(system) {
 }
 
 /**
- * The sidebar groups for describeMe({ sidebar: { groups } }): Foundations, then every component and every screen
- * under its group, in table order. describe-me lists the groups in key order.
+ * The sidebar groups for describeMe({ sidebar: { groups } }): Foundations (when the system has src/foundations), then
+ * every component and every screen under its group, in table order. describe-me lists the groups in key order.
  */
 export function sidebarGroups(system, inventory) {
   const src = system.paths.src;
   const entries = (top, dir, rows) =>
     rows.map((row) => [`${top}/${row.group}/${row.name}`, posix.join(src, dir, row.name, `${row.name}.test.tsx`)]);
   return Object.fromEntries([
-    ['Foundations', posix.join(src, 'foundations/**')],
+    // An empty group makes describe-me warn on every run, and a new system has no foundations tests.
+    ...(existsSync(system.at(posix.join(src, 'foundations'))) ? [['Foundations', posix.join(src, 'foundations/**')]] : []),
     ...entries('Components', 'components', inventory.components.rows),
     ...entries('Screens', 'screens', inventory.screens.rows),
   ]);
