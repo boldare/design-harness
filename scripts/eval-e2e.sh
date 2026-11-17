@@ -10,18 +10,21 @@ PROMPT=${1:-"In Device settings, LED brightness should be a slider, not three ra
 OUT=${EVAL_OUT:-$REPO/evals-e2e/results/$(date +%Y%m%dT%H%M%S)}
 WORK=$(mktemp -d)/atlas-e2e
 mkdir -p "$OUT"
-git -C "$REPO" worktree add --detach -q "$WORK" HEAD
-trap 'git -C "$REPO" worktree remove --force "$WORK" >/dev/null 2>&1' EXIT
+# A clone, not a worktree: in a worktree Claude Code also loads the skills of the main checkout, which may hold another
+# version of the skill (or the old one under another name), and the session would choose between them.
+git clone -q --no-checkout "$REPO" "$WORK"
+git -C "$WORK" checkout -q --detach "$(git -C "$REPO" rev-parse HEAD)"
+trap 'rm -rf "$WORK"' EXIT
 cd "$WORK"
-# pnpm's node_modules hold relative links into the checkout they were made in, so the worktree installs its own.
+# pnpm's node_modules hold relative links into the checkout they were made in, so the clone installs its own.
 pnpm install --frozen-lockfile --prefer-offline
 # Claude Code loads the skill through Atlas's link, .claude/skills/design-harness.
 cd "$WORK/examples/atlas"
 
 OFF="mcp__plugin_figma_figma,Artifact"
 READ="Read,Glob,Grep,Skill,Write,Edit"
-BUILD="Bash(npm run tokens),Bash(npm run lint:tokens),Bash(npm run typecheck),Bash(npm test),Bash(npm run check-states),Bash(npx vitest*),Bash(npm run claude-design*)"
-BUILD="$BUILD,Bash(pnpm run tokens),Bash(pnpm run lint:tokens),Bash(pnpm run typecheck),Bash(pnpm test),Bash(pnpm run check-states),Bash(pnpm exec vitest*),Bash(pnpm run claude-design*)"
+BUILD="Bash(npm run check),Bash(npm run tokens),Bash(npm run lint:tokens),Bash(npm run typecheck),Bash(npm test),Bash(npm run check-states),Bash(npx vitest*),Bash(npm run claude-design*)"
+BUILD="$BUILD,Bash(pnpm run check),Bash(pnpm check),Bash(pnpm run tokens),Bash(pnpm run lint:tokens),Bash(pnpm run typecheck),Bash(pnpm test),Bash(pnpm run check-states),Bash(pnpm exec vitest*),Bash(pnpm run claude-design*)"
 FAIL=0
 check() { if bash -c "$2" >/dev/null 2>&1; then echo "PASS  $1"; else echo "FAIL  $1"; FAIL=1; fi; }
 
