@@ -143,8 +143,8 @@ for (const file of templateFiles().sort()) {
     mergePackage();
     continue;
   }
-  // pnpm pack leaves out a .gitignore, so the template has none.
-  const target = file === 'gitignore' ? '.gitignore' : file;
+  // pnpm pack leaves out a .gitignore and an .npmrc, so the templates have no dot.
+  const target = file === 'gitignore' || file === 'npmrc' ? `.${file}` : file;
   if (lstat(join(cwd, target))) {
     report('skipped', target, 'it exists');
     continue;

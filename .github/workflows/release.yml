@@ -1,0 +1,75 @@
+# On every push to main, refresh the "Version Packages" pull request from the pending changesets. When that PR has just
+# been merged, a second job publishes the bumped package to GitHub Packages (npm.pkg.github.com, scope @boldare).
+#
+# The publish authenticates with the workflow's own GITHUB_TOKEN (packages: write), so no token is stored in the
+# repository. It runs in the `npm` environment, which deploys only from main and waits for a maintainer's approval,
+# so only the publish job uses it: refreshing the pull request never waits.
+name: release
+
+on:
+  push:
+    branches: [main]
+  # Re-runs a publish that failed, from main only (the environment enforces it).
+  workflow_dispatch:
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      hasChangesets: ${{ steps.changesets.outputs.has-changesets }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # v2 is the action line for the Changesets CLI v3. It pushes the release commit through the GitHub API, so the
+      # commit is signed by GitHub.
+      - uses: changesets/action@v2
+        id: changesets
+        with:
+          version-script: pnpm version-packages
+          commit-message: 'chore: version packages'
+          pr-title: 'chore: version packages'
+
+  publish:
+    needs: version
+    # Nothing is pending and the push is the merged Version Packages PR, or a maintainer started the run.
+    if: >-
+      needs.version.outputs.hasChangesets == 'false' &&
+      (github.event_name == 'workflow_dispatch' ||
+       startsWith(github.event.head_commit.message, 'chore: version packages'))
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          # Writes a user .npmrc with the registry and ${NODE_AUTH_TOKEN}, and points NPM_CONFIG_USERCONFIG at it;
+          # pnpm reads the token from there (it ignores tokens in the repository's .npmrc).
+          registry-url: https://npm.pkg.github.com
+          scope: '@boldare'
+      - run: pnpm install --frozen-lockfile
+      - uses: changesets/action@v2
+        with:
+          publish-script: pnpm release
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

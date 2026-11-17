@@ -1,0 +1,3 @@
+# @boldare packages come from GitHub Packages. The token is not here: pnpm reads it from your user config
+# (pnpm config set //npm.pkg.github.com/:_authToken <token>), or in CI from the one actions/setup-node writes.
+@boldare:registry=https://npm.pkg.github.com

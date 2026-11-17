@@ -22,6 +22,7 @@ git init -q
 # No package.json before the add: a designer has none.
 pnpm add -D "$TARBALL"
 pnpm exec design-harness init
+grep -qx '@boldare:registry=https://npm.pkg.github.com' .npmrc || fail ".npmrc does not send @boldare to GitHub Packages"
 # CI freezes the lockfile by default, and init has just added devDependencies.
 pnpm install --no-frozen-lockfile
 pnpm run check

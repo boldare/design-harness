@@ -2,6 +2,15 @@
   "name": "@boldare/design-harness",
   "version": "0.0.0",
   "description": "The design-harness workflow for Claude: the skill, the CLI and the test helpers its checks run.",
+  "keywords": ["design system", "design tokens", "claude", "claude code", "skill", "figma", "react", "vitest", "describe-me"],
+  "author": "Boldare",
+  "homepage": "https://github.com/boldare/design-harness/tree/main/packages/design-harness#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boldare/design-harness.git",
+    "directory": "packages/design-harness"
+  },
+  "bugs": "https://github.com/boldare/design-harness/issues",
   "type": "module",
   "bin": { "design-harness": "bin/design-harness.mjs" },
   "exports": {
@@ -10,6 +19,8 @@
     "./package.json": "./package.json"
   },
   "files": ["bin", "lib", "skill", "adapters", "templates", "README.md"],
+  "engines": { "node": "^20.19.0 || >=22.12.0" },
+  "publishConfig": { "registry": "https://npm.pkg.github.com" },
   "dependencies": {
     "@describe-me/vitest": "^0.12.1",
     "axe-core": "^4.14.0",
