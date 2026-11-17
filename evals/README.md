@@ -80,7 +80,7 @@ The branch at `64edad9`, with-skill arm only. `spec-first` has a fourth grader, 
 
 End-to-end, the bio prompt: all 16 pass. 311 s, 0.67 + 1.54 USD. It changes TextField and Profile, no new row, so it checks that nothing else moved.
 
-## Step 5b, foundations first (PR #24), 17-18.11.2026
+## Step 5b, foundations first (PR #25), 17-18.11.2026
 
 Two new cases on an empty system: the scaffold (`evals/lib/empty-system.sh`) runs `design-harness init --name Kestrel` from this repository's package and copies the package into `node_modules`, as a designer's system would have it.
 - `foundations-first`: the Kestrel brand book (`evals/foundations-first/brand-book.md`, a made-up brand: one light look, eight colours, Work Sans, a 4 px grid, and nothing on focus, disabled, errors or touch size) and "Start our design system from the brand book". Graders: no Write or Edit to `tokens/tokens.json` and no Write to `src/` (matched on `file_path`: a first version matched the whole input, and the proposal's own text names `tokens/tokens.json`, so it failed every run of both arms), the brand's teal and ink in `docs/foundations.md`, and two judges: the reply waits for approval, and it names at least two things the brand book does not define as open points.
