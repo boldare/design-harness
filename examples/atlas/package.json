@@ -1,6 +1,5 @@
 {
   "name": "atlas",
-  "version": "0.1.0",
   "private": true,
   "description": "Atlas base components built from tokens/tokens.json, documented by their tests.",
   "type": "module",
