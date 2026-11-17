@@ -4,7 +4,7 @@ A design workflow for Claude: a skill that takes a change to a design system fro
 
 This repository holds:
 
-- the package `@boldare/design-harness` (not on npm yet): the skill, the adapters, the test helpers and the `design-harness` CLI,
+- the package [`@boldare/design-harness`](packages/design-harness/README.md), on GitHub Packages from 0.1.0 ([`RELEASING.md`](RELEASING.md)): the skill, the adapters, the test helpers and the `design-harness` CLI,
 - Atlas, the example design system and the fixture the evals run on,
 - the evals of the skill,
 - the docs: the architecture and the plan.

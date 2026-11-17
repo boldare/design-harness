@@ -2,7 +2,7 @@
 
 The harness is a design workflow in one package: a skill that takes a design change from a spec to a report, with gates where a person approves, and the CLI and test helpers that the skill's checks run. A design system lives in its own repository. The harness reads the system's files through contracts, which are data formats, and the tools sit behind those contracts as adapters: Figma, describe-me, React and Claude Design. [Atlas](https://github.com/boldare/design-harness/blob/main/examples/atlas/README.md) is the example system and the fixture the evals run on.
 
-The package is not on npm yet, but `init` is here. The contracts and the adapters: [`docs/architecture.md`](https://github.com/boldare/design-harness/blob/main/docs/architecture.md).
+The contracts and the adapters: [`docs/architecture.md`](https://github.com/boldare/design-harness/blob/main/docs/architecture.md).
 
 ## Commands
 
@@ -22,7 +22,7 @@ The package is not on npm yet, but `init` is here. The contracts and the adapter
 - `adapters/`: one folder per tool. `react/` holds `code.md`, the token build, the raw-value lint, the Vitest preset (`vitest.mjs`, exported as `@boldare/design-harness/vitest`) and the test helpers in `test/`, exported as `@boldare/design-harness/test`. `describe-me/` holds the plugin options and the states check, `figma/` holds `figma.md`, and `claude-design/` holds `claude-design.md`, the build and the preview helpers.
 - `bin/`: `design-harness.mjs`, the CLI.
 - `lib/`: `init`, and the readers of the manifest and the inventory that the adapters share.
-- `templates/`: what `init` writes. Its `gitignore` becomes `.gitignore`, because `pnpm pack` leaves out a `.gitignore`.
+- `templates/`: what `init` writes. Its `gitignore` and `npmrc` become `.gitignore` and `.npmrc`, because `pnpm pack` leaves out both.
 
 ## A system's Vitest config
 
@@ -52,12 +52,42 @@ import { expectAccessible, layout, PhoneFrame, respond, responseDelay } from '@b
 
 The preset and the helpers need these next to the package: `vitest`, `@vitest/browser-playwright` with `playwright`, `@vitejs/plugin-react`, `react` and `react-dom`.
 
+## Access
+
+The package is on GitHub Packages, in the `@boldare` scope, and installing it needs a GitHub token with `read:packages`. Once per computer, with the GitHub CLI:
+
+```
+gh auth refresh -h github.com -s read:packages
+pnpm config set //npm.pkg.github.com/:_authToken "$(gh auth token)"
+```
+
+Without the CLI, use a classic personal access token with `read:packages` in the second command; fine-grained tokens do not work with this registry. If the organisation uses single sign-on, authorise the token for `boldare`. pnpm keeps the token in its user config, never in the repository: it ignores a token in a project's `.npmrc`.
+
+In GitHub Actions, the workflow's own token reads the package:
+
+```yaml
+permissions:
+  contents: read
+  packages: read
+steps:
+  - uses: actions/setup-node@v4
+    with:
+      registry-url: https://npm.pkg.github.com
+      scope: '@boldare'
+  - run: pnpm install --frozen-lockfile
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+While the package is private, its settings on GitHub must give the system's repository read access ("Manage Actions access").
+
 ## How a designer starts a system
 
-Once the package is on npm:
+A new repository, from scratch:
 
 ```
 mkdir design-project-x && cd design-project-x && git init
+echo "@boldare:registry=https://npm.pkg.github.com" > .npmrc
 pnpm add -D @boldare/design-harness
 pnpm exec design-harness init
 pnpm install
@@ -71,7 +101,7 @@ claude        # "Start the system from the brand book in docs/brand-book.pdf"
 - `docs/foundations.md` and `docs/rules.md`.
 - The inventories `components/README.md` and `screens/README.md`, with empty tables.
 - In `package.json`, whatever it lacks of `"type": "module"`, the scripts (`check` and its steps, `dev` and `docs`) and the devDependencies a component test needs.
-- `vitest.config.ts` on the preset, `tsconfig.json`, `src/index.ts`, `src/vite-env.d.ts`, an empty `src/styles/fonts.html` and `.gitignore`.
+- `vitest.config.ts` on the preset, `tsconfig.json`, `src/index.ts`, `src/vite-env.d.ts`, an empty `src/styles/fonts.html`, `.gitignore`, and `.npmrc`, which sends `@boldare` packages to GitHub Packages.
 - The link `.claude/skills/design-harness` to `../../node_modules/@boldare/design-harness/skill`.
 
 `pnpm install` installs what `init` added to `package.json`. The check then passes with no components. Chromium is needed from the first component test on.
