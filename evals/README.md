@@ -1,6 +1,6 @@
 # Eval results
 
-The yardstick for every change to the skill (`docs/plans/workflow-split.md`, step 0). The four cases live in `evals/`, the end-to-end script is `scripts/eval-e2e.sh`. Single runs are noisy; these numbers are three runs per case, one at a time, with a no-skill arm for the delta.
+The yardstick for every change to the skill (`docs/plans/workflow-split.md`, step 0). The cases live in `evals/` (four on Atlas, and from step 5b two on an empty system), the end-to-end scripts are `scripts/eval-e2e.sh` (Atlas) and `scripts/eval-e2e-foundations.sh` (an empty system and a brand book). Single runs are noisy; these numbers are three runs per case, one at a time, with a no-skill arm for the delta.
 
 Run them with `claude plugin eval . --scaffold --allow-tools Write Edit -j 1` from the root of a detached worktree of the commit under test, then `scripts/eval-e2e.sh`. The runner takes the skill from `.claude-plugin/plugin.json`, so the no-skill arm runs without it loaded. The scaffold copies `examples/atlas/` and the package into the workspace.
 
@@ -79,3 +79,28 @@ The branch at `64edad9`, with-skill arm only. `spec-first` has a fourth grader, 
 560 s, 3.83 USD.
 
 End-to-end, the bio prompt: all 16 pass. 311 s, 0.67 + 1.54 USD. It changes TextField and Profile, no new row, so it checks that nothing else moved.
+
+## Step 5b, foundations first (PR #24), 17-18.11.2026
+
+Two new cases on an empty system: the scaffold (`evals/lib/empty-system.sh`) runs `design-harness init --name Kestrel` from this repository's package and copies the package into `node_modules`, as a designer's system would have it.
+- `foundations-first`: the Kestrel brand book (`evals/foundations-first/brand-book.md`, a made-up brand: one light look, eight colours, Work Sans, a 4 px grid, and nothing on focus, disabled, errors or touch size) and "Start our design system from the brand book". Graders: no Write or Edit to `tokens/tokens.json` and no Write to `src/` (matched on `file_path`: a first version matched the whole input, and the proposal's own text names `tokens/tokens.json`, so it failed every run of both arms), the brand's teal and ink in `docs/foundations.md`, and two judges: the reply waits for approval, and it names at least two things the brand book does not define as open points.
+- `foundations-no-source`: "Set up the design system for our new app, Kestrel. We need a primary button and a text field to start." Graders: no Write, no Edit, and a judge: the reply asks for a source and names no value of its own.
+
+The no-skill arm does not measure these cases, nor the Atlas ones since step 5: the workspace has the system's own link `.claude/skills/design-harness`, so Claude Code loads the skill in both arms. In a first run with both arms, `foundations-no-source` scored 1.00 with the skill and 0.89 without.
+
+The branch at `cb3bcd1`, with-skill arm, three runs each:
+
+| Case | Score | Note |
+|---|---|---|
+| foundations-first | 1.00 | `docs/foundations.md` carries the brand's values with usage and source, one light theme, and contrast measured by hand (Line on white 1.39:1 for input borders, Ember 3.68:1 as text, both raised as open points). |
+| foundations-no-source | 0.89 | One run failed the judge (FAIL FAIL FAIL) on a reply that wrote nothing, asked for a brand book, a Figma file or CSS, and named no value. The criterion was made more explicit after the same happened in an earlier run; the judge still misreads it at times. |
+| refuse-hardcode | 1.00 | |
+| reuse-screen | 1.00 | |
+| spec-first | 1.00 | |
+| token-proposal | 0.89 | One run failed `proposes-not-approximates` (FAIL FAIL FAIL) on a reply with a full `size.progress-track` proposal and why no token fits. |
+
+482 s, 5.26 USD.
+
+End-to-end, `scripts/eval-e2e-foundations.sh` (pack, `init`, the brand book; phase 1 the request, phase 2 "approved as proposed, and take your proposals for the open points"): all 19 checks pass, twice. The tokens file stays empty until approval, then holds the brand's colours as primitives and semantic tokens with usage notes, the six Work Sans styles, one theme, and the tokens for the core rules, which `docs/rules.md` names; `npm run check` passes with no components. 268 s, 0.77 + 1.43 USD, and 256 s, 0.60 + 1.41 USD. The Atlas e2e (bio prompt): all 16 pass, 332 s.
+
+Figma, by hand: an approved Kestrel system and an empty Figma file ("Kestrel (design-harness foundations demo)", Boldare S.A.), with the request to build the library. `claude -p` had no Figma connection (the MCP's sign-in is per session), and the skill stopped at the `figma` gate and said so. A subagent in a session with the connection, reading only the skill and the adapter, built three collections (8 primitives, 16 semantic colours, 16 dimensions, every one scoped, described and with code syntax), six text styles, one effect style, the Foundations page drawn from them, `figma/library.json` and `outputs.figma`. Its list of what the text left open (the shape of `library.json`, mode names, scopes, unit conversions, the shadow's alpha, the Foundations page's own values, a Figma file given after approval) went into the Figma adapter and the skill.

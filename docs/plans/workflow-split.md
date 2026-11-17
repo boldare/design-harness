@@ -1,6 +1,6 @@
 # Plan: split the workflow from the Atlas design system
 
-Status: draft for review (16.10.2026, decisions added 22.10.2026; decisions 1, 3, 4, 6 and 7 revised, decision 8 and steps 1c and 5b added 02.11.2026). Step 0 and step 1 done: baseline and branch evals in `evals/README.md`, the swap in PR #3, the first component built through it (Slider) in PR #5. Step 2 done in `docs/architecture.md`, steps 3 and 4 done (16.11.2026). Step 1c done (code 16.11.2026, Figma and the skill 17.11.2026). Step 5 done (17.11.2026): `@boldare/design-harness` 0.1.0 is on GitHub Packages. Owner: Grzegorz Łotysz.
+Status: draft for review (16.10.2026, decisions added 22.10.2026; decisions 1, 3, 4, 6 and 7 revised, decision 8 and steps 1c and 5b added 02.11.2026). Step 0 and step 1 done: baseline and branch evals in `evals/README.md`, the swap in PR #3, the first component built through it (Slider) in PR #5. Step 2 done in `docs/architecture.md`, steps 3 and 4 done (16.11.2026). Step 1c done (code 16.11.2026, Figma and the skill 17.11.2026). Step 5 done (17.11.2026): `@boldare/design-harness` 0.1.0 is on GitHub Packages. Step 5b done (18.11.2026). Owner: Grzegorz Łotysz.
 
 ## Why
 
@@ -87,6 +87,7 @@ Done, publishing (17.11.2026): `@boldare/design-harness` 0.1.0 is on GitHub Pack
 ### 5b. Foundations first
 The skill's way into an empty system. It asks for a source (a brand book, the variables and styles of the client's Figma, or the CSS the project has; describe-me's Foundations reader already parses custom properties, Tailwind `@theme` and MUI themes), proposes the tokens with usage notes and the foundations, waits at the `tokens` gate, and then builds the Figma variables, styles and Foundations page. With no source it asks for one; it never invents a look. A new eval covers it: an empty repository and a brand book go in, token proposals and a stop at the gate come out.
 Done when: an empty repository goes from `init` to approved foundations in Figma and code, and the new eval passes.
+Done (18.11.2026): SKILL.md has "An empty system: foundations first", and `references/foundations.md` the proposal it writes in `docs/foundations.md`: every token with its value, usage and source, the tokens the core rules need, contrast and open points. With no source the skill asks for one and writes nothing. The Figma adapter's "Starting a library" builds the collections, styles, Foundations page and `library.json`, also for a file given after approval. Two evals (`foundations-first` with a made-up brand book, `foundations-no-source`) and `scripts/eval-e2e-foundations.sh` cover it; the made-up Kestrel system went from `init` to approved foundations in code and in a Figma file (`evals/README.md`).
 
 ### 6. Pilot on a second system
 Start one real system with `design-harness init`, on React for the web (decision 3), internal first; most Boldare projects work in the client's Figma, so its foundations will likely come from there (step 5b). It will find what is still Atlas-shaped.
