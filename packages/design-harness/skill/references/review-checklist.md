@@ -9,7 +9,7 @@
 - [ ] Labels survive a 40 % longer translation.
 - [ ] A colour pair that failed a contrast rule has been looked up across the system, and other places using it are listed under Open.
 - [ ] `npm run lint:tokens`, `npm run typecheck`, `npm test`, `npm run check-states` pass.
-- [ ] `figma/library.json` (when the manifest has `outputs.figma`) and the component index (`components/README.md` or `screens/README.md`) updated.
+- [ ] `figma/library.json` (when the manifest has `outputs.figma`) and the inventory table (`components/README.md` or `screens/README.md`) updated, the new row in its group.
 - [ ] Claude Design re-synced, when the manifest has `outputs.claude_design`.
 - [ ] Every gate the manifest adds (`gates`) passed, or is waiting for its person.
 

@@ -55,16 +55,72 @@
     "Components": {
       "pageId": "6:2",
       "overviewFrameId": "10:260",
-      "note": "One section per component. Overview frame shows the same instances in Light and Dark."
+      "groups": {
+        "Icons": {
+          "id": "114:898",
+          "sections": {
+            "Icon": "6:3"
+          }
+        },
+        "Actions": {
+          "id": "114:899",
+          "sections": {
+            "Button": "7:43",
+            "IconButton": "7:57",
+            "Link": "7:79"
+          }
+        },
+        "Inputs": {
+          "id": "114:900",
+          "sections": {
+            "TextField": "8:163",
+            "Select": "9:129"
+          }
+        },
+        "Selection": {
+          "id": "114:901",
+          "sections": {
+            "Checkbox": "10:163",
+            "Radio": "10:201",
+            "Switch": "10:239",
+            "Slider": "34:221"
+          }
+        },
+        "Feedback": {
+          "id": "114:902",
+          "sections": {
+            "Alert": "10:248",
+            "StatusMark": "13:205"
+          }
+        },
+        "Identity": {
+          "id": "114:903",
+          "sections": {
+            "AccountCard": "10:255",
+            "Logo": "13:204"
+          }
+        }
+      },
+      "note": "One section per group of components/README.md, top to bottom in table order, each holding one section per component in table order. The Overview frame, right of the groups, shows the same instances in Light and Dark."
     },
     "Screens": {
       "pageId": "14:2",
-      "sections": {
-        "SignIn": "14:252",
-        "Profile": "15:562",
-        "DeviceSettings": "15:732"
+      "groups": {
+        "Account": {
+          "id": "114:904",
+          "sections": {
+            "SignIn": "14:252",
+            "Profile": "15:562"
+          }
+        },
+        "Settings": {
+          "id": "114:905",
+          "sections": {
+            "DeviceSettings": "15:732"
+          }
+        }
       },
-      "note": "Light row on top, dark row below (clones with the Color collection set to Dark). Built only from component instances."
+      "note": "One section per group of screens/README.md, as on Components. In each screen section the light row is on top and the dark row below (clones with the Color collection set to Dark), built only from component instances."
     }
   },
   "components": {

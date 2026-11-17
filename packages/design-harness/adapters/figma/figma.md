@@ -6,8 +6,10 @@ Use the Figma MCP `use_figma` tool and load the `figma-use` skill before the fir
 
 ## Pages
 - `Foundations`: overview drawn from variables. Update it when you add a token family.
-- `Components`: one section per component, in the order of the components inventory, component set inside, variants in a wrapping auto-layout grid.
-- `Screens`: one section per screen, in the order of the screens inventory, one row per theme (the first theme on top, then a clone with the colour collection set to each other mode).
+- `Components`: one section per group of the components inventory (the Group column of `components/README.md`), named after the group, stacked top to bottom in the order of the table. Inside a group, one section per component, named after it and stacked top to bottom in table order, with the component set inside and the variants in a wrapping auto-layout grid.
+- `Screens`: the same for the screens inventory, one section per group, then one section per screen, with one row per theme (the first theme on top, then a clone with the colour collection set to each other mode).
+
+A new component or screen goes into the section of its group, at its place in the table. A new group is a new section at its place among the groups. Move the sections below it down, and grow the group section, so that nothing overlaps. `library.json` lists the group sections and the sections in them (`pages.<Page>.groups`).
 
 ## Helpers
 Start every script with these, then build. They bind everything to variables and styles, which is the rule in Figma terms.
@@ -34,7 +36,7 @@ Use the collections listed in `figma/library.json`, by what each `holds`: dimens
 
 ## Components
 - Variant names `Axis=value, Axis=value`, axes and values exactly as in the spec's states table.
-- Combine with `figma.combineAsVariants`, then give the set a wrapping auto-layout (gaps `space.6` / `space.8`, padding `space.8`, fill `surface.page`), put it in its own section and set the set's description to the spec's first sentence plus `Spec: components/<Name>/README.md`.
+- Combine with `figma.combineAsVariants`, then give the set a wrapping auto-layout (gaps `space.6` / `space.8`, padding `space.8`, fill `surface.page`), put it in its own section inside the section of its group and set the set's description to the spec's first sentence plus `Spec: components/<Name>/README.md`.
 - Text and booleans that screens change become component properties (`Label`, `Description`).
 
 ## Pitfalls already met
@@ -46,3 +48,11 @@ Use the collections listed in `figma/library.json`, by what each `holds`: dimens
 
 ## Check
 Screenshot the new section, look at every variant, then check one screen or instance in every other theme. Fix what is clipped, cut off or unbound before reporting. Add the new ids to `figma/library.json`.
+
+Then list the sections of the page and compare them with its inventory table: the same groups, in the same order, and in each group the same names in the same order. A difference fails the gate, and is fixed in Figma, not in the table.
+
+```js
+const page = figma.root.children.find(p => p.name === 'Components'); await figma.setCurrentPageAsync(page);
+const sections = n => n.children.filter(c => c.type === 'SECTION').sort((a, b) => a.y - b.y);
+return sections(page).map(g => `${g.name}: ${sections(g).map(s => s.name).join(', ')}`);
+```

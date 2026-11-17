@@ -46,6 +46,7 @@ State in two or three lines what is being added, which existing components it re
 - Component: `components/<Name>/README.md` from `references/component-spec.md`.
 - Screen: `screens/<Name>/README.md` from `references/screens.md`.
 - New tokens: proposals in the format of `references/tokens.md`.
+- The inventory row: a new component or screen gets its row in the inventory table (`components/README.md` or `screens/README.md`) with its spec, in its group. The Group column sets the groups, the rows of a group stand together, and the order of the table is the order of the library in the viewer, in Figma and in Claude Design. Put the row among the rows of the group it belongs to, where it fits, usually last. Start a new group only when no existing group fits, put it where it fits among the groups, and list it in the spec as an open point for the designer.
 
 Show the spec and any token proposals and wait for the designer's go-ahead, unless the request says to go straight through. This is the moment where a person decides; everything after it is execution.
 
@@ -53,7 +54,7 @@ Show the spec and any token proposals and wait for the designer's go-ahead, unle
 Add approved tokens to the tokens file with usage notes, record them in the foundations, run `npm run tokens`, and create the matching Figma variables (`node_modules/@boldare/design-harness/adapters/figma/figma.md`, "Variables").
 
 ### 4. Figma (`figma`)
-Build the component or screen in the system's Figma file following `node_modules/@boldare/design-harness/adapters/figma/figma.md`: every fill, stroke, padding, gap, radius, size and opacity bound to a variable, every text on one of the system's text styles, every state from the spec as a variant, and a screenshot to check it in every theme.
+Build the component or screen in the system's Figma file following `node_modules/@boldare/design-harness/adapters/figma/figma.md`: every fill, stroke, padding, gap, radius, size and opacity bound to a variable, every text on one of the system's text styles, every state from the spec as a variant, the section in its group at its place in the inventory table, and a screenshot to check it in every theme.
 
 ### 5. Code (`code`, `states`)
 Implement in `src/` (`paths.src`) following `node_modules/@boldare/design-harness/adapters/react/code.md`: the component or screen, a test for every state (the tests are the stories), and the checks passing: `npm run check` (lint:tokens, typecheck, test, check-states) closes `code`, and `check-states` closes `states`.
