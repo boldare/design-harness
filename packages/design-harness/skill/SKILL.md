@@ -18,6 +18,8 @@ You work inside an existing design system. Your job is not to invent a look; it 
 
 Do not start from what a typical design system would have. Start from what this one has.
 
+The guides for each tool (Figma, code, Claude Design) are not in this skill but in the package's adapters, at `node_modules/@boldare/design-harness/adapters/` from the root of the system. Open them by that path: this skill is usually a link, so a path relative to it does not resolve.
+
 ## The rule
 
 Every value comes from a token. No colour, size, spacing, radius, font size or duration is typed in by hand, in Figma or in code. When nothing fits, you do not approximate: you propose a token (name, value, usage note, reason) using `references/tokens.md`, and it is added to the tokens file and recorded in the foundations before anything uses it.
@@ -48,16 +50,16 @@ State in two or three lines what is being added, which existing components it re
 Show the spec and any token proposals and wait for the designer's go-ahead, unless the request says to go straight through. This is the moment where a person decides; everything after it is execution.
 
 ### 3. Tokens (`tokens`)
-Add approved tokens to the tokens file with usage notes, record them in the foundations, run `npm run tokens`, and create the matching Figma variables (`../adapters/figma/figma.md`, "Variables").
+Add approved tokens to the tokens file with usage notes, record them in the foundations, run `npm run tokens`, and create the matching Figma variables (`node_modules/@boldare/design-harness/adapters/figma/figma.md`, "Variables").
 
 ### 4. Figma (`figma`)
-Build the component or screen in the system's Figma file following `../adapters/figma/figma.md`: every fill, stroke, padding, gap, radius, size and opacity bound to a variable, every text on one of the system's text styles, every state from the spec as a variant, and a screenshot to check it in every theme.
+Build the component or screen in the system's Figma file following `node_modules/@boldare/design-harness/adapters/figma/figma.md`: every fill, stroke, padding, gap, radius, size and opacity bound to a variable, every text on one of the system's text styles, every state from the spec as a variant, and a screenshot to check it in every theme.
 
 ### 5. Code (`code`, `states`)
-Implement in `src/` (`paths.src`) following `../adapters/react/code.md`: the component or screen, a test for every state (the tests are the stories), and the checks passing: `npm run check` (lint:tokens, typecheck, test, check-states) closes `code`, and `check-states` closes `states`.
+Implement in `src/` (`paths.src`) following `node_modules/@boldare/design-harness/adapters/react/code.md`: the component or screen, a test for every state (the tests are the stories), and the checks passing: `npm run check` (lint:tokens, typecheck, test, check-states) closes `code`, and `check-states` closes `states`.
 
 ### 6. Claude Design (`sync`)
-Re-sync the published design system as described in `../adapters/claude-design/claude-design.md`.
+Re-sync the published design system as described in `node_modules/@boldare/design-harness/adapters/claude-design/claude-design.md`.
 
 ### 7. Review and report (`report`)
 Go through `references/review-checklist.md`. Finish with the change report it defines. If anything in the spec turned out to be unclear while building, fix the spec, not only the output.
