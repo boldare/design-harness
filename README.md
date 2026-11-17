@@ -12,10 +12,11 @@ This repository holds:
 ## Layout
 
 ```
-packages/design-harness/   @boldare/design-harness: skill/, adapters/, lib/, bin/design-harness.mjs
+packages/design-harness/   @boldare/design-harness: skill/, adapters/, lib/, templates/, bin/design-harness.mjs
 examples/atlas/            Atlas, the example system and the eval fixture
 evals/                     the skill evals, whose scaffold copies examples/atlas and the package
 scripts/eval-e2e.sh        the end-to-end eval
+scripts/check-init.sh      init on the packed package, in an empty system
 docs/                      the architecture and the plan
 .claude-plugin/            the skill as a plugin, for claude plugin eval
 ```
@@ -32,6 +33,12 @@ pnpm claude-design
 ```
 
 `pnpm check` runs Atlas's checks: the raw-value lint, the typecheck, the tests (the stories and axe in both themes) and the states check. `pnpm claude-design` builds Atlas for Claude Design into `examples/atlas/claude-design/project/`, next to the card sources.
+
+`scripts/check-init.sh` packs the package and starts an empty system from the tarball in a temporary folder. It runs `init` and the system's check, checks the skill link and the paths its `SKILL.md` names, and runs `init` again, which must change nothing. It needs the npm registry. CI runs it after the Claude Design build.
+
+```
+scripts/check-init.sh
+```
 
 ## Evals
 

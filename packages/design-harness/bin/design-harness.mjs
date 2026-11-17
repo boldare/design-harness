@@ -1,10 +1,12 @@
 #!/usr/bin/env node
-// The design-harness command: runs one adapter script on the design system whose manifest is found from the working directory up.
+// The design-harness command. `init` writes a new design system into the working directory. Every other command runs
+// one adapter script on the design system whose manifest is found from the working directory up.
 
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const commands = new Map([
+  ['init', '../lib/init.mjs'],
   ['tokens', '../adapters/react/build-tokens.mjs'],
   ['lint', '../adapters/react/check-raw-values.mjs'],
   ['states', '../adapters/describe-me/check-states.mjs'],
