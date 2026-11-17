@@ -104,7 +104,7 @@ design-harness/                      this repository, a pnpm workspace as in des
   packages/design-harness/           @boldare/design-harness, published
     skill/                           SKILL.md and references/: the core
     adapters/                        react/, describe-me/, figma/, claude-design/
-    lib/                             the manifest and inventory readers the adapters share
+    lib/                             init, and the manifest and inventory readers the adapters share
     bin/design-harness.mjs           init · tokens · lint · states · claude-design
     templates/                       what init writes
   examples/atlas/                    the example system and the eval fixture
@@ -122,7 +122,7 @@ design-project-x/                    a designer's repository
 
 ## Where every file goes
 
-The path before step 5, the path after it, and the layer. `skill:` is short for `.claude/skills/atlas-design-system/` before step 5, and `pkg/` for `packages/design-harness/` after it. The move is done, except `templates/`, which come with `init`.
+The path before step 5, the path after it, and the layer. `skill:` is short for `.claude/skills/atlas-design-system/` before step 5, and `pkg/` for `packages/design-harness/` after it. The move is done, `templates/` included.
 
 | Before step 5 | After step 5 | Layer |
 |---|---|---|
@@ -156,10 +156,20 @@ The path before step 5, the path after it, and the layer. `skill:` is short for 
 mkdir design-project-x && cd design-project-x && git init
 pnpm add -D @boldare/design-harness
 pnpm exec design-harness init
+pnpm install
+pnpm exec playwright install chromium
 claude        # "Start the system from the brand book in docs/brand-book.pdf"
 ```
 
-`init` writes the skeleton and links the skill. The first session builds the foundations from the source, the next ones the components and screens. An update is `pnpm up @boldare/design-harness`; the skill follows through the link.
+`init` writes the skeleton and links the skill. It never overwrites a file. It writes:
+
+- `design-harness.yaml` with the name, and `tokens/tokens.json` with the themes `light` and `dark` and no tokens,
+- `docs/foundations.md`, `docs/rules.md`, and the inventories `components/README.md` and `screens/README.md` with empty tables,
+- the scripts of the checks and the devDependencies, merged into `package.json`,
+- `vitest.config.ts`, `tsconfig.json`, `src/index.ts`, `src/vite-env.d.ts`, an empty `src/styles/fonts.html` and `.gitignore`,
+- the link `.claude/skills/design-harness`.
+
+After `pnpm install`, the check passes with zero components. The first session builds the foundations from the source, the next ones the components and screens. An update is `pnpm up @boldare/design-harness`, and the skill follows through the link.
 
 ## Not decided here
 

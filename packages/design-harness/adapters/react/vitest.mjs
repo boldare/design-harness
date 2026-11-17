@@ -48,6 +48,8 @@ export function defineHarnessConfig(overrides = {}) {
     test: {
       include: [posix.join(system.paths.src, '**/*.test.tsx')],
       setupFiles: [fileURLToPath(new URL('./test/setup.ts', import.meta.url))],
+      // A new system has no tests yet. The states check still fails once an inventory row has no recorded test file.
+      passWithNoTests: true,
       // A real browser, so layout, fonts, focus and contrast are the real ones.
       browser: {
         enabled: true,

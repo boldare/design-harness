@@ -93,7 +93,7 @@ function validate(raw) {
 export function loadSystem(from = process.cwd()) {
   const root = findRoot(from);
   if (!root) {
-    console.error(`No ${MANIFEST} in ${from} or above it. Run the command inside a design system.`);
+    console.error(`No ${MANIFEST} in ${from} or above it. Run the command inside a design system, or start one with \`design-harness init\`.`);
     process.exit(1);
   }
   let raw;

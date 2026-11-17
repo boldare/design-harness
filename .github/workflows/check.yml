@@ -1,4 +1,4 @@
-# The checks every pull request must pass before it merges: the same pnpm check a designer runs, plus the Claude Design build.
+# The checks every pull request must pass before it merges: the same pnpm check a designer runs, the Claude Design build and init on the packed package.
 name: check
 
 on:
@@ -27,3 +27,5 @@ jobs:
       - run: pnpm check
       # Builds the artifact files without publishing them; the script stops when the output would not work on the page.
       - run: pnpm claude-design --out "$RUNNER_TEMP/claude-design" --via "CI · ${{ github.repository }}@${{ github.sha }}"
+      # Starts an empty system from the packed package with init and runs its check, as a designer would.
+      - run: scripts/check-init.sh

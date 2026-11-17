@@ -1,0 +1,9 @@
+# src/styles/tokens.css is generated but tracked, because the app imports it.
+node_modules
+# describe-me output: the recorded frames and the static site. Vitest attachments: failure screenshots.
+.describe-me
+describe-me-dist
+.vitest
+dist
+*.log
+.DS_Store

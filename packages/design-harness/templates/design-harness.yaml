@@ -1,0 +1,8 @@
+# The manifest of the design system: how the harness finds it.
+# Only name is required. The optional keys and their defaults are in "The manifest":
+# https://github.com/boldare/design-harness/blob/main/docs/architecture.md#the-manifest
+#   paths    where the tokens, the docs, the specs and the code live
+#   frame    the screen mockup, { width, height }. A system without one has no screens.
+#   outputs  figma and claude_design. An output left out skips its step and its gate.
+#   gates    gates added to the core gates
+name: Design system
