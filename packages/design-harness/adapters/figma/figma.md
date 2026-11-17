@@ -34,6 +34,16 @@ Icons: create an instance of the icon component from the Components page (`Icon/
 ## Variables
 Use the collections listed in `figma/library.json`, by what each `holds`: dimensions (FLOAT) in one, colour primitives in another (hidden, scopes `[]`), and semantic colours as aliases with one mode per theme. Always set scopes, a description from the usage note, and code syntax as the library's `naming` says (WEB `var(--name)`, ANDROID camelCase).
 
+## Starting a library
+The foundations of an empty system, when there is no `figma/library.json` yet. The designer gives the file: an empty one, or the client's file with a page for the library. Create a new file with the MCP only when the designer asks, in the team and project they name.
+
+1. Collections: `Primitives` (one mode, `Value`, every variable hidden with scopes `[]`), `Color` (one mode per theme, named as the themes in the tokens file, semantic colours as aliases of primitives), `Dimensions` (one mode, `Value`: spacing, radius, size, stroke, opacity). Duration and layer are code only.
+2. Text styles `<group>/<style>` from `type.groups`, and effect styles `Shadow/<name>` from `shadow`. Load each font first; a font the file cannot load is an open point, not a substitute.
+3. Pages `Foundations`, `Components` and, when the manifest has `frame`, `Screens`. The Foundations page is drawn from the variables and styles, nothing typed by hand: colour swatches per theme side by side, one specimen per text style, the spacing, radius and size scales as bars, and one sample per shadow.
+4. `figma/library.json` in Atlas's shape: `file` (name, key, URL, team, project), `naming`, `collections` with ids, modes and what each `holds`, `syncedAt`, `counts`, `pages` (the Foundations root frame, `groups: {}` on the others), `components: {}`, `figmaNotes: []`. Then `outputs.figma: { library: figma/library.json }` in the manifest.
+
+Check: screenshot the Foundations page in every theme, and compare the counts in `library.json` with the tokens file.
+
 ## Components
 - Variant names `Axis=value, Axis=value`, axes and values exactly as in the spec's states table.
 - Combine with `figma.combineAsVariants`, then give the set a wrapping auto-layout (gaps `space.6` / `space.8`, padding `space.8`, fill `surface.page`), put it in its own section inside the section of its group and set the set's description to the spec's first sentence plus `Spec: components/<Name>/README.md`.
