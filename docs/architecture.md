@@ -104,12 +104,14 @@ design-harness/                      this repository, a pnpm workspace as in des
   packages/design-harness/           @boldare/design-harness, published
     skill/                           SKILL.md and references/: the core
     adapters/                        react/, describe-me/, figma/, claude-design/
+    lib/                             the manifest and inventory readers the adapters share
     bin/design-harness.mjs           init · tokens · lint · states · claude-design
     templates/                       what init writes
   examples/atlas/                    the example system and the eval fixture
-  evals/                             the skill evals; the scaffold copies examples/atlas
+  evals/                             the skill evals, whose scaffold copies examples/atlas and the package
   scripts/eval-e2e.sh
   docs/                              the plan, this file
+  .claude-plugin/plugin.json         the skill as a plugin, for claude plugin eval
 
 design-project-x/                    a designer's repository
   package.json                       devDependencies: @boldare/design-harness
@@ -120,9 +122,9 @@ design-project-x/                    a designer's repository
 
 ## Where every file goes
 
-Today's path, its path after step 5, and its layer. `skill:` is short for `.claude/skills/atlas-design-system/` today, and `pkg/` for `packages/design-harness/` after the move.
+The path before step 5, the path after it, and the layer. `skill:` is short for `.claude/skills/atlas-design-system/` before step 5, and `pkg/` for `packages/design-harness/` after it. The move is done, except `src/test/setup.ts`, which stays in `examples/atlas/src/test/` until the Vitest preset, and `templates/`, which come with `init`.
 
-| Today | After step 5 | Layer |
+| Before step 5 | After step 5 | Layer |
 |---|---|---|
 | `skill:SKILL.md` | `pkg/skill/SKILL.md`, skill `design-harness` | Core |
 | `skill:references/component-spec.md`, `screens.md`, `tokens.md`, `review-checklist.md` | `pkg/skill/references/` | Core |

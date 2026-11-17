@@ -1,4 +1,4 @@
-# The checks every pull request must pass before it merges: the same npm run check a designer runs, plus the Claude Design build.
+# The checks every pull request must pass before it merges: the same pnpm check a designer runs, plus the Claude Design build.
 name: check
 
 on:
@@ -16,13 +16,14 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: npm
-      - run: npm ci
-      # The tests run in a real Chromium (vitest.config.ts).
-      - run: npx playwright install --with-deps chromium
-      - run: npm run check
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # The tests run in a real Chromium (examples/atlas/vitest.config.ts).
+      - run: pnpm --filter ./examples/atlas exec playwright install --with-deps chromium
+      - run: pnpm check
       # Builds the artifact files without publishing them; the script stops when the output would not work on the page.
-      - run: npm run claude-design -- --out "$RUNNER_TEMP/claude-design" --via "CI · ${{ github.repository }}@${{ github.sha }}"
+      - run: pnpm claude-design --out "$RUNNER_TEMP/claude-design" --via "CI · ${{ github.repository }}@${{ github.sha }}"

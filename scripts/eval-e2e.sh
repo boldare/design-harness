@@ -1,5 +1,5 @@
 #!/bin/bash
-# End-to-end eval of the atlas-design-system skill, run headless on a throwaway copy of the repository:
+# End-to-end eval of the design-harness skill on Atlas, run headless on a throwaway copy of the repository:
 #   phase 1  the prompt; the skill must write a spec and stop for approval, with no code changed
 #   phase 2  "approved"; the skill builds; then the repository checks run (lint, typecheck, tests, states) and the report is inspected
 # Figma and Claude Design are switched off: this checks the source and the code, not the outputs.
@@ -12,12 +12,16 @@ WORK=$(mktemp -d)/atlas-e2e
 mkdir -p "$OUT"
 git -C "$REPO" worktree add --detach -q "$WORK" HEAD
 trap 'git -C "$REPO" worktree remove --force "$WORK" >/dev/null 2>&1' EXIT
-ln -s "$REPO/node_modules" "$WORK/node_modules"
 cd "$WORK"
+# pnpm's node_modules hold relative links into the checkout they were made in, so the worktree installs its own.
+pnpm install --frozen-lockfile --prefer-offline
+# Claude Code loads the skill through Atlas's link, .claude/skills/design-harness.
+cd "$WORK/examples/atlas"
 
 OFF="mcp__plugin_figma_figma,Artifact"
 READ="Read,Glob,Grep,Skill,Write,Edit"
 BUILD="Bash(npm run tokens),Bash(npm run lint:tokens),Bash(npm run typecheck),Bash(npm test),Bash(npm run check-states),Bash(npx vitest*),Bash(npm run claude-design*)"
+BUILD="$BUILD,Bash(pnpm run tokens),Bash(pnpm run lint:tokens),Bash(pnpm run typecheck),Bash(pnpm test),Bash(pnpm run check-states),Bash(pnpm exec vitest*),Bash(pnpm run claude-design*)"
 FAIL=0
 check() { if bash -c "$2" >/dev/null 2>&1; then echo "PASS  $1"; else echo "FAIL  $1"; FAIL=1; fi; }
 
@@ -42,11 +46,11 @@ jq -r 'select(.type=="result") | .result' "$OUT/phase2.jsonl" > "$OUT/report.md"
 total=$(( $(date +%s) - start ))
 {
 echo "Total: ${total}s"
-check "tokens build"                             "npm run -s tokens"
-check "lint:tokens (no raw values in CSS)"       "npm run -s lint:tokens"
-check "typecheck"                                "npm run -s typecheck"
-check "tests (the stories, axe in both themes)"  "npm run -s test"
-check "every spec state has a test, the sidebar follows the inventory"  "npm run -s check-states"
+check "tokens build"                             "pnpm run -s tokens"
+check "lint:tokens (no raw values in CSS)"       "pnpm run -s lint:tokens"
+check "typecheck"                                "pnpm run -s typecheck"
+check "tests (the stories, axe in both themes)"  "pnpm run -s test"
+check "every spec state has a test, the sidebar follows the inventory"  "pnpm run -s check-states"
 check "no hex colours added in src/"             "! { git diff HEAD -- src ':!src/styles/tokens.css' | grep '^+' ; git ls-files -o --exclude-standard src | xargs cat 2>/dev/null; } | grep -qE '#[0-9a-fA-F]{6}\\b'"
 check "new tokens recorded in foundations.md"    "git diff --quiet HEAD -- tokens/tokens.json || ! git diff --quiet HEAD -- docs/foundations.md"
 for f in 'Change:' 'Reused:' 'New:' 'Tokens used:' 'States:' 'Checks:'; do

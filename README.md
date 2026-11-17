@@ -1,16 +1,50 @@
 # design-harness
 
-The Atlas design system, kept as files that people and agents read and change in the same way.
+A design workflow for Claude: a skill that takes a change to a design system from a spec to a report, with gates where a person approves, and keeps the spec, the tokens, the Figma library, the code and Claude Design in step.
 
-- `tokens/tokens.json` is the source of truth: colours (light and dark), type, spacing, radius, size, stroke and shadow. Every token carries a usage note.
-- `docs/foundations.md` records where each value came from and the decisions behind it.
-- `docs/rules.md` holds the Atlas rules on top of the skill's core rules: the tokens for focus, disabled, errors and touch size, the frame, the text styles, the icon and logo geometry, the persona.
-- `figma/library.json` maps tokens to the Figma library ([design-harness](https://www.figma.com/design/XHhJ2l7C09Si5uQu3EBmUH), Boldare S.A. / Gildia designu): file and collection ids, and the naming rules from token to Figma variable, CSS variable and Android name.
-- `docs/claude-design.md` covers the same system in Claude Design ([Atlas](https://claude.ai/artifact/1tmtuAJXcgkirZ25hAMPY5)), generated from this repository by `npm run claude-design`.
+This repository holds:
 
-The rule: every value in a component comes from a token. A value no token covers becomes a proposal for a new token, recorded in `docs/foundations.md` before any component uses it.
+- the package `@boldare/design-harness` (not on npm yet): the skill, the adapters, the test helpers and the `design-harness` CLI,
+- Atlas, the example design system and the fixture the evals run on,
+- the evals of the skill,
+- the docs: the architecture and the plan.
 
-- `components/` holds the spec of every component (README), `screens/` the screens composed from them, `src/` the React implementation, documented by its tests with describe-me (`npm run dev` for the viewer, `npm run check` for every check).
-- `design-harness.yaml` is the manifest: the system's name, where its files are, its frame and its outputs. The scripts find the system through it ([`docs/architecture.md`](docs/architecture.md#the-manifest)).
+## Layout
 
-Coming next: a Claude skill that adds new components and screens inside these rules, and keeps Figma, code and Claude Design in step.
+```
+packages/design-harness/   @boldare/design-harness: skill/, adapters/, lib/, bin/design-harness.mjs
+examples/atlas/            Atlas, the example system and the eval fixture
+evals/                     the skill evals, whose scaffold copies examples/atlas and the package
+scripts/eval-e2e.sh        the end-to-end eval
+docs/                      the architecture and the plan
+.claude-plugin/            the skill as a plugin, for claude plugin eval
+```
+
+## Check
+
+The repository is a pnpm workspace. From its root:
+
+```
+pnpm install
+pnpm --filter ./examples/atlas exec playwright install chromium
+pnpm check
+pnpm claude-design
+```
+
+`pnpm check` runs Atlas's checks: the raw-value lint, the typecheck, the tests (the stories and axe in both themes) and the states check. `pnpm claude-design` builds Atlas for Claude Design into `examples/atlas/claude-design/project/`, next to the card sources.
+
+## Evals
+
+From the root of a detached worktree of the commit under test:
+
+```
+claude plugin eval . --scaffold --allow-tools Write Edit -j 1
+scripts/eval-e2e.sh
+```
+
+The cases, the results and how they were run: [`evals/README.md`](evals/README.md).
+
+## Docs
+
+- [`docs/architecture.md`](docs/architecture.md): the harness and a design system, the contracts between them and where every file goes.
+- [`docs/plans/workflow-split.md`](docs/plans/workflow-split.md): the plan that splits the workflow from Atlas.
