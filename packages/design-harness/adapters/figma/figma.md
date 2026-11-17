@@ -1,6 +1,6 @@
 # Figma
 
-The system's Figma file is in `figma/library.json` (`outputs.figma.library` in the manifest): the file key and URL, the naming rules, the variable collections with their ids and modes, the pages, and every component's node ids. Read it first and never guess an id. A system without `outputs.figma` skips this step.
+The system's Figma file is in `figma/library.json` (`outputs.figma.library` in the manifest): the file key and URL, the naming rules, the variable collections with their ids and modes, the pages, and every component's node ids. Read it first and never guess an id. A system without `outputs.figma` skips this step, unless the designer gives a file: then start the library ("Starting a library").
 
 Use the Figma MCP `use_figma` tool and load the `figma-use` skill before the first call (and `figma-generate-library` for components). Calls are sequential, never parallel.
 
@@ -35,14 +35,47 @@ Icons: create an instance of the icon component from the Components page (`Icon/
 Use the collections listed in `figma/library.json`, by what each `holds`: dimensions (FLOAT) in one, colour primitives in another (hidden, scopes `[]`), and semantic colours as aliases with one mode per theme. Always set scopes, a description from the usage note, and code syntax as the library's `naming` says (WEB `var(--name)`, ANDROID camelCase).
 
 ## Starting a library
-The foundations of an empty system, when there is no `figma/library.json` yet. The designer gives the file: an empty one, or the client's file with a page for the library. Create a new file with the MCP only when the designer asks, in the team and project they name.
+The foundations of a system that has no `figma/library.json` yet: right after the foundations are approved, or in a later session, when the designer gives a file for foundations that are already in the tokens file. The designer gives the file: an empty one, or the client's file with a page for the library. Create a new file with the MCP only when the designer asks, in the team and project they name. The repository is the source, so the library discovery of `figma-generate-library` (`get_libraries`, `search_design_system`) is not needed in an empty file.
 
-1. Collections: `Primitives` (one mode, `Value`, every variable hidden with scopes `[]`), `Color` (one mode per theme, named as the themes in the tokens file, semantic colours as aliases of primitives), `Dimensions` (one mode, `Value`: spacing, radius, size, stroke, opacity). Duration and layer are code only.
-2. Text styles `<group>/<style>` from `type.groups`, and effect styles `Shadow/<name>` from `shadow`. Load each font first; a font the file cannot load is an open point, not a substitute.
-3. Pages `Foundations`, `Components` and, when the manifest has `frame`, `Screens`. The Foundations page is drawn from the variables and styles, nothing typed by hand: colour swatches per theme side by side, one specimen per text style, the spacing, radius and size scales as bars, and one sample per shadow.
-4. `figma/library.json` in Atlas's shape: `file` (name, key, URL, team, project), `naming`, `collections` with ids, modes and what each `holds`, `syncedAt`, `counts`, `pages` (the Foundations root frame, `groups: {}` on the others), `components: {}`, `figmaNotes: []`. Then `outputs.figma: { library: figma/library.json }` in the manifest.
+1. Collections, named as here so every system reads the same:
+   - `Primitives`: one mode, `Value`. Colour primitives, each with scopes `[]` and `hiddenFromPublishing`.
+   - `Color`: one mode per theme, named after the theme's `name` in the tokens file (`Light`). Semantic colours as aliases of primitives.
+   - `Dimensions`: one mode, `Value`. Spacing, radius, size, stroke and opacity (0-100, see "Pitfalls"). Duration and layer are code only.
 
-Check: screenshot the Foundations page in every theme, and compare the counts in `library.json` with the tokens file.
+   Scopes by role: surfaces `FRAME_FILL`, `SHAPE_FILL`; text `TEXT_FILL`; borders and focus rings `STROKE_COLOR` (plus `EFFECT_COLOR` when a shadow draws the ring); marks and icons `SHAPE_FILL`, `STROKE_COLOR`; spacing `GAP` (and `EFFECT_FLOAT` for an offset a shadow uses); radius `CORNER_RADIUS`; size `WIDTH_HEIGHT`; stroke `STROKE_FLOAT`; opacity `OPACITY`. A token with two roles gets both.
+2. Text styles `<group>/<style>` from `type.groups`: `letterSpacing` in `em` becomes `PERCENT` times 100, `textTransform: uppercase` becomes `textCase: UPPER`, and the description is the usage note. Effect styles `Shadow/<name>` from `shadow`, parsed from the CSS value; a shadow colour with its own alpha stays a value, because binding it to an opaque variable drops the alpha. Load each font first; a font the file cannot load is an open point, not a substitute.
+3. Pages: rename the file's first page to `Foundations`, then add `Components` and, when the manifest has `frame`, `Screens`. The Foundations page is drawn from the variables and styles, nothing typed by hand: per theme side by side, the semantic colours with their primitive, value and usage note; the primitives; one specimen per text style; the spacing, radius and size scales; the strokes, the focus ring and the disabled opacity; one sample per shadow. Its own layout (swatch size, bar thickness, gaps) takes space and size tokens, and its bars a semantic colour such as `text.secondary`, never a primitive.
+4. `figma/library.json`, the shape every adapter reads:
+
+```json
+{
+  "file": { "name": "<from the designer>", "key": "<key>", "url": "https://www.figma.com/design/<key>", "team": "<from the designer>", "project": "<from the designer>" },
+  "naming": {
+    "figmaVariable": "token name with '.' replaced by '/' (surface.page -> surface/page)",
+    "web": "var(--<token name with '.' replaced by '-'>) (surface.page -> var(--surface-page))",
+    "android": "camelCase of the token name (surface.page -> surfacePage)",
+    "textStyle": "<type group>/<style name> (Text/body-sm)",
+    "effectStyle": "Shadow/<name without 'shadow.'> (Shadow/overlay)"
+  },
+  "collections": {
+    "Primitives": { "id": "VariableCollectionId:…", "modes": { "Value": "…" }, "holds": "color primitives, hidden from pickers" },
+    "Color": { "id": "VariableCollectionId:…", "modes": { "Light": "…" }, "holds": "semantic colours, aliases of primitives" },
+    "Dimensions": { "id": "VariableCollectionId:…", "modes": { "Value": "…" }, "holds": "space, radius, size, stroke, opacity" }
+  },
+  "syncedAt": "<YYYY-MM-DD>",
+  "counts": { "primitives": 0, "semantic": 0, "dimensions": 0, "textStyles": 0, "effectStyles": 0 },
+  "pages": {
+    "Foundations": { "pageId": "…", "rootFrameId": "…", "url": "…", "note": "…" },
+    "Components": { "pageId": "…", "groups": {}, "note": "…" }
+  },
+  "components": {},
+  "figmaNotes": []
+}
+```
+
+   The plugin API cannot read the file's name, team or project: ask the designer, or leave them `null` and list them under Open. Then add `outputs: { figma: { library: figma/library.json } }` to the manifest, and record the file in the foundations.
+
+Check: screenshot the Foundations page in every theme, and compare `counts` with the tokens file: primitives and semantic colours, the tokens of the Dimensions families, the text styles and the shadows.
 
 ## Components
 - Variant names `Axis=value, Axis=value`, axes and values exactly as in the spec's states table.

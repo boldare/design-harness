@@ -31,6 +31,7 @@ When the tokens file has no tokens yet (a system just made with `design-harness 
 - With no source named, ask for one and stop. Do not propose a palette, a typeface or a scale of your own, and write nothing.
 - With a source, the foundations go through the seven steps below. The spec is the proposal in `docs/foundations.md`, written by `references/foundations.md`: every token with its value, its usage note and where in the source it came from, the tokens the core rules need, and the open points. The `spec` and `tokens` gates stop together: show the proposal and wait.
 - After approval: the tokens file, the foundations, the system's rules (the tokens for the core rules), the fonts in `paths.preview_head`, then `npm run tokens` and `npm run check`, which passes with no components. Figma, when the manifest has `outputs.figma` or the designer gives a file: the variables, the text and effect styles and the Foundations page, by "Starting a library" in the Figma adapter. Code has nothing else to build.
+- Foundations already approved, and a Figma file given later: run step 4 alone, by "Starting a library", then the report.
 
 ## Workflow
 

@@ -1,6 +1,6 @@
 # Foundations proposal
 
-The first change of an empty system. It turns a source the designer names into tokens, and it is the spec of that change: write it in `docs/foundations.md` (`paths.foundations`), show it, and wait at the `spec` and `tokens` gates. Atlas's `docs/foundations.md` is the model of the result, after approval.
+The first change of an empty system. It turns a source the designer names into tokens, and it is the spec of that change: write it in `docs/foundations.md` (`paths.foundations`), show it, and wait at the `spec` and `tokens` gates. Once approved, the same file stays the record of where each value came from: the proposal's tables become the record, and each open point gets the answer the designer gave.
 
 ## Read the source
 - A brand book: its colours, typefaces and sizes, its spacing or grid, its corners, and what it says each one is for. Read all of it; usage often sits next to the swatches, not in them.
