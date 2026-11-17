@@ -24,7 +24,8 @@ The first release is `0.1.0` (`.changeset/first-release.md`). Anything below `1.
 
 - `publishConfig.registry` sends the package to `https://npm.pkg.github.com`. The scope `@boldare` is the GitHub organisation, which owns the package.
 - The publish job authenticates with the workflow's `GITHUB_TOKEN` (`packages: write`). `actions/setup-node` writes it into a user `.npmrc` and points `NPM_CONFIG_USERCONFIG` at it, which pnpm reads. No token is stored in the repository, and no first publish by hand is needed: the first publish creates the package and links it to this repository (`repository` in `package.json`).
-- **After the first publish**, on the package's page in the organisation (Packages → `design-harness` → Package settings): check its visibility (private, visible to members of `boldare`, until the licence is settled), and under "Manage Actions access" give read access to each system repository whose CI installs it.
+- **Right after the first publish of a new package, make it private.** The package starts with the visibility of the repository it is linked to, most likely, and this repository is public: `@boldare/design-harness` 0.1.0 was public when it appeared (17.11.2026). On the package's page in the organisation (Packages → `design-harness` → Package settings → Danger Zone → Change visibility), set it to private, visible to members of `boldare`, until the licence is settled. Switching it back from public worked. Approve the `publish` job only when you can do this straight after.
+- Then, in the same settings, under "Manage Actions access", give read access to each system repository whose CI installs it.
 - GitHub Packages has no npm provenance. Nothing to set.
 
 ## Manifest rules
