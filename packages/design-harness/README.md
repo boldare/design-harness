@@ -2,7 +2,7 @@
 
 The harness is a design workflow in one package: a skill that takes a design change from a spec to a report, with gates where a person approves, and the CLI and test helpers that the skill's checks run. A design system lives in its own repository. The harness reads the system's files through contracts, which are data formats, and the tools sit behind those contracts as adapters: Figma, describe-me, React and Claude Design. [Atlas](https://github.com/boldare/design-harness/blob/main/examples/atlas/README.md) is the example system and the fixture the evals run on.
 
-The package is not on npm yet, but `init` is here. The contracts and the adapters: [`docs/architecture.md`](https://github.com/boldare/design-harness/blob/main/docs/architecture.md).
+The contracts and the adapters: [`docs/architecture.md`](https://github.com/boldare/design-harness/blob/main/docs/architecture.md).
 
 ## Commands
 
@@ -54,7 +54,7 @@ The preset and the helpers need these next to the package: `vitest`, `@vitest/br
 
 ## How a designer starts a system
 
-Once the package is on npm:
+A new repository, from scratch:
 
 ```
 mkdir design-project-x && cd design-project-x && git init
