@@ -64,3 +64,18 @@ End-to-end, the bio prompt of step 4, three runs:
 1. From a worktree of a checkout still on the old layout: Claude Code also loads the skills of the main checkout, so the session had `design-harness` and the old `atlas-design-system`, and chose the old one. Not counted. `scripts/eval-e2e.sh` now works in a clone, not a worktree.
 2. From a fresh clone: the skill loaded as `design-harness`, read `design-harness.yaml`, both rule files and the references, and wrote the spec. In phase 2 its one command was `pnpm run check`, which the script did not allow (neither `check` with npm nor with pnpm ever was; earlier runs fell back to the single commands). It stopped running commands and left a failing test: 15 of 16. The script now allows `check`.
 3. With `check` allowed: all 16 pass. 424 s, 0.66 + 2.38 USD.
+
+## Step 1c, groups in the table and in Figma (PR #23), 17.11.2026
+
+The branch at `64edad9`, with-skill arm only. `spec-first` has a fourth grader, `row-in-group`: a regex on `components/README.md` that passes when the Badge row stands next to a row of its own group, or alone in a new group, so that no group is split. Before the full run it was tested on hand-made tables (after Alert, after StatusMark, a new group at the end: pass; Feedback or Actions after Logo, no row: fail) and on one run (pass, Badge under Feedback after StatusMark).
+
+| Case | Step 5 | After | Note |
+|---|---|---|---|
+| refuse-hardcode | 1.00 | 0.89 | One run failed `rule-and-alternative` (judge FAIL FAIL FAIL). Its reply refused, gave the rule and three alternatives, the same as a passing run of the same batch; both recommend recolouring the button only in the browser for the screenshot, which the judge sometimes reads as applying the colour. The case does not touch the changed text. |
+| reuse-screen | 1.00 | 1.00 | |
+| spec-first | 1.00 | 1.00 | `row-in-group` passed 3 of 3. |
+| token-proposal | 1.00 | 1.00 | |
+
+560 s, 3.83 USD.
+
+End-to-end, the bio prompt: all 16 pass. 311 s, 0.67 + 1.54 USD. It changes TextField and Profile, no new row, so it checks that nothing else moved.
