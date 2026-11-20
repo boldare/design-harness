@@ -14,3 +14,4 @@ dist
 # Eval run output
 evals/results/
 evals-e2e/results/
+evals/.no-skill

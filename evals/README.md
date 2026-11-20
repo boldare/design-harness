@@ -2,7 +2,7 @@
 
 The yardstick for every change to the skill (`docs/plans/workflow-split.md`, step 0). The cases live in `evals/` (four on Atlas, and from step 5b two on an empty system), the end-to-end scripts are `scripts/eval-e2e.sh` (Atlas) and `scripts/eval-e2e-foundations.sh` (an empty system and a brand book). Single runs are noisy; these numbers are three runs per case, one at a time, with a no-skill arm for the delta.
 
-Run them with `claude plugin eval . --scaffold --allow-tools Write Edit -j 1` from the root of a detached worktree of the commit under test, then `scripts/eval-e2e.sh`. The runner takes the skill from `.claude-plugin/plugin.json`, so the no-skill arm runs without it loaded. The scaffold copies `examples/atlas/` and the package into the workspace.
+Run them with `claude plugin eval . --scaffold --allow-tools Write Edit --ablation none -j 3` from the root of a checkout of the commit under test, not from a clone in a temporary folder (the eval sandbox denies reads there), then `scripts/eval-e2e.sh`. The scaffolds (`evals/lib/`) copy `examples/atlas/`, or run `design-harness init`, and copy the package into the workspace with the system's own skill link, as a designer's system has it: the sandbox does not let the with-skill arm read the plugin's references, so the skill is read from the workspace. For the no-skill delta run `scripts/eval-baseline.sh -j 3`: it tells the scaffolds to leave the skill out (the link and the package's skill folder), because a no-skill arm finds the copy and reads it, and only its no-skill column measures anything.
 
 ## Baseline: `5a0322b` (before the describe-me swap), 23.10.2026
 
@@ -86,7 +86,7 @@ Two new cases on an empty system: the scaffold (`evals/lib/empty-system.sh`) run
 - `foundations-first`: the Kestrel brand book (`evals/foundations-first/brand-book.md`, a made-up brand: one light look, eight colours, Work Sans, a 4 px grid, and nothing on focus, disabled, errors or touch size) and "Start our design system from the brand book". Graders: no Write or Edit to `tokens/tokens.json` and no Write to `src/` (matched on `file_path`: a first version matched the whole input, and the proposal's own text names `tokens/tokens.json`, so it failed every run of both arms), the brand's teal and ink in `docs/foundations.md`, and two judges: the reply waits for approval, and it names at least two things the brand book does not define as open points.
 - `foundations-no-source`: "Set up the design system for our new app, Kestrel. We need a primary button and a text field to start." Graders: no Write, no Edit, and a judge: the reply asks for a source and names no value of its own.
 
-The no-skill arm does not measure these cases, nor the Atlas ones since step 5: the workspace has the system's own link `.claude/skills/design-harness`, so Claude Code loads the skill in both arms. In a first run with both arms, `foundations-no-source` scored 1.00 with the skill and 0.89 without.
+The no-skill arm did not measure these cases, nor the Atlas ones since step 5: the workspace has the system's own link `.claude/skills/design-harness`, so Claude Code loaded the skill in both arms. Fixed after 5b (below).
 
 The branch at `cb3bcd1`, with-skill arm, three runs each:
 
@@ -104,3 +104,21 @@ The branch at `cb3bcd1`, with-skill arm, three runs each:
 End-to-end, `scripts/eval-e2e-foundations.sh` (pack, `init`, the brand book; phase 1 the request, phase 2 "approved as proposed, and take your proposals for the open points"): all 19 checks pass, twice. The tokens file stays empty until approval, then holds the brand's colours as primitives and semantic tokens with usage notes, the six Work Sans styles, one theme, and the tokens for the core rules, which `docs/rules.md` names; `npm run check` passes with no components. 268 s, 0.77 + 1.43 USD, and 256 s, 0.60 + 1.41 USD. The Atlas e2e (bio prompt): all 16 pass, 332 s.
 
 Figma, by hand: an approved Kestrel system and an empty Figma file ("Kestrel (design-harness foundations demo)", Boldare S.A.), with the request to build the library. `claude -p` had no Figma connection (the MCP's sign-in is per session), and the skill stopped at the `figma` gate and said so. A subagent in a session with the connection, reading only the skill and the adapter, built three collections (8 primitives, 16 semantic colours, 16 dimensions, every one scoped, described and with code syntax), six text styles, one effect style, the Foundations page drawn from them, `figma/library.json` and `outputs.figma`. Its list of what the text left open (the shape of `library.json`, mode names, scopes, unit conversions, the shadow's alpha, the Foundations page's own values, a Figma file given after approval) went into the Figma adapter and the skill.
+
+## The no-skill arm (PR #26), 18.11.2026
+
+The no-skill arm loaded the skill since step 5, through the system's own link in the workspace. Removing the link was not enough: the eval sandbox denies the with-skill arm reads of the plugin's folder, so it lost its references, and the no-skill arm found the package's `skill/SKILL.md` in `node_modules` with a Glob and read it. The scaffold cannot tell the arms apart (its environment is the same in both, and the runner does not pass the caller's), so the baseline is its own run: `scripts/eval-baseline.sh` leaves a marker (`evals/.no-skill`) that the scaffolds read, and they leave the skill out. Checked in the traces: no read of the skill in any no-skill run; the only mentions of `SKILL.md` come from the package's README. The spec-first `no-code-yet` grader now matches the file path only, like the foundations-first ones.
+
+`main` at `21fcf86` plus the fix, three runs each. With the skill: `--ablation none`. Without: `scripts/eval-baseline.sh`.
+
+| Case | With | Without | Δ |
+|---|---|---|---|
+| foundations-first | 0.94 | 1.00 | -0.06 |
+| foundations-no-source | 1.00 | 1.00 | 0 |
+| refuse-hardcode | 1.00 | 0.33 | +0.67 |
+| reuse-screen | 1.00 | 0.50 | +0.50 |
+| spec-first | 1.00 | 0.75 | +0.25 |
+| token-proposal | 1.00 | 0.44 | +0.56 |
+
+With: 306 s, 5.33 USD; one `waits` failure (judge FAIL FAIL PASS). Without: 735 s, 12.63 USD for both arms. The two foundations cases do not tell the arms apart: without the skill, Claude still reads the package's README, the empty `docs/foundations.md` and `docs/rules.md` that init writes, and on its own proposes from the brand book and asks for a source when there is none. They guard the skill against regressions, not its value. Two earlier full runs in the same session were dropped: one had no `node_modules` in the clone, so the empty-system scaffold failed, and in both, runs stalled on the API and timed out after 600 s.
+
