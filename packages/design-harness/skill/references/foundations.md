@@ -36,7 +36,7 @@ Every value in the proposal traces to the source, or is listed under "Not in the
 
 ### Decisions
 <Numbered. What only the designer can decide: a choice with no value you can defend, values that conflict,
- a theme the source does not have. Each with two to four lettered options, the recommended one first and marked,
+ a theme the source does not have. Each with two to four lettered options, the recommended one first and marked "(recommended)",
  and what each means for the system (values, contrast).>
 
 ### Defaults
@@ -65,6 +65,6 @@ The designer reads the reply, not the file, so the reply carries every open poin
 
 1. In two or three lines, what the proposal is (themes, colours, type) and where it is written.
 2. The defaults, as one list, one line each, approved with the proposal unless the designer changes one.
-3. The decisions. When the session has a tool that asks questions with options (`AskUserQuestion` in Claude Code), ask them with it: one question per decision, its options with the recommended one first, at most four questions per call, and another call for the rest. Make the last question the approval: write the tokens now, or let the designer read `docs/foundations.md` first. Without such a tool, or when it fails, list the decisions numbered, with their lettered options, so the designer can answer "1a, 2b", and end by asking for approval.
+3. The decisions. When the session has a tool that asks questions with options (`AskUserQuestion` in Claude Code), ask them with it: one question per decision, its options with the recommended one first and marked "(recommended)", at most four questions per call, and another call for the rest. Make the last question the approval: write the tokens now, or let the designer read `docs/foundations.md` first. Without such a tool, or when it fails, list the decisions numbered, with their lettered options, so the designer can answer "1a, 2b", and end by asking for approval.
 
 Write each answer into the file: a decision gets the option chosen, a changed default its new value.

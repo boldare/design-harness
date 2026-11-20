@@ -122,3 +122,9 @@ The no-skill arm loaded the skill since step 5, through the system's own link in
 
 With: 306 s, 5.33 USD; one `waits` failure (judge FAIL FAIL PASS). Without: 735 s, 12.63 USD for both arms. The two foundations cases do not tell the arms apart: without the skill, Claude still reads the package's README, the empty `docs/foundations.md` and `docs/rules.md` that init writes, and on its own proposes from the brand book and asks for a source when there is none. They guard the skill against regressions, not its value. Two earlier full runs in the same session were dropped: one had no `node_modules` in the clone, so the empty-system scaffold failed, and in both, runs stalled on the API and timed out after 600 s.
 
+
+## Decisions and defaults, 20.11.2026
+
+The first run on a real brand (Boldare's, from its social media skill) wrote eleven open points into `docs/foundations.md` and showed five of them in the reply, as "the most important". The proposal now splits open points into decisions (numbered, lettered options, one marked "(recommended)") and defaults, the reply shows all of them, and in Claude Code the decisions go through the question picker. The evals run headless, without the picker, so they test the listed form: `open-points` asks for the two groups, and `decisions-and-defaults` checks the file.
+
+`foundations-first` 1.00 (3 runs, 1.61 USD), after a first run at 0.90: one reply marked its recommendations with "✓" and two judges did not count it, so the skill now asks for "(recommended)". `foundations-no-source` 1.00 (3 runs). The replies listed two to four decisions (error colour, input border, touch target, screen frame) and five to eight defaults, and asked about Figma and Claude Design only after approval. End-to-end (`scripts/eval-e2e-foundations.sh`): all 19 checks pass, 275 s, 2.20 USD. The Atlas cases were not run: the change touches only an empty system's foundations.
