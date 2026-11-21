@@ -65,7 +65,7 @@ check "tokens build"                             "pnpm run -s tokens"
 check "lint:tokens"                              "pnpm run -s lint:tokens"
 check "check (typecheck, tests, states)"         "pnpm run -s check"
 check "nothing in src/components"                "[ ! -d src/components ] || [ -z \"\$(ls -A src/components)\" ]"
-for f in 'Change:' 'New tokens:' 'Checks:' 'Open:'; do
+for f in 'Change:' 'New tokens:' 'Checks:' 'Preview:' 'Open:'; do
   check "report has $f"                          "grep -q '$f' '$OUT/report.md'"
 done
 jq -r 'select(.type=="result") | "Cost USD: \(.total_cost_usd)"' "$OUT/phase1.jsonl" "$OUT/phase2.jsonl"

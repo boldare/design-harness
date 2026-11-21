@@ -132,3 +132,7 @@ The first run on a real brand (Boldare's, from its social media skill) wrote ele
 ## `CLAUDE.md` from init, 21.11.2026
 
 The empty-system scaffold runs `init`, so its workspace now has the `CLAUDE.md` that init writes. A first version named the Figma library, the code and Claude Design as outputs of the repository, and the replies asked about Figma and Claude Design before any source or approval (`foundations-no-source` 0.89, one reply failed by all three judges). Without that sentence, six runs each: `foundations-first` 0.98 (one `waits` split FAIL FAIL PASS on a reply that ends with the approval question and a line on what follows), `foundations-no-source` 1.00, 3.74 USD. End-to-end (`scripts/eval-e2e-foundations.sh`, first version): all 19 checks.
+
+## The viewer after the checks, 21.11.2026
+
+Step 7 now starts the describe-me viewer (`npm run dev`) in the background when nothing answers on port 6006, and the report has a `Preview:` line; the foundations end there too. The end-to-end script checks for that line. End-to-end: all 20 checks pass, 264 s, 2.42 USD. The run allows only the check commands, so the agent could not start the viewer and wrote the command instead ("npm run dev, then http://localhost:6006 → Foundations"), which leaves no server behind. `spec-first` 0.92 (3 runs, 1.13 USD): one `waits` split FAIL FAIL PASS and one FAIL, on replies that all say they stopped for approval with nothing built; the viewer does not come up before the spec gate.
