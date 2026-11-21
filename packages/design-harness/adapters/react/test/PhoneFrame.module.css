@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  /* An outline shows the frame edge on a canvas of the same colour without changing the frame size. */
-  outline: var(--stroke-default) solid var(--border-subtle);
+  /* An outline shows the frame edge on a canvas of the same colour without changing the frame size.
+     Its width is fixed and its colour falls back to the text colour: the helpers cannot know a system's tokens. */
+  outline: 1px solid var(--border-subtle, currentColor);
 }

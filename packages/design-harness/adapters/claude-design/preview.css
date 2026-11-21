@@ -1,4 +1,5 @@
-/* Preview canvas, as the test canvas (src/test/canvas.css): page colour and default text from the tokens. */
+/* Preview canvas, as the test canvas (src/test/canvas.css): page colour and default text from the tokens.
+   The preview layout below (paddings, gaps) is fixed, not tokens: the helpers cannot know a system's spacing scale. */
 html,
 body {
   margin: 0;
@@ -9,7 +10,7 @@ body {
 
 .pv {
   box-sizing: border-box;
-  padding: var(--space-6);
+  padding: 24px;
 }
 
 .pv p {
@@ -19,7 +20,7 @@ body {
 .pv-stack {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
+  gap: 32px;
 }
 
 /* State matrix, as the state rows of the tests: a heading column, then one column per variant. */
@@ -27,16 +28,12 @@ body {
   display: grid;
   grid-template-columns: max-content repeat(var(--pv-columns), minmax(0, 1fr));
   align-items: center;
-  column-gap: var(--space-8);
-  row-gap: var(--space-6);
+  column-gap: 32px;
+  row-gap: 24px;
 }
 
 .pv-row {
   display: contents;
-}
-
-.pv-heading {
-  color: var(--text-secondary);
 }
 
 /* Preview layout only, not a design token: about one phone screen wide, as in the StateMatrix story helper. */
@@ -50,13 +47,13 @@ body {
   display: grid;
   grid-template-columns: repeat(var(--pv-columns), minmax(0, 360px));
   align-items: start;
-  column-gap: var(--space-8);
-  row-gap: var(--space-6);
+  column-gap: 32px;
+  row-gap: 24px;
 }
 
 .pv-example {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 8px;
   min-width: 0;
 }
