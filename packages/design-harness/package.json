@@ -1,6 +1,6 @@
 {
   "name": "@boldare/design-harness",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "The design-harness workflow for Claude: the skill, the CLI and the test helpers its checks run.",
   "keywords": ["design system", "design tokens", "claude", "claude code", "skill", "figma", "react", "vitest", "describe-me"],
   "author": "Boldare",
