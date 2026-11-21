@@ -102,6 +102,7 @@ claude        # "Start the system from the brand book in docs/brand-book.pdf"
 - The inventories `components/README.md` and `screens/README.md`, with empty tables.
 - In `package.json`, whatever it lacks of `"type": "module"`, the scripts (`check` and its steps, `dev` and `docs`) and the devDependencies a component test needs.
 - `vitest.config.ts` on the preset, `tsconfig.json`, `src/index.ts`, `src/vite-env.d.ts`, an empty `src/styles/fonts.html`, `.gitignore`, and `.npmrc`, which sends `@boldare` packages to GitHub Packages.
+- `CLAUDE.md`, read by every Claude Code session in the system: changes go through the skill, `npm run check` closes them, the repository is in English, and commits are one short line. Edit it to your team's conventions.
 - The link `.claude/skills/design-harness` to `../../node_modules/@boldare/design-harness/skill`.
 
 `pnpm install` installs what `init` added to `package.json`. The check then passes with no components. Chromium is needed from the first component test on.
