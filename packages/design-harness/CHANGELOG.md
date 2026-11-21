@@ -1,5 +1,15 @@
 # @boldare/design-harness
 
+## 0.2.1
+
+### Patch Changes
+
+- [#27](https://github.com/boldare/design-harness/pull/27) [`ea01d59`](https://github.com/boldare/design-harness/commit/ea01d59b06c2fa6ce3f0c0cb25ca0c43942deceb) Thanks [@grzehub](https://github.com/grzehub)! - The foundations proposal splits its open points into decisions (numbered, with options and a recommended one) and defaults (a value approved with the proposal unless the designer changes it), and its reply shows every open point instead of a selection. In Claude Code the decisions are asked with the question picker, the approval as the last question; without it they are listed so the designer can answer "1a, 2b". Figma and Claude Design are asked about after approval, not as open points.
+
+- [#29](https://github.com/boldare/design-harness/pull/29) [`dec34e2`](https://github.com/boldare/design-harness/commit/dec34e2fb289797509798250fe4f4842e58a0a1c) Thanks [@grzehub](https://github.com/grzehub)! - `design-harness init` writes a `.gitignore` that also leaves out editor settings (`.idea/`, `.vscode/`).
+
+- [#31](https://github.com/boldare/design-harness/pull/31) [`dc36f99`](https://github.com/boldare/design-harness/commit/dc36f997100f5ccf6df0d58c64b4026d36ebbc50) Thanks [@grzehub](https://github.com/grzehub)! - `design-harness init` writes a `CLAUDE.md`: changes go through the skill, `npm run check` closes them, the repository is in English, and commits are one short line with no body.
+
 ## 0.2.0
 
 ### Minor Changes
