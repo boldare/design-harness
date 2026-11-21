@@ -1,4 +1,4 @@
-// Fails when a state in a spec (the "## States" section of a component or screen README) has no test of that name
+// Fails when a state in a spec (the "## States" or "## Variants and states" section of a component or screen README) has no test of that name
 // in the component's test file, as recorded in .describe-me/manifest.json by the last test run.
 // Every state is a story because every state is a test; this check keeps the specs and the tests in step.
 // It also fails when the recorded sidebar differs from the inventory tables, which set the groups and their order.
@@ -24,7 +24,7 @@ const testsByModule = new Map(manifest.modules.map((module) => [module.id, modul
  * in the first sentence of the section after the last "×". Notes in later sentences ("No `error` state: …") do not count.
  */
 function statesOf(readme) {
-  const section = /^## States[^\n]*\n([\s\S]*?)(?=^## |(?![\s\S]))/m.exec(readme)?.[1];
+  const section = /^## (?:Variants and states|States)\b[^\n]*\n([\s\S]*?)(?=^## |(?![\s\S]))/m.exec(readme)?.[1];
   if (!section) return [];
   const rows = section.split('\n').filter((line) => line.trim().startsWith('|'));
   if (rows.length > 2) {
