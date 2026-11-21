@@ -1,5 +1,11 @@
 # @boldare/design-harness
 
+## 0.2.2
+
+### Patch Changes
+
+- [#32](https://github.com/boldare/design-harness/pull/32) [`50155d7`](https://github.com/boldare/design-harness/commit/50155d73670d1410f4daba9eaa6a3323c21b1a0f) Thanks [@grzehub](https://github.com/grzehub)! - Fixes found building the first component of a real system: a token that points at a semantic colour (such as a shadow) follows the theme of a section with its own `data-theme`, and the default theme gets a `[data-theme]` block too; `check-states` reads `## Variants and states`, the heading of the spec template, as well as `## States`; the test and preview helpers no longer read spacing and stroke tokens a system may not have; the React adapter draws focus with an outline when the system's focus tokens are a colour and a stroke, or when the component has a shadow of its own.
+
 ## 0.2.1
 
 ### Patch Changes
