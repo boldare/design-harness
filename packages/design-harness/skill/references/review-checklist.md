@@ -10,6 +10,7 @@
 - [ ] A colour pair that failed a contrast rule has been looked up across the system, and other places using it are listed under Open.
 - [ ] `npm run lint:tokens`, `npm run typecheck`, `npm test`, `npm run check-states` pass.
 - [ ] `figma/library.json` (when the manifest has `outputs.figma`) and the inventory table (`components/README.md` or `screens/README.md`) updated, the new row in its group.
+- [ ] The viewer running for the designer (`npm run dev` in the background), or the command for it in the report.
 - [ ] Claude Design re-synced, when the manifest has `outputs.claude_design`.
 - [ ] Every gate the manifest adds (`gates`) passed, or is waiting for its person.
 
@@ -26,5 +27,6 @@ New tokens:  <name = value, reason>  (or "none")
 States:      <list, and where they can be seen: Figma section, test file>
 Checks:      lint:tokens <pass/fail>, typecheck <pass/fail>, test <pass/fail>, check-states <pass/fail>, themes <checked>
 Spec fixes:  <anything the spec did not say and now does>  (or "none")
+Preview:     <http://localhost:6006, running, and where in it: the component, the screen or Foundations>  (or "npm run dev, then http://localhost:6006")
 Open:        <decisions for the designer>  (or "none")
 ```

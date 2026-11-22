@@ -30,7 +30,7 @@ When the tokens file has no tokens yet (a system just made with `design-harness 
 
 - With no source named, ask for one and stop. Do not propose a palette, a typeface or a scale of your own, and write nothing.
 - With a source, the foundations go through the seven steps below. The spec is the proposal in `docs/foundations.md`, written by `references/foundations.md`: every token with its value, its usage note and where in the source it came from, the tokens the core rules need, and the open points, split into decisions and defaults. The `spec` and `tokens` gates stop together: show the proposal by "Showing the proposal" in that reference, with every open point, and wait.
-- After approval: the tokens file, the foundations, the system's rules (the tokens for the core rules), the fonts in `paths.preview_head`, then `npm run tokens` and `npm run check`, which passes with no components. Figma, when the manifest has `outputs.figma` or the designer gives a file: the variables, the text and effect styles and the Foundations page, by "Starting a library" in the Figma adapter. Code has nothing else to build.
+- After approval: the tokens file, the foundations, the system's rules (the tokens for the core rules), the fonts in `paths.preview_head`, then `npm run tokens` and `npm run check`, which passes with no components, and the viewer by "The viewer" in step 7, where the designer sees the Foundations. Figma, when the manifest has `outputs.figma` or the designer gives a file: the variables, the text and effect styles and the Foundations page, by "Starting a library" in the Figma adapter. Code has nothing else to build.
 - Foundations already approved, and a Figma file given later: run step 4 alone, by "Starting a library", then the report.
 
 ## Workflow
@@ -73,6 +73,8 @@ Re-sync the published design system as described in `node_modules/@boldare/desig
 
 ### 7. Review and report (`report`)
 Go through `references/review-checklist.md`. Finish with the change report it defines. If anything in the spec turned out to be unclear while building, fix the spec, not only the output.
+
+The viewer: once the checks pass, the designer looks at the change in the describe-me viewer (`npm run dev`, http://localhost:6006). When nothing answers on that port, start `npm run dev` as a background command: it does not exit, so never in the foreground. The report's `Preview:` line gives the address and what to open there. When you cannot run a background command, it gives the command instead.
 
 ## When something does not fit
 
