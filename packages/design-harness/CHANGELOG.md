@@ -1,5 +1,11 @@
 # @boldare/design-harness
 
+## 0.2.3
+
+### Patch Changes
+
+- [#34](https://github.com/boldare/design-harness/pull/34) [`3cfc449`](https://github.com/boldare/design-harness/commit/3cfc4493a397c954b4915de3b13a14b57642120d) Thanks [@grzehub](https://github.com/grzehub)! - After the checks pass, the skill starts the describe-me viewer (`npm run dev`) in the background when it is not running, after a change and after the foundations, and the change report has a `Preview:` line with the address and what to open there.
+
 ## 0.2.2
 
 ### Patch Changes
