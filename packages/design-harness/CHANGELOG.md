@@ -1,5 +1,11 @@
 # @boldare/design-harness
 
+## 0.2.4
+
+### Patch Changes
+
+- [#36](https://github.com/boldare/design-harness/pull/36) [`581064b`](https://github.com/boldare/design-harness/commit/581064b6dbf1f75caa5807ce6f6343b06c578eff) Thanks [@grzehub](https://github.com/grzehub)! - The foundations read what a source's components use outside its tokens (paddings and radii typed by hand, colours off the palette, text with no style) and settle each value in the proposal: mapped to a token, a proposed token, or a decision. The source is never changed, and the new section of `docs/foundations.md` maps the old values to the tokens. The Figma adapter has the read-only tally for a Figma source.
+
 ## 0.2.3
 
 ### Patch Changes
