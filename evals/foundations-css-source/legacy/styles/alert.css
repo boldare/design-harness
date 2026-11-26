@@ -1,0 +1,7 @@
+.alert {
+  color: #C0392B;
+  background: #FDECEA;
+  padding: 12px var(--space-3);
+  border-radius: 6px;
+  font: var(--text-small);
+}

@@ -34,6 +34,15 @@ Icons: create an instance of the icon component from the Components page (`Icon/
 ## Variables
 Use the collections listed in `figma/library.json`, by what each `holds`: dimensions (FLOAT) in one, colour primitives in another (hidden, scopes `[]`), and semantic colours as aliases with one mode per theme. Always set scopes, a description from the usage note, and code syntax as the library's `naming` says (WEB `var(--name)`, ANDROID camelCase).
 
+## Reading a source file
+When the foundations come from a Figma file, read it without changing it: the designer gives a copy, and nothing is written to it. First its variables and its text and effect styles. Then, with read-only `use_figma` scripts, one per page that holds components (in parallel), what its components use outside them, walking every component, component set and the frames inside them:
+- a solid fill or stroke with no bound colour variable: its hex;
+- a padding, item spacing or corner radius above 0 with no bound variable (`node.boundVariables`): its px;
+- a text node with no text style (`textStyleId` empty): its family, size, weight and line height;
+- an effect with no effect style.
+
+Each script returns a tally, not the nodes: per value, the number of uses and the names of up to five components that use it. The foundations reference says what each value becomes.
+
 ## Starting a library
 The foundations of a system that has no `figma/library.json` yet: right after the foundations are approved, or in a later session, when the designer gives a file for foundations that are already in the tokens file. The designer gives the file: an empty one, or the client's file with a page for the library. Create a new file with the MCP only when the designer asks, in the team and project they name. The repository is the source, so the library discovery of `figma-generate-library` (`get_libraries`, `search_design_system`) is not needed in an empty file.
 

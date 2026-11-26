@@ -1,0 +1,7 @@
+.input {
+  background: var(--pebble-white);
+  border: 1px solid #E2DED8;
+  padding: 12px var(--space-3);
+  border-radius: var(--radius-sm);
+  font: var(--text-body);
+}
