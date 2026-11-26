@@ -1,0 +1,28 @@
+/* Pebble, a made-up note-taking app: the theme of the current web app. */
+:root {
+  --pebble-ink: #1F2A37;      /* text */
+  --pebble-stone: #6B7280;    /* secondary text, hints */
+  --pebble-paper: #F7F5F2;    /* page background */
+  --pebble-white: #FFFFFF;    /* cards, inputs */
+  --pebble-moss: #2F6B4F;     /* the brand colour: buttons, links, selection */
+  --pebble-line: #E2DED8;     /* borders, dividers */
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+
+  --radius-sm: 4px;
+
+  --font-body: "Nunito Sans", system-ui, sans-serif;
+  --text-title: 600 24px/32px var(--font-body);
+  --text-body: 400 16px/24px var(--font-body);
+  --text-small: 400 14px/20px var(--font-body);
+}
+
+body {
+  background: var(--pebble-paper);
+  color: var(--pebble-ink);
+  font: var(--text-body);
+}

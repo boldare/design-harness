@@ -1,0 +1,6 @@
+.card {
+  background: var(--pebble-white);
+  border: 1px solid var(--pebble-line);
+  padding: var(--space-4);
+  border-radius: 6px;
+}

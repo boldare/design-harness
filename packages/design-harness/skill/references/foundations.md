@@ -4,10 +4,17 @@ The first change of an empty system. It turns a source the designer names into t
 
 ## Read the source
 - A brand book: its colours, typefaces and sizes, its spacing or grid, its corners, and what it says each one is for. Read all of it; usage often sits next to the swatches, not in them.
-- A Figma file: its variables (collections, modes, scopes) and its text and effect styles, through the Figma MCP. Keep its names where they say what a value is for.
-- CSS or a theme (custom properties, a Tailwind `@theme`, a MUI theme): the values and how the project's components use them.
+- A Figma file: its variables (collections, modes, scopes) and its text and effect styles, through the Figma MCP. Keep its names where they say what a value is for. Then what its components use outside them, by "Reading a source file" in the Figma adapter.
+- CSS or a theme (custom properties, a Tailwind `@theme`, a MUI theme): the values and how the project's components use them, with the values the components type by hand.
 
 Every value in the proposal traces to the source, or is listed under "Not in the source" for the designer to decide. Nothing is filled in silently, however typical.
+
+A source's components often use values outside its own tokens: a padding typed in px, a colour that is not in the palette, a text with no style. Collect each with where it is used and how often, and settle it in "Outside the source's tokens":
+- Within a step of a token, or a colour a few units off one: mapped to that token, a default.
+- Used in several places with no token: a proposed token, its Source the places that use it.
+- Used once or twice and fitting nothing, so a mistake cannot be told from an intent: a decision (the nearest token, a new token, or dropped).
+
+Never change the source. The fix lives in the new system, and the table is the map from the old values to the tokens, for the people who will move the product onto them.
 
 ## Sections
 
@@ -27,6 +34,10 @@ Every value in the proposal traces to the source, or is listed under "Not in the
 
 ## Normalised
 <Values snapped to a scale or merged, as a table: source | now | why. Or "none".>
+
+## Outside the source's tokens
+<Values the source's components use without one of its tokens: Value | Where (components, uses) | Now | Why.
+ Now is a token of the proposal, a proposed token, or the decision that settles it. Or "none" when the components use only the source's tokens.>
 
 ## Contrast
 <Every text and icon colour on every surface it is meant for, per theme, with the measured ratio. A pair under 4.5:1 for text
